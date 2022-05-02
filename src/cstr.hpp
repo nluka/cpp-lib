@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-namespace cstr {
+namespace cstr { // stands for `C string`
 
 constexpr
 int cmp(char const *s1, char const *s2);

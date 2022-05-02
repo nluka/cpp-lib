@@ -26,9 +26,9 @@ size_t cstr::count(char const *const str, char const c) {
 constexpr
 char cstr::last_char(char const *const str) {
   size_t const len = cstr::len(str);
-  if (len > 0) [[likely]] {
+  if (len > 0) {
     return str[len - 1];
-  } else [[unlikely]] {
+  } else {
     return '\0';
   }
 }

@@ -21,7 +21,10 @@ void assert_file(std::ofstream const *file, std::string const &name) {
   }
 }
 
-std::string construct_full_file_pathname(char const *const dir, char const *const fname) {
+std::string construct_full_file_pathname(
+  char const *const dir,
+  char const *const fname
+) {
   std::stringstream ss{};
   ss << dir << '/' << fname;
   return ss.str();

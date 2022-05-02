@@ -17,7 +17,7 @@ void term::cursor_show() {
   printf("\33[?25h");
 }
 
-void term::cursor_move_up(size_t lines) {
+void term::cursor_move_up(size_t const lines) {
   printf("\33[%zuA", lines);
 }
 

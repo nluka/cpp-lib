@@ -1,5 +1,6 @@
 #include "pgm8.hpp"
 
+static
 void write_header(
   char const *const magicNum,
   std::ofstream *const file,
