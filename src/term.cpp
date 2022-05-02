@@ -37,3 +37,7 @@ void term::printf_colored(
   set_color_text(g_defaultColorText);
   va_end(args);
 }
+
+void term::set_color_text_default(ColorText const color) {
+  g_defaultColorText = color;
+}

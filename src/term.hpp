@@ -27,9 +27,11 @@ void clear_curr_line();
 
 /*
   Wrapper for printf allowing for colored printing. Sets stdout text color to
-  `g_defaultColorText` after printing.
+  `g_defaultColorText` after printing - use `set_color_text_default` to change
+  it.
 */
 void printf_colored(ColorText color, char const *format, ...);
+void set_color_text_default(ColorText color);
 
 } // namespace term
 

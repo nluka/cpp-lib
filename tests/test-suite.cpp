@@ -28,6 +28,8 @@ std::string construct_full_file_pathname(char const *const dir, char const *cons
 }
 
 int main(int const argc, char const *const *const argv) {
+  term::set_color_text_default(ColorText::DEFAULT);
+
   if (argc < 2) {
     printf_colored(ColorText::YELLOW, "usage: <out_dir> [<use_stdout>]");
     exit(1);
@@ -130,4 +132,4 @@ int main(int const argc, char const *const *const argv) {
   delete result;
 }
 
-// g++ src/*.cpp tests/test-suite.cpp -Wall -std=c++2a -Wno-format -o bin/test-suite.exe
+// g++ src/*.cpp tests/test-suite.cpp -Wall -Wno-format -std=c++2a -o bin/test-suite.exe
