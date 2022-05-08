@@ -1,6 +1,6 @@
 #include "cstr.hpp"
 
-constexpr
+// constexpr
 int cstr::cmp(char const *s1, char const *s2) {
   // from https://stackoverflow.com/a/34873406/16471560
   while(*s1 && (*s1 == *s2)) {
@@ -11,7 +11,7 @@ int cstr::cmp(char const *s1, char const *s2) {
 }
 
 // Returns the number of occurences of a character.
-constexpr
+// constexpr
 size_t cstr::count(char const *const str, char const c) {
   size_t i = 0, count = 0;
   while (str[i] != '\0') {
@@ -23,7 +23,7 @@ size_t cstr::count(char const *const str, char const c) {
 }
 
 // Returns the last character of the given string.
-constexpr
+// constexpr
 char cstr::last_char(char const *const str) {
   size_t const len = cstr::len(str);
   if (len > 0) {
@@ -33,9 +33,14 @@ char cstr::last_char(char const *const str) {
   }
 }
 
-constexpr
+// constexpr
 size_t cstr::len(char const *const str) {
   size_t i = 0;
   while (str[i] != '\0') ++i;
   return i;
+}
+
+// constexpr
+int cstr::to_int(char const c) {
+  return static_cast<int>(c) - 48;
 }
