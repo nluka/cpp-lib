@@ -10,7 +10,8 @@ using
   test::Assertion, test::run_suite,
   term::printf_colored, term::ColorText;
 
-void assert_file(std::ofstream const *file, std::string const &name) {
+template<typename FstreamType>
+void assert_file(FstreamType const *file, char const *name) {
   if (!file->is_open()) {
     printf_colored(
       ColorText::RED,
@@ -21,13 +22,18 @@ void assert_file(std::ofstream const *file, std::string const &name) {
   }
 }
 
-std::string construct_full_file_pathname(
+std::string make_full_file_pathname(
   char const *const dir,
   char const *const fname
 ) {
   std::stringstream ss{};
   ss << dir << '/' << fname;
   return ss.str();
+}
+
+void oneoff_assertion(char const *const name, bool const expr) {
+  Assertion(name, expr).run(true);
+  Assertion::reset_counters();
 }
 
 int main(int const argc, char const *const *const argv) {
@@ -44,50 +50,92 @@ int main(int const argc, char const *const *const argv) {
 
   { // setup result file
     std::string const pathname
-      = construct_full_file_pathname(argv[1], "assertions.txt");
+      = make_full_file_pathname(argv[1], "assertions.txt");
     result = new std::ofstream(pathname);
-    assert_file(result, pathname);
+    assert_file<std::ofstream>(result, pathname.c_str());
     test::set_ofstream(result);
   }
 
   uint16_t const width = 5, height = 5;
-  unsigned char pixels[height][width] {
-    10, 20, 30, 40, 50,
+  uint8_t pixels[height * width] {
+    1, 20, 30, 40, 50,
     60, 70, 80, 90, 100,
     110, 120, 130, 140, 150,
     160, 170, 180, 190, 200,
     210, 220, 230, 240, 250
   };
 
-  { // write ASCII PGM file
+  { // ASCII PGM
     std::string const pathname
-      = construct_full_file_pathname(argv[1], "ascii.pgm");
-    std::ofstream out(pathname);
-    assert_file(&out, pathname);
+      = make_full_file_pathname(argv[1], "ascii.pgm");
 
-    // this can't really be unit-tested, the outputted file needs to be
-    // manually verified
-    pgm8::write_ascii(
-      &out,
-      width, height,
-      250,
-      reinterpret_cast<unsigned char const *>(pixels)
-    );
+    { // write
+      std::ofstream out(pathname);
+      assert_file<std::ofstream>(&out, pathname.c_str());
+
+      // outputted file needs to be manually verified
+      pgm8::write_ascii(
+        &out,
+        width, height,
+        250,
+        reinterpret_cast<uint8_t const *>(pixels)
+      );
+    }
+    { // read
+      std::ifstream in(pathname);
+      assert_file<std::ifstream>(&in, pathname.c_str());
+      pgm8::Image img{};
+      try {
+        img.load(in);
+      } catch (char const *err) {
+        printf_colored(ColorText::RED, "%s\n", err);
+        exit(2);
+      }
+      bool pixelsMatch = true;
+      for (size_t i = 0; i < img.pixelCount(); ++i) {
+        if (img.pixels()[i] != pixels[i]) {
+          pixelsMatch = false;
+          break;
+        }
+      }
+      oneoff_assertion("ASCII img read", pixelsMatch);
+    }
   }
-  { // write binary PGM file
-    std::string const pathname
-      = construct_full_file_pathname(argv[1], "binary.pgm");
-    std::ofstream out(pathname);
-    assert_file(&out, pathname);
 
-    // this can't really be unit-tested, the outputted file needs to be
-    // manually verified
-    pgm8::write_bin(
-      &out,
-      width, height,
-      250,
-      reinterpret_cast<unsigned char const *>(pixels)
-    );
+  { // binary PGM
+    std::string const pathname
+      = make_full_file_pathname(argv[1], "binary.pgm");
+
+    { // write
+      std::ofstream out(pathname);
+      assert_file<std::ofstream>(&out, pathname.c_str());
+      // outputted file needs to be manually verified
+      pgm8::write_bin(
+        &out,
+        width, height,
+        250,
+        pixels
+      );
+    }
+    { // read
+      std::ifstream in(pathname);
+      assert_file<std::ifstream>(&in, pathname.c_str());
+      pgm8::Image img{};
+      try {
+        img.load(in);
+      } catch (char const *err) {
+        printf_colored(ColorText::RED, "%s\n", err);
+        exit(2);
+      }
+      bool pixelsMatch = true;
+      for (size_t i = 0; i < img.pixelCount(); ++i) {
+        if (img.pixels()[i] != pixels[i]) {
+          pixelsMatch = false;
+          break;
+        }
+      }
+      oneoff_assertion("binary img read", pixelsMatch);
+    }
   }
 
   if (argc >= 3) {
@@ -133,6 +181,7 @@ int main(int const argc, char const *const *const argv) {
   }
 
   delete result;
+  return 0;
 }
 
 // g++ src/*.cpp tests/test-suite.cpp -Wall -Wno-format -std=c++2a -o bin/test-suite.exe

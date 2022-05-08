@@ -25,7 +25,7 @@ public:
   static void reset_counters();
 
   Assertion(char const *name, bool expr);
-  void run() const;
+  void run(bool verbose = false) const;
 };
 
 void run_suite(

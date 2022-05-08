@@ -34,27 +34,27 @@ void Assertion::print_summary() {
     if (s_useStdout) {
       printf_colored(
         ColorText::GREEN,
-        "all %zu assertions succeeded\n",
+        "all %zu assertions passed\n",
         s_successCount
       );
     }
     if (s_ofstream != nullptr) {
       *s_ofstream
         << "all " << s_successCount
-        << " assertions succeeded\n\n";
+        << " assertions passed\n\n";
     }
   } else {
     if (s_useStdout) {
       printf_colored(
         ColorText::YELLOW,
-        "%zu assertions failed, %zu succeeded\n",
+        "%zu assertions failed, %zu passed\n",
         s_failCount, s_successCount
       );
     }
     if (s_ofstream != nullptr) {
       *s_ofstream
         << s_failCount << " assertions failed, "
-        << s_successCount << " succeeded\n\n";
+        << s_successCount << " passed\n\n";
     }
   }
 }
@@ -62,9 +62,21 @@ void Assertion::print_summary() {
 Assertion::Assertion(char const *const name, bool const expr)
 : m_name{name}, m_expr{expr} {}
 
-void Assertion::run() const {
+void Assertion::run(bool const verbose) const {
   if (m_expr == true) {
     ++s_successCount;
+
+    if (s_useStdout && verbose) {
+      printf_colored(
+        ColorText::GREEN,
+        "`%s` passed\n",
+        m_name
+      );
+    }
+
+    if (s_ofstream != nullptr && verbose) {
+      *s_ofstream << "`" << m_name << "` passed\n";
+    }
   } else {
     ++s_failCount;
 

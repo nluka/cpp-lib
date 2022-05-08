@@ -1,27 +1,31 @@
+#include <string>
+#include "cstr.hpp"
 #include "pgm8.hpp"
+
+using pgm8::Image;
 
 static
 void write_header(
-  char const *const magicNum,
   std::ofstream *const file,
+  char const *const magicNum,
   uint16_t const width,
   uint16_t const height,
-  unsigned char const maxPixelVal
+  uint8_t const maxPixelVal
 ) {
   *file
     << magicNum << '\n'
-    << width << ' ' << height << '\n'
-    << static_cast<int>(maxPixelVal) << '\n';
+    << std::to_string(width) << ' ' << std::to_string(height) << '\n'
+    << std::to_string(maxPixelVal) << '\n';
 }
 
 void pgm8::write_ascii(
   std::ofstream *const file,
   uint16_t const width,
   uint16_t const height,
-  unsigned char const maxPixelVal,
-  unsigned char const *const pixels // 1D array
+  uint8_t const maxPixelVal,
+  uint8_t const *const pixels
 ) {
-  write_header("P2", file, width, height, maxPixelVal);
+  write_header(file, "P2", width, height, maxPixelVal);
 
   // pixels
   for (uint16_t r = 0; r < height; ++r) {
@@ -38,11 +42,98 @@ void pgm8::write_bin(
   std::ofstream *const file,
   uint16_t const width,
   uint16_t const height,
-  unsigned char const maxPixelVal,
-  unsigned char const *const pixels
+  uint8_t const maxPixelVal,
+  uint8_t const *const pixels
 ) {
-  write_header("P5", file, width, height, maxPixelVal);
+  write_header(file, "P5", width, height, maxPixelVal);
 
   // pixels
-  file->write(reinterpret_cast<char const *>(pixels), width * height);
+  size_t const pixelCount = width * height;
+  char pixel{};
+  for (size_t i = 0; i < pixelCount; ++i) {
+    pixel = static_cast<char>(pixels[i]);
+    file->write(&pixel, 1);
+  }
+}
+
+pgm8::Image::Image()
+: m_width{0}, m_height{0}, m_pixels{nullptr}, m_maxPixelVal{0}
+{}
+
+pgm8::Image::Image(std::ifstream &file) : pgm8::Image::Image() {
+  load(file);
+}
+
+Image::~Image() {
+  delete m_pixels;
+}
+
+void Image::load(std::ifstream &file) {
+  if (!file.is_open()) {
+    throw "file closed";
+  }
+  if (!file.good()) {
+    throw "bad file";
+  }
+
+  int kind{};
+
+  { // determine kind of image based on magic number
+    // PGMs have 2 possible magic numbers - `P2` = ASCII, `P5` = binary
+    char magicNum[3]{};
+    file.getline(magicNum, sizeof magicNum);
+    if (magicNum[0] != 'P' || (magicNum[1] != '2' && magicNum[1] != '5')) {
+      throw "invalid magic number";
+    }
+    kind = static_cast<int>(cstr::to_int(magicNum[1]));
+  }
+
+  file >> m_width;
+  file >> m_height;
+  {
+    int maxval;
+    file >> maxval;
+    m_maxPixelVal = static_cast<uint8_t>(maxval);
+  }
+
+  const size_t pixelCount = m_width * m_height;
+  try {
+    m_pixels = new uint8_t[pixelCount];
+  } catch (...) {
+    throw "not enough memory";
+  }
+
+  if (kind == 2) { // ASCII
+    char pixel[4]{};
+    for (size_t i = 0; i < pixelCount; ++i) {
+      file >> pixel;
+      m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
+    }
+  } else { // binary
+    { // read newline between maxval and start of pixel raster
+      char newline;
+      file.read(&newline, 1);
+    }
+    char pixel{};
+    for (size_t i = 0; i < pixelCount; ++i) {
+      file.read(&pixel, 1);
+      m_pixels[i] = static_cast<uint8_t>(pixel);
+    }
+  }
+}
+
+uint_fast16_t Image::width() const {
+  return m_width;
+}
+uint_fast16_t Image::height() const {
+  return m_height;
+}
+uint8_t const *Image::pixels() const {
+  return m_pixels;
+}
+size_t Image::pixelCount() const {
+  return m_width * m_height;
+}
+uint8_t Image::maxPixelVal() const {
+  return m_maxPixelVal;
 }
