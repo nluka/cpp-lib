@@ -34,7 +34,7 @@ void Assertion::print_summary() {
     if (s_useStdout) {
       printf_colored(
         ColorText::GREEN,
-        "all %zu assertions passed\n",
+        "all %zu assertions passed\n\n",
         s_successCount
       );
     }
@@ -112,4 +112,13 @@ void test::run_suite(
 
   Assertion::print_summary();
   Assertion::reset_counters();
+}
+
+void test::print_newline() {
+  if (s_useStdout) {
+    std::cout << '\n';
+  }
+  if (s_ofstream != nullptr) {
+    *s_ofstream << '\n';
+  }
 }

@@ -34,6 +34,8 @@ void run_suite(
   size_t const assertionCount
 );
 
+void print_newline();
+
 } // namespace test
 
 #endif // TEST_HPP
