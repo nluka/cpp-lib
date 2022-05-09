@@ -12,6 +12,9 @@ void write_header(
   uint16_t const height,
   uint8_t const maxPixelVal
 ) {
+  if (maxPixelVal < 1) {
+    throw "maxPixelVal must be > 0";
+  }
   *file
     << magicNum << '\n'
     << std::to_string(width) << ' ' << std::to_string(height) << '\n'
@@ -65,7 +68,7 @@ pgm8::Image::Image(std::ifstream &file) : pgm8::Image::Image() {
 }
 
 Image::~Image() {
-  delete m_pixels;
+  delete[] m_pixels;
 }
 
 void Image::load(std::ifstream &file) {
@@ -81,7 +84,7 @@ void Image::load(std::ifstream &file) {
   { // determine kind of image based on magic number
     // PGMs have 2 possible magic numbers - `P2` = ASCII, `P5` = binary
     char magicNum[3]{};
-    file.getline(magicNum, sizeof magicNum);
+    file.getline(magicNum, sizeof(magicNum));
     if (magicNum[0] != 'P' || (magicNum[1] != '2' && magicNum[1] != '5')) {
       throw "invalid magic number";
     }
