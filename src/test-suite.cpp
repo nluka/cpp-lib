@@ -6,7 +6,7 @@
 #include "arr2d.hpp"
 #include "pgm8.hpp"
 #include "term.hpp"
-#include "log.hpp"
+#include "logger.hpp"
 
 using
   test::Assertion, test::run_suite,
@@ -41,12 +41,8 @@ void oneoff_assertion(char const *const name, bool const expr) {
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(ColorText::DEFAULT);
 
-  // if (argc < 3) {
-  //   printf_colored(ColorText::YELLOW, "usage: <assertions_dir> <log_dir> [<use_stdout>]");
-  //   exit(1);
-  // }
-  if (argc < 2) {
-    printf_colored(ColorText::YELLOW, "usage: <assertions_dir> [<use_stdout>]");
+  if (argc < 3) {
+    printf_colored(ColorText::YELLOW, "usage: <assertions_dir> <log_pathname> [<use_stdout>]");
     exit(1);
   }
 
@@ -245,16 +241,17 @@ int main(int const argc, char const *const *const argv) {
     delete result;
   }
 
-  { // log stuff
-    using log::EventType;
+  { // logger module
+    using logger::EventType;
 
-    log::set_out_pathname(argv[2]);
+    logger::set_out_pathname(argv[2]);
+    logger::set_delim("\n");
 
-    auto const log_task = [](EventType const evType){
+    auto const logTask = [](EventType const evType){
       std::ostringstream oss;
       oss << std::this_thread::get_id();
       for (size_t i = 1; i <= 100; ++i) {
-        log::write(
+        logger::write(
           evType, "message %zu from thread %s",
           i, oss.str().c_str()
         );
@@ -262,13 +259,15 @@ int main(int const argc, char const *const *const argv) {
     };
 
     std::thread
-      t1(log_task, EventType::INF),
-      t2(log_task, EventType::WRN),
-      t3(log_task, EventType::ERR);
+      t1(logTask, EventType::INF),
+      t2(logTask, EventType::WRN),
+      t3(logTask, EventType::ERR);
 
     t1.join();
     t2.join();
     t3.join();
+
+    logger::flush();
   }
 
   return 0;
