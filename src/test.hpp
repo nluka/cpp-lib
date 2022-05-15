@@ -2,9 +2,12 @@
 #define TEST_HPP
 
 #include <fstream>
+#include <vector>
 #include "term.hpp"
 
 namespace test {
+
+#define TEST_GEN_NAME(asr) #asr, asr
 
 void use_stdout(bool boolean);
 void set_ofstream(std::ofstream *ofs);
@@ -32,6 +35,10 @@ void run_suite(
   char const *name,
   Assertion const assertions[],
   size_t const assertionCount
+);
+void run_suite(
+  char const *name,
+  std::vector<Assertion> const &assertions
 );
 
 void print_newline();

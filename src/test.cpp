@@ -47,7 +47,7 @@ void Assertion::print_summary() {
     if (s_useStdout) {
       printf_colored(
         ColorText::YELLOW,
-        "%zu assertions failed, %zu passed\n",
+        "%zu assertions failed, %zu passed\n\n",
         s_failCount, s_successCount
       );
     }
@@ -94,10 +94,10 @@ void Assertion::run(bool const verbose) const {
   }
 }
 
-void test::run_suite(
+template<typename LambdaT>
+void suite_runner(
   char const *const name,
-  Assertion const assertions[],
-  size_t const assertionCount
+  LambdaT const &lambda
 ) {
   if (s_useStdout) {
     term::printf_colored(term::ColorText::MAGENTA, "=== %s ===\n", name);
@@ -106,12 +106,33 @@ void test::run_suite(
     *s_ofstream << "=== " << name << " ===\n";
   }
 
-  for (size_t i = 0; i < assertionCount; ++i) {
-    assertions[i].run();
-  }
+  lambda();
 
   Assertion::print_summary();
   Assertion::reset_counters();
+}
+
+void test::run_suite(
+  char const *const name,
+  Assertion const assertions[],
+  size_t const assertionCount
+) {
+  suite_runner(name, [&assertions, assertionCount](){
+    for (size_t i = 0; i < assertionCount; ++i) {
+      assertions[i].run();
+    }
+  });
+}
+
+void test::run_suite(
+  char const *const name,
+  std::vector<Assertion> const &assertions
+) {
+  suite_runner(name, [&assertions](){
+    for (auto const &asr : assertions) {
+      asr.run();
+    }
+  });
 }
 
 void test::print_newline() {

@@ -6,7 +6,6 @@
 #include "arr2d.hpp"
 #include "pgm8.hpp"
 #include "term.hpp"
-#include "log.hpp"
 
 using
   test::Assertion, test::run_suite,
@@ -41,8 +40,12 @@ void oneoff_assertion(char const *const name, bool const expr) {
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(ColorText::DEFAULT);
 
-  if (argc < 3) {
-    printf_colored(ColorText::YELLOW, "usage: <assertions_dir> <log_dir> [<use_stdout>]");
+  // if (argc < 3) {
+  //   printf_colored(ColorText::YELLOW, "usage: <assertions_dir> <log_dir> [<use_stdout>]");
+  //   exit(1);
+  // }
+  if (argc < 2) {
+    printf_colored(ColorText::YELLOW, "usage: <assertions_dir> [<use_stdout>]");
     exit(1);
   }
 
@@ -71,32 +74,80 @@ int main(int const argc, char const *const *const argv) {
 
   {
     using arr2d::get_1d_idx;
-
     Assertion const assertions[] {
-      //          w  x  y                    w  x  y
-      Assertion("(1, 0, 0) == 0", get_1d_idx(1, 0, 0) == 0),
+      //                             w  x  y
+      Assertion(TEST_GEN_NAME(get_1d_idx(1, 0, 0) == 0)),
 
-      Assertion("(2, 0, 0) == 0", get_1d_idx(2, 0, 0) == 0),
-      Assertion("(2, 1, 0) == 1", get_1d_idx(2, 1, 0) == 1),
-      Assertion("(2, 0, 1) == 2", get_1d_idx(2, 0, 1) == 2),
-      Assertion("(2, 1, 1) == 3", get_1d_idx(2, 1, 1) == 3),
-      Assertion("(2, 0, 2) == 4", get_1d_idx(2, 0, 2) == 4),
-      Assertion("(2, 1, 2) == 5", get_1d_idx(2, 1, 2) == 5),
+      Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 0) == 0)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(2, 1, 0) == 1)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 1) == 2)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(2, 1, 1) == 3)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 2) == 4)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(2, 1, 2) == 5)),
 
-      Assertion("(3, 0, 0) == 0",  get_1d_idx(3, 0, 0) == 0),
-      Assertion("(3, 1, 0) == 1",  get_1d_idx(3, 1, 0) == 1),
-      Assertion("(3, 2, 0) == 2",  get_1d_idx(3, 2, 0) == 2),
-      Assertion("(3, 0, 1) == 3",  get_1d_idx(3, 0, 1) == 3),
-      Assertion("(3, 1, 1) == 4",  get_1d_idx(3, 1, 1) == 4),
-      Assertion("(3, 2, 1) == 5",  get_1d_idx(3, 2, 1) == 5),
-      Assertion("(3, 0, 2) == 6",  get_1d_idx(3, 0, 2) == 6),
-      Assertion("(3, 1, 2) == 7",  get_1d_idx(3, 1, 2) == 7),
-      Assertion("(3, 2, 2) == 8",  get_1d_idx(3, 2, 2) == 8),
-      Assertion("(3, 0, 3) == 9",  get_1d_idx(3, 0, 3) == 9),
-      Assertion("(3, 1, 3) == 10", get_1d_idx(3, 1, 3) == 10),
-      Assertion("(3, 2, 3) == 11", get_1d_idx(3, 2, 3) == 11),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 0) == 0)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 0) == 1)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 0) == 2)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 1) == 3)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 1) == 4)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 1) == 5)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 2) == 6)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 2) == 7)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 2) == 8)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 3) == 9)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 3) == 10)),
+      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 3) == 11)),
     };
     run_suite("arr2d::get_1d_idx", assertions, lengthof(assertions));
+  }
+
+  {
+    using arr2d::max;
+    std::vector<Assertion> assertions{};
+    assertions.reserve(6);
+    {
+      int const arr1x3[] {
+        0,
+        1,
+        2
+      };
+      assertions.emplace_back(TEST_GEN_NAME(max(arr1x3, 1, 3) == 2));
+    }
+    {
+      int const arr5x1[] { 5, 4, 3, 2, 1 };
+      assertions.emplace_back(TEST_GEN_NAME(max(arr5x1, 5, 1, 2) == 3));
+    }
+    {
+      int const arr2x2[] {
+        0, 1,
+        0, 1,
+      };
+      assertions.emplace_back(TEST_GEN_NAME(max(arr2x2, 2, 2) == 1));
+    }
+    {
+      int const arr2x3[] {
+        2, 3,
+        4, 5,
+        1, 0
+      };
+      assertions.emplace_back(TEST_GEN_NAME(max(arr2x3, 2, 3) == 5));
+    }
+    {
+      int const arr3x2[] {
+        -1, -2, -3,
+        -4, -5,  0
+      };
+      assertions.emplace_back(TEST_GEN_NAME(max(arr3x2, 3, 2) == 0));
+    }
+    {
+      int const arr3x3[] {
+        0, 1, 2,
+        3, 4, 5,
+        6, 7, 8
+      };
+      assertions.emplace_back(TEST_GEN_NAME(max(arr3x3, 3, 3) == 8));
+    }
+    run_suite("arr2d::max", assertions);
   }
 
   { // pgm8 stuff
@@ -108,6 +159,11 @@ int main(int const argc, char const *const *const argv) {
       160, 170, 180, 190, 200,
       210, 220, 230, 240, 250
     };
+    uint8_t const maxPixel = arr2d::max<uint8_t>(
+      pixels,
+      static_cast<size_t>(width),
+      static_cast<size_t>(height)
+    );
 
     { // ASCII PGM
       std::string const pathname
@@ -121,7 +177,7 @@ int main(int const argc, char const *const *const argv) {
         pgm8::write_ascii(
           &out,
           width, height,
-          250,
+          maxPixel,
           reinterpret_cast<uint8_t const *>(pixels)
         );
       }
@@ -157,7 +213,7 @@ int main(int const argc, char const *const *const argv) {
         pgm8::write_bin(
           &out,
           width, height,
-          250,
+          maxPixel,
           pixels
         );
       }
@@ -188,28 +244,31 @@ int main(int const argc, char const *const *const argv) {
     delete result;
   }
 
-  { // log stuff
-    using log::EventType;
+  // { // log stuff
+  //   using log::EventType;
 
-    log::set_out_pathname(argv[2]);
+  //   log::set_out_pathname(argv[2]);
 
-    auto const log_task = [](EventType const evType){
-      std::ostringstream oss;
-      oss << std::this_thread::get_id();
-      for (size_t i = 0; i < 100; ++i) {
-        log::write(evType, "message from thread %s", oss.str().c_str());
-      }
-    };
+  //   auto const log_task = [](EventType const evType){
+  //     std::ostringstream oss;
+  //     oss << std::this_thread::get_id();
+  //     for (size_t i = 1; i <= 100; ++i) {
+  //       log::write(
+  //         evType, "message %zu from thread %s",
+  //         i, oss.str().c_str()
+  //       );
+  //     }
+  //   };
 
-    std::thread
-      t1(log_task, EventType::INF),
-      t2(log_task, EventType::WRN),
-      t3(log_task, EventType::ERR);
+  //   std::thread
+  //     t1(log_task, EventType::INF),
+  //     t2(log_task, EventType::WRN),
+  //     t3(log_task, EventType::ERR);
 
-    t1.join();
-    t2.join();
-    t3.join();
-  }
+  //   t1.join();
+  //   t2.join();
+  //   t3.join();
+  // }
 
   return 0;
 }
