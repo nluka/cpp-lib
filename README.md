@@ -1,6 +1,6 @@
 # cpp-lib
 
-A varied collection of useful C++ code written for me, by me.
+A collection of useful C++ functionality not included in the STL.
 
 ## arr2d
 
