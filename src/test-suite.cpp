@@ -20,7 +20,7 @@ void assert_file(FstreamType const *file, char const *name) {
       "failed to open file `%s`",
       name
     );
-    exit(2);
+    exit(-1);
   }
 }
 
@@ -72,7 +72,7 @@ int main(int const argc, char const *const *const argv) {
   {
     using arr2d::get_1d_idx;
     Assertion const assertions[] {
-      //                             w  x  y
+      //                                 w  x  y
       Assertion(TEST_GEN_NAME(get_1d_idx(1, 0, 0) == 0)),
 
       Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 0) == 0)),
