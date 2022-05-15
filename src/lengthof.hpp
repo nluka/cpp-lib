@@ -2,7 +2,6 @@
 #define CPPLIB_LENGTHOF_HPP
 
 // from https://stackoverflow.com/a/2404697/16471560
-// this is voodoo, but works perfectly
 template<typename T, size_t sz>
 constexpr size_t lengthof(T (&)[sz]) {
   return sz;
