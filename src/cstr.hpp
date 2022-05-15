@@ -1,7 +1,7 @@
 // TODO: figure out why `constexpr` causes compiler warnings
 
-#ifndef CSTR_HPP
-#define CSTR_HPP
+#ifndef CPPLIB_CSTR_HPP
+#define CPPLIB_CSTR_HPP
 
 #include <cstdlib>
 
@@ -24,4 +24,4 @@ int to_int(char c);
 
 } // namespace cstr
 
-#endif // CSTR_HPP
+#endif // CPPLIB_CSTR_HPP

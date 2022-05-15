@@ -1,5 +1,5 @@
-#ifndef ARR2D_HPP
-#define ARR2D_HPP
+#ifndef CPPLIB_ARR2D_HPP
+#define CPPLIB_ARR2D_HPP
 
 #include <cstdlib>
 
@@ -28,4 +28,4 @@ ElemT max(
 
 } // namespace arr2d
 
-#endif // ARR2D_HPP
+#endif // CPPLIB_ARR2D_HPP

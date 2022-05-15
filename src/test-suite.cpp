@@ -6,6 +6,7 @@
 #include "arr2d.hpp"
 #include "pgm8.hpp"
 #include "term.hpp"
+#include "log.hpp"
 
 using
   test::Assertion, test::run_suite,
@@ -244,31 +245,31 @@ int main(int const argc, char const *const *const argv) {
     delete result;
   }
 
-  // { // log stuff
-  //   using log::EventType;
+  { // log stuff
+    using log::EventType;
 
-  //   log::set_out_pathname(argv[2]);
+    log::set_out_pathname(argv[2]);
 
-  //   auto const log_task = [](EventType const evType){
-  //     std::ostringstream oss;
-  //     oss << std::this_thread::get_id();
-  //     for (size_t i = 1; i <= 100; ++i) {
-  //       log::write(
-  //         evType, "message %zu from thread %s",
-  //         i, oss.str().c_str()
-  //       );
-  //     }
-  //   };
+    auto const log_task = [](EventType const evType){
+      std::ostringstream oss;
+      oss << std::this_thread::get_id();
+      for (size_t i = 1; i <= 100; ++i) {
+        log::write(
+          evType, "message %zu from thread %s",
+          i, oss.str().c_str()
+        );
+      }
+    };
 
-  //   std::thread
-  //     t1(log_task, EventType::INF),
-  //     t2(log_task, EventType::WRN),
-  //     t3(log_task, EventType::ERR);
+    std::thread
+      t1(log_task, EventType::INF),
+      t2(log_task, EventType::WRN),
+      t3(log_task, EventType::ERR);
 
-  //   t1.join();
-  //   t2.join();
-  //   t3.join();
-  // }
+    t1.join();
+    t2.join();
+    t3.join();
+  }
 
   return 0;
 }

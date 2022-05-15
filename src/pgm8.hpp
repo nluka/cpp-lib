@@ -1,5 +1,5 @@
-#ifndef PGM8_HPP
-#define PGM8_HPP
+#ifndef CPPLIB_PGM8_HPP
+#define CPPLIB_PGM8_HPP
 
 #include <fstream>
 #include <cinttypes>
@@ -43,4 +43,4 @@ public:
 
 } // namespace pgm
 
-#endif // PGM8_HPP
+#endif // CPPLIB_PGM8_HPP

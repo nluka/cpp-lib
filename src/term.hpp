@@ -1,5 +1,5 @@
-#ifndef TERM_HPP
-#define TERM_HPP
+#ifndef CPPLIB_TERM_HPP
+#define CPPLIB_TERM_HPP
 
 namespace term { // stands for `terminal`
 
@@ -35,4 +35,4 @@ void set_color_text_default(ColorText color);
 
 } // namespace term
 
-#endif // TERM_HPP
+#endif // CPPLIB_TERM_HPP

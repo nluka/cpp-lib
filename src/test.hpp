@@ -1,5 +1,5 @@
-#ifndef TEST_HPP
-#define TEST_HPP
+#ifndef CPPLIB_TEST_HPP
+#define CPPLIB_TEST_HPP
 
 #include <fstream>
 #include <vector>
@@ -45,4 +45,4 @@ void print_newline();
 
 } // namespace test
 
-#endif // TEST_HPP
+#endif // CPPLIB_TEST_HPP
