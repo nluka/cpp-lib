@@ -9,6 +9,29 @@
 #include <cstdarg>
 #include "logger.hpp"
 
+static std::string s_outPathname{};
+void logger::set_out_pathname(char const *const pathname) {
+  s_outPathname = pathname;
+}
+void logger::set_out_pathname(std::string const &pathname) {
+  s_outPathname = pathname;
+}
+
+static size_t s_maxMsgLen = 100;
+void logger::set_max_msg_len(size_t const maxLen) {
+  s_maxMsgLen = maxLen;
+}
+
+static char const *s_delim = "\n";
+void logger::set_delim(char const *const delim) {
+  s_delim = delim;
+}
+
+static bool s_autoFlush = false;
+void logger::set_autoflush(bool const b) {
+  s_autoFlush = b;
+}
+
 using logger::EventType;
 
 static
@@ -36,10 +59,10 @@ public:
   std::string stringify() const {
     std::stringstream ss{};
 
-    ss << '['
-      << event_type_to_str(m_type) << ' ';
+    ss << '[' << event_type_to_str(m_type) << "] ";
 
     { // timestamp
+      ss << '(';
       std::time_t const time =
         std::chrono::system_clock::to_time_t(m_timepoint);
       struct tm const *local = localtime(&time);
@@ -50,39 +73,16 @@ public:
         << local->tm_hour << ':'
         << std::setw(2) << local->tm_min << ':'
         << std::setw(2) << local->tm_sec;
+      ss << ") ";
     }
 
-    ss << "] " << m_msg;
+    ss << m_msg;
 
     return ss.str();
   }
 };
 
 static std::vector<Event> s_events{};
-
-static std::string s_outPathname{};
-void logger::set_out_pathname(char const *const pathname) {
-  s_outPathname = pathname;
-}
-void logger::set_out_pathname(std::string const &pathname) {
-  s_outPathname = pathname;
-}
-
-static size_t s_maxMsgLen = 100;
-void logger::set_max_msg_len(size_t const maxLen) {
-  s_maxMsgLen = maxLen;
-}
-
-static char const *s_delim = "\n";
-void logger::set_delim(char const *const delim) {
-  s_delim = delim;
-}
-
-static bool s_autoFlush = false;
-void logger::set_autoflush(bool const autoFlush) {
-  s_autoFlush = autoFlush;
-}
-
 static bool s_isFileReady = false;
 
 static
