@@ -17,6 +17,7 @@ char const *event_type_to_str(EventType const evType) {
     case EventType::INF: return "INFO";
     case EventType::WRN: return "WARNING";
     case EventType::ERR: return "ERROR";
+    case EventType::FTL: return "FATAL";
     default: throw "bad EventType";
   }
 }

@@ -261,11 +261,13 @@ int main(int const argc, char const *const *const argv) {
     std::thread
       t1(logTask, EventType::INF),
       t2(logTask, EventType::WRN),
-      t3(logTask, EventType::ERR);
+      t3(logTask, EventType::ERR),
+      t4(logTask, EventType::FTL);
 
     t1.join();
     t2.join();
     t3.join();
+    t4.join();
 
     logger::flush();
   }

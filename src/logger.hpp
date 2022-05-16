@@ -8,7 +8,8 @@ namespace logger {
 enum class EventType {
   INF,
   WRN,
-  ERR
+  ERR,
+  FTL
 };
 
 void write(EventType evType, char const *fmt, ...);
