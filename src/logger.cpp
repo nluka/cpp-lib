@@ -62,18 +62,19 @@ public:
     ss << '[' << event_type_to_str(m_type) << "] ";
 
     { // timestamp
-      ss << '(';
       std::time_t const time =
         std::chrono::system_clock::to_time_t(m_timepoint);
       struct tm const *local = localtime(&time);
-      ss << (local->tm_year + 1900) << '-'
+
+      ss << '('
+        << (local->tm_year + 1900) << '-'
         << local->tm_mon << '-'
         << local->tm_mday << ' '
         << std::setfill('0')
         << local->tm_hour << ':'
         << std::setw(2) << local->tm_min << ':'
-        << std::setw(2) << local->tm_sec;
-      ss << ") ";
+        << std::setw(2) << local->tm_sec
+      << ") ";
     }
 
     ss << m_msg;
