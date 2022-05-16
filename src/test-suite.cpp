@@ -6,6 +6,7 @@
 #include "arr2d.hpp"
 #include "pgm8.hpp"
 #include "term.hpp"
+#include "cstr.hpp"
 #include "logger.hpp"
 
 using
@@ -147,6 +148,77 @@ int main(int const argc, char const *const *const argv) {
     run_suite("arr2d::max", assertions);
   }
 
+  {
+    using cstr::cmp;
+    Assertion const assertions[] {
+      Assertion(TEST_GEN_NAME(cmp("a", "a") == 0)),
+      Assertion(TEST_GEN_NAME(cmp("a", "") == 'a')),
+      Assertion(TEST_GEN_NAME(cmp("", "a") == -'a')),
+      Assertion(TEST_GEN_NAME(cmp("a", "b") == ('a' - 'b'))),
+      Assertion(TEST_GEN_NAME(cmp("b", "a") == ('b' - 'a'))),
+      Assertion(TEST_GEN_NAME(cmp("aa", "a") == 'a')),
+      Assertion(TEST_GEN_NAME(cmp("a", "aa") == -'a')),
+    };
+    run_suite("cstr::cmp", assertions, lengthof(assertions));
+  }
+
+  {
+    using cstr::count;
+    Assertion const assertions[] {
+      Assertion(TEST_GEN_NAME(count("", 'a') == 0)),
+      Assertion(TEST_GEN_NAME(count("a", 'a') == 1)),
+      Assertion(TEST_GEN_NAME(count("aa", 'a') == 2)),
+      Assertion(TEST_GEN_NAME(count("ab", 'a') == 1)),
+      Assertion(TEST_GEN_NAME(count("aba", 'a') == 2)),
+      Assertion(TEST_GEN_NAME(count("ababa", 'a') == 3)),
+      Assertion(TEST_GEN_NAME(count("bbbbb", 'a') == 0)),
+      Assertion(TEST_GEN_NAME(count("bbbbb", 'b') == 5)),
+    };
+    run_suite("cstr::count", assertions, lengthof(assertions));
+  }
+
+  {
+    using cstr::last_char;
+    Assertion const assertions[] {
+      Assertion(TEST_GEN_NAME(last_char("") == '\0')),
+      Assertion(TEST_GEN_NAME(last_char("a") == 'a')),
+      Assertion(TEST_GEN_NAME(last_char("_a") == 'a')),
+      Assertion(TEST_GEN_NAME(last_char("__b") == 'b')),
+      Assertion(TEST_GEN_NAME(last_char("___c") == 'c')),
+    };
+    run_suite("cstr::last_char", assertions, lengthof(assertions));
+  }
+
+  {
+    using cstr::len;
+    Assertion const assertions[] {
+      Assertion(TEST_GEN_NAME(len("") == 0)),
+      Assertion(TEST_GEN_NAME(len("_") == 1)),
+      Assertion(TEST_GEN_NAME(len("_-") == 2)),
+      Assertion(TEST_GEN_NAME(len("_-_") == 3)),
+      Assertion(TEST_GEN_NAME(len("_-_-") == 4)),
+      Assertion(TEST_GEN_NAME(len("_-_-_") == 5)),
+    };
+    run_suite("cstr::len", assertions, lengthof(assertions));
+  }
+
+  {
+    using cstr::to_int;
+    Assertion const assertions[] {
+      Assertion(TEST_GEN_NAME(to_int('0') == 0)),
+      Assertion(TEST_GEN_NAME(to_int('1') == 1)),
+      Assertion(TEST_GEN_NAME(to_int('2') == 2)),
+      Assertion(TEST_GEN_NAME(to_int('3') == 3)),
+      Assertion(TEST_GEN_NAME(to_int('4') == 4)),
+      Assertion(TEST_GEN_NAME(to_int('5') == 5)),
+      Assertion(TEST_GEN_NAME(to_int('6') == 6)),
+      Assertion(TEST_GEN_NAME(to_int('7') == 7)),
+      Assertion(TEST_GEN_NAME(to_int('8') == 8)),
+      Assertion(TEST_GEN_NAME(to_int('9') == 9)),
+    };
+    run_suite("cstr::to_int", assertions, lengthof(assertions));
+  }
+
   { // pgm8 stuff
     uint16_t const width = 5, height = 5;
     uint8_t pixels[height * width] {
@@ -169,7 +241,6 @@ int main(int const argc, char const *const *const argv) {
       { // write
         std::ofstream out(pathname);
         assert_file<std::ofstream>(&out, pathname.c_str());
-
         // outputted file needs to be manually verified
         pgm8::write_ascii(
           &out,

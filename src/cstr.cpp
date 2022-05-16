@@ -18,6 +18,7 @@ size_t cstr::count(char const *const str, char const c) {
     if (str[i] == c) {
       ++count;
     }
+    ++i;
   }
   return count;
 }
