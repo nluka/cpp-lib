@@ -15,49 +15,49 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\test-suite.cpp">
+    <ClCompile Include="..\impl\arr2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\test.cpp">
+    <ClCompile Include="..\impl\cstr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\term.cpp">
+    <ClCompile Include="..\impl\logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\pgm8.cpp">
+    <ClCompile Include="..\impl\pgm8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\cstr.cpp">
+    <ClCompile Include="..\impl\term.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\arr2d.cpp">
+    <ClCompile Include="..\impl\test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\logger.cpp">
+    <ClCompile Include="..\test\test-suite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\test.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\arr2d.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\term.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\cstr.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\pgm8.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\lengthof.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\lengthof.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\logger.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cstr.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\pgm8.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\arr2d.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\term.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\logger.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\includes\test.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

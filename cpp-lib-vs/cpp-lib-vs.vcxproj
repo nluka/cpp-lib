@@ -19,22 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\arr2d.cpp" />
-    <ClCompile Include="..\src\cstr.cpp" />
-    <ClCompile Include="..\src\logger.cpp" />
-    <ClCompile Include="..\src\pgm8.cpp" />
-    <ClCompile Include="..\src\term.cpp" />
-    <ClCompile Include="..\src\test-suite.cpp" />
-    <ClCompile Include="..\src\test.cpp" />
+    <ClCompile Include="..\impl\arr2d.cpp" />
+    <ClCompile Include="..\impl\cstr.cpp" />
+    <ClCompile Include="..\impl\logger.cpp" />
+    <ClCompile Include="..\impl\pgm8.cpp" />
+    <ClCompile Include="..\impl\term.cpp" />
+    <ClCompile Include="..\impl\test.cpp" />
+    <ClCompile Include="..\test\test-suite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\arr2d.hpp" />
-    <ClInclude Include="..\src\cstr.hpp" />
-    <ClInclude Include="..\src\lengthof.hpp" />
-    <ClInclude Include="..\src\logger.hpp" />
-    <ClInclude Include="..\src\pgm8.hpp" />
-    <ClInclude Include="..\src\term.hpp" />
-    <ClInclude Include="..\src\test.hpp" />
+    <ClInclude Include="..\includes\arr2d.hpp" />
+    <ClInclude Include="..\includes\cstr.hpp" />
+    <ClInclude Include="..\includes\lengthof.hpp" />
+    <ClInclude Include="..\includes\logger.hpp" />
+    <ClInclude Include="..\includes\pgm8.hpp" />
+    <ClInclude Include="..\includes\term.hpp" />
+    <ClInclude Include="..\includes\test.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

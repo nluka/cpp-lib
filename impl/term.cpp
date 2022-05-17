@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
-#include "term.hpp"
+#include "../includes/term.hpp"
 
 using term::ColorText;
 

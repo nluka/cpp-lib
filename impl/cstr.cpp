@@ -1,4 +1,4 @@
-#include "cstr.hpp"
+#include "../includes/cstr.hpp"
 
 // constexpr
 int cstr::cmp(char const *s1, char const *s2) {

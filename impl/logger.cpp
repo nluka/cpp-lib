@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <fstream>
 #include <cstdarg>
-#include "logger.hpp"
+#include "../includes/logger.hpp"
 
 static std::string s_outPathname{};
 void logger::set_out_pathname(char const *const pathname) {

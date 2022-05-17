@@ -1,6 +1,6 @@
 #include <string>
-#include "cstr.hpp"
-#include "pgm8.hpp"
+#include "../includes/cstr.hpp"
+#include "../includes/pgm8.hpp"
 
 using pgm8::Image;
 

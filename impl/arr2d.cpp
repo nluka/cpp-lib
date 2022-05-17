@@ -1,4 +1,4 @@
-#include "arr2d.hpp"
+#include "../includes/arr2d.hpp"
 
 // constexpr
 size_t arr2d::get_1d_idx(

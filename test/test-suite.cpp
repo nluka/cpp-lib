@@ -1,13 +1,13 @@
 #include <fstream>
 #include <sstream>
 #include <thread>
-#include "lengthof.hpp"
-#include "test.hpp"
-#include "arr2d.hpp"
-#include "pgm8.hpp"
-#include "term.hpp"
-#include "cstr.hpp"
-#include "logger.hpp"
+#include "../includes/lengthof.hpp"
+#include "../includes/test.hpp"
+#include "../includes/arr2d.hpp"
+#include "../includes/pgm8.hpp"
+#include "../includes/term.hpp"
+#include "../includes/cstr.hpp"
+#include "../includes/logger.hpp"
 
 using
   test::Assertion, test::run_suite,
