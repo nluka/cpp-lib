@@ -39,6 +39,7 @@ void oneoff_assertion(char const *const name, bool const expr) {
   Assertion::reset_counters();
 }
 
+// .\bin\test-suite.exe test/out test/out/.log 1
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(ColorText::DEFAULT);
 
@@ -267,42 +268,6 @@ int main(int const argc, char const *const *const argv) {
           }
         }
         oneoff_assertion("ASCII img read", pixelsMatch);
-      }
-    }
-
-    { // binary PGM
-      std::string const pathname
-        = make_full_file_pathname(argv[1], "binary.pgm");
-
-      { // write
-        std::ofstream out(pathname);
-        assert_file<std::ofstream>(&out, pathname.c_str());
-        // outputted file needs to be manually verified
-        pgm8::write_bin(
-          &out,
-          width, height,
-          maxPixel,
-          pixels
-        );
-      }
-      { // read
-        std::ifstream in(pathname);
-        assert_file<std::ifstream>(&in, pathname.c_str());
-        pgm8::Image img{};
-        try {
-          img.load(in);
-        } catch (char const *err) {
-          printf_colored(ColorText::RED, "%s\n", err);
-          exit(2);
-        }
-        bool pixelsMatch = true;
-        for (size_t i = 0; i < img.pixelCount(); ++i) {
-          if (img.pixels()[i] != pixels[i]) {
-            pixelsMatch = false;
-            break;
-          }
-        }
-        oneoff_assertion("binary img read", pixelsMatch);
       }
     }
   }

@@ -13,14 +13,6 @@ void write_ascii(
   uint16_t width,
   uint16_t height,
   uint8_t maxPixelVal,
-  uint8_t const *pixels // 1D array
-);
-
-void write_bin(
-  std::ofstream *file,
-  uint16_t width,
-  uint16_t height,
-  uint8_t maxPixelVal,
   uint8_t const *pixels
 );
 

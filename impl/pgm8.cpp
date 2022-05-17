@@ -1,8 +1,6 @@
 #include <string>
-#include "../includes/cstr.hpp"
 #include "../includes/pgm8.hpp"
-
-using pgm8::Image;
+#include "../includes/cstr.hpp"
 
 static
 void write_header(
@@ -41,29 +39,13 @@ void pgm8::write_ascii(
   }
 }
 
-void pgm8::write_bin(
-  std::ofstream *const file,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxPixelVal,
-  uint8_t const *const pixels
-) {
-  write_header(file, "P5", width, height, maxPixelVal);
+using pgm8::Image;
 
-  // pixels
-  size_t const pixelCount = width * height;
-  char pixel{};
-  for (size_t i = 0; i < pixelCount; ++i) {
-    pixel = static_cast<char>(pixels[i]);
-    file->write(&pixel, 1);
-  }
-}
-
-pgm8::Image::Image()
+Image::Image()
 : m_width{0}, m_height{0}, m_pixels{nullptr}, m_maxPixelVal{0}
 {}
 
-pgm8::Image::Image(std::ifstream &file) : pgm8::Image::Image() {
+Image::Image(std::ifstream &file) : Image::Image() {
   load(file);
 }
 
@@ -113,15 +95,7 @@ void Image::load(std::ifstream &file) {
       m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
     }
   } else { // binary
-    { // read newline between maxval and start of pixel raster
-      char newline;
-      file.read(&newline, 1);
-    }
-    char pixel{};
-    for (size_t i = 0; i < pixelCount; ++i) {
-      file.read(&pixel, 1);
-      m_pixels[i] = static_cast<uint8_t>(pixel);
-    }
+    throw "raw files not supported";
   }
 }
 
