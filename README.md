@@ -6,9 +6,6 @@ A collection of useful C++ functionality not included in the STL.
 
 Contains functions for dealing with 2D arrays.
 
-Todo:
-- constexpr
-
 ## cstr
 
 Contains constexpr versions of functions from `<string.h>`, with some additional ones thrown in the mix.
@@ -22,9 +19,6 @@ Contains constexpr versions of functions from `<string.h>`, with some additional
 | --------------- | ----------- |
 | count           | Returns the number of occurences of a character. |
 | last_char       | Returns the last character of the given string. |
-
-Todo:
-- constexpr
 
 ## pgm8
 
