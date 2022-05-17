@@ -16,12 +16,12 @@ enum class ColorText {
 };
 
 // Sets stdout text color.
-void set_color_text(ColorText color);
+void set_color_text(ColorText);
 
 void cursor_hide();
 void cursor_show();
 
-void cursor_move_up(size_t lines);
+void cursor_move_up(size_t);
 
 void clear_curr_line();
 
@@ -30,7 +30,7 @@ void clear_curr_line();
   `g_defaultColorText` after printing - use `set_color_text_default` to change
   it.
 */
-void printf_colored(ColorText color, char const *format, ...);
+void printf_colored(ColorText, char const *fmt, ...);
 void set_color_text_default(ColorText color);
 
 } // namespace term
