@@ -19,8 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\impl\arr2d.cpp" />
-    <ClCompile Include="..\impl\cstr.cpp" />
     <ClCompile Include="..\impl\logger.cpp" />
     <ClCompile Include="..\impl\pgm8.cpp" />
     <ClCompile Include="..\impl\term.cpp" />

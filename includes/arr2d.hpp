@@ -5,8 +5,14 @@
 
 namespace arr2d { // stands for `array 2d`
 
-// constexpr
-size_t get_1d_idx(size_t arrWidth, size_t targetColumn, size_t targetRow);
+constexpr
+size_t get_1d_idx(
+  size_t const arrWidth,
+  size_t const targetCol,
+  size_t const targetRow
+) {
+  return (targetRow * arrWidth) + targetCol;
+}
 
 template<typename ElemT>
 constexpr
