@@ -18,7 +18,7 @@ enum class EventType {
   FTL
 };
 
-void write(EventType evType, char const *fmt, ...);
+void write(EventType, char const *fmt, ...);
 void flush();
 
 } // namespace log
