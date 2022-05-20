@@ -1,5 +1,3 @@
-// TODO: figure out why `constexpr` causes compiler warnings
-
 #ifndef CPPLIB_CSTR_HPP
 #define CPPLIB_CSTR_HPP
 
