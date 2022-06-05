@@ -53,6 +53,20 @@ void pgm8::write(
   }
 }
 
+using pgm8::RLE;
+
+RLE::RLE() {}
+
+RLE::RLE(uint8_t const *pixels, size_t const pixelCount) {
+  encode(pixels, pixelCount);
+}
+
+RLE::RLE(uint8_t const *pixels, uint16_t const width, uint16_t const height) {
+  size_t const pixelCount =
+    static_cast<size_t>(width) * static_cast<size_t>(height);
+  encode(pixels, pixelCount);
+}
+
 using pgm8::Image;
 
 Image::Image()
@@ -69,6 +83,17 @@ Image::~Image() {
 
 void Image::load(std::ifstream &file) {
   using pgm8::Type;
+
+  // clear prev image
+  {
+    if (m_pixels != nullptr) {
+      delete[] m_pixels;
+      m_pixels = nullptr;
+    }
+    m_width = 0;
+    m_height = 0;
+    m_maxval = 0;
+  }
 
   if (!file.is_open()) {
     throw "pgm8::Image::load failed: file closed";
@@ -127,7 +152,7 @@ uint_fast16_t Image::height() const {
 uint8_t const *Image::pixels() const {
   return m_pixels;
 }
-size_t Image::pixelCount() const {
+size_t Image::pixel_count() const {
   return m_width * m_height;
 }
 uint8_t Image::maxval() const {
