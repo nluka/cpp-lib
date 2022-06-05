@@ -268,19 +268,19 @@ int main(int const argc, char const *const *const argv) {
   }
 
   {
-    using cstr::to_int;
-    test::Suite s("cstr::to_int");
+    using cstr::ascii_digit_to_int;
+    test::Suite s("cstr::ascii_digit_to_int");
 
-    s.assert(CASE(to_int('0') == 0));
-    s.assert(CASE(to_int('1') == 1));
-    s.assert(CASE(to_int('2') == 2));
-    s.assert(CASE(to_int('3') == 3));
-    s.assert(CASE(to_int('4') == 4));
-    s.assert(CASE(to_int('5') == 5));
-    s.assert(CASE(to_int('6') == 6));
-    s.assert(CASE(to_int('7') == 7));
-    s.assert(CASE(to_int('8') == 8));
-    s.assert(CASE(to_int('9') == 9));
+    s.assert(CASE(ascii_digit_to_int('0') == 0));
+    s.assert(CASE(ascii_digit_to_int('1') == 1));
+    s.assert(CASE(ascii_digit_to_int('2') == 2));
+    s.assert(CASE(ascii_digit_to_int('3') == 3));
+    s.assert(CASE(ascii_digit_to_int('4') == 4));
+    s.assert(CASE(ascii_digit_to_int('5') == 5));
+    s.assert(CASE(ascii_digit_to_int('6') == 6));
+    s.assert(CASE(ascii_digit_to_int('7') == 7));
+    s.assert(CASE(ascii_digit_to_int('8') == 8));
+    s.assert(CASE(ascii_digit_to_int('9') == 9));
 
     test::register_suite(std::move(s));
   }
@@ -310,7 +310,7 @@ int main(int const argc, char const *const *const argv) {
         std::ofstream out(pathname);
         assert_file<std::ofstream>(&out, pathname.c_str());
         // resultant file needs to be manually verified
-        pgm8::write_plain(&out, w, h, maxval, pixels);
+        pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::PLAIN);
       }
 
       { // read
@@ -343,7 +343,7 @@ int main(int const argc, char const *const *const argv) {
         std::ofstream out(pathname, std::ios::binary);
         assert_file<std::ofstream>(&out, pathname.c_str());
         // resultant file needs to be manually verified
-        pgm8::write_raw(&out, w, h, maxval, pixels);
+        pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::RAW);
       }
 
       { // read

@@ -8,25 +8,23 @@
 
 namespace pgm8 { // stands for `portable gray map 8-bit`
 
-// Writes an 8-bit PGM image in plain (a.k.a ASCII) format.
-void write_plain(
-  std::ofstream *file,
-  uint16_t width,
-  uint16_t height,
-  uint8_t maxval,
-  uint8_t const *pixels
-);
+enum class Type {
+  PLAIN = 2,
+  RAW = 5,
+};
 
 /*
   Writes an 8-bit PGM image in raw (a.k.a binary) format.
-  Make sure `file` is in binary (std::ios::binary) mode!
+  If writing a raw (pgm8::Type::RAW) file, make sure `file`
+  is in binary (std::ios::binary) mode!
 */
-void write_raw(
+void write(
   std::ofstream *file,
   uint16_t width,
   uint16_t height,
   uint8_t maxval,
-  uint8_t const *pixels
+  uint8_t const *pixels,
+  pgm8::Type type = pgm8::Type::RAW
 );
 
 // Class for reading 8-bit PGM images.

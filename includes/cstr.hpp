@@ -46,9 +46,18 @@ char last_char(char const *const str) {
 
 constexpr
 // Converts an ASCII number ('1') to an integer (1).
-int to_int(char const c) {
+int ascii_digit_to_int(char const c) {
   return static_cast<int>(c) - 48;
 }
+
+#pragma warning(push)
+#pragma warning(disable: 4244)
+constexpr
+// Converts an int digit (0-9) to ASCII ('0'-'9').
+char int_to_ascii_digit(int const num) {
+  return '0' + num;
+}
+#pragma warning(pop)
 
 } // namespace cstr
 

@@ -1,55 +1,56 @@
 #include <string>
+#include <sstream>
 #include "../includes/pgm8.hpp"
 #include "../includes/cstr.hpp"
 
-static
-void write_header(
+void pgm8::write(
   std::ofstream *const file,
-  char const *const magicNum,
   uint16_t const width,
   uint16_t const height,
-  uint8_t const maxval
+  uint8_t const maxval,
+  uint8_t const *const pixels,
+  Type const type
 ) {
+  using pgm8::Type;
+
   if (maxval < 1) {
-    throw "maxval must be > 0";
+    throw "pgm8::write failed: maxval must be > 0";
   }
-  *file
-    << magicNum << '\n'
-    << std::to_string(width) << ' ' << std::to_string(height) << '\n'
-    << std::to_string(maxval) << '\n';
-}
 
-void pgm8::write_plain(
-  std::ofstream *const file,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxval,
-  uint8_t const *const pixels
-) {
-  write_header(file, "P2", width, height, maxval);
+  // header
+  {
+    char magicNum[3] {
+      'P',
+      cstr::int_to_ascii_digit(static_cast<int>(type)),
+      '\0'
+    };
+
+    *file << magicNum << '\n'
+      << std::to_string(width) << ' ' << std::to_string(height) << '\n'
+      << std::to_string(maxval) << '\n';
+  }
 
   // pixels
-  for (uint16_t r = 0; r < height; ++r) {
-    for (uint16_t c = 0; c < width; ++c) {
-      *file
-        << static_cast<int>(pixels[arr2d::get_1d_idx(width, c, r)])
-        << ' ';
+  switch (type) {
+    case Type::PLAIN: {
+      for (uint16_t r = 0; r < height; ++r) {
+        for (uint16_t c = 0; c < width; ++c) {
+          *file
+            << static_cast<int>(pixels[arr2d::get_1d_idx(width, c, r)])
+            << ' ';
+        }
+        *file << '\n';
+      }
+      break;
     }
-    *file << '\n';
+    case Type::RAW: {
+      file->write(reinterpret_cast<char const *>(pixels), width * height);
+      break;
+    }
+    default: {
+      throw "pgm8::write failed: `type` is not a valid pgm8::Type";
+    }
   }
-}
-
-void pgm8::write_raw(
-  std::ofstream *const file,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxval,
-  uint8_t const *pixels
-) {
-  write_header(file, "P5", width, height, maxval);
-
-  // pixels
-  file->write(reinterpret_cast<char const *>(pixels), width * height);
 }
 
 using pgm8::Image;
@@ -67,6 +68,8 @@ Image::~Image() {
 }
 
 void Image::load(std::ifstream &file) {
+  using pgm8::Type;
+
   if (!file.is_open()) {
     throw "pgm8::Image::load failed: file closed";
   }
@@ -74,18 +77,14 @@ void Image::load(std::ifstream &file) {
     throw "pgm8::Image::load failed: bad file";
   }
 
-  int kind{}; // will be 2 (plain) or 5 (raw)
-  #define PLAIN_KIND 2
-
-  { // determine kind of image based on magic number
-    // PGMs have 2 possible magic numbers - `P2` = plain, `P5` = raw
-    char magicNum[3]{};
+  Type const type = ([&file](){
+    char magicNum[3] {};
     file.getline(magicNum, sizeof(magicNum));
     if (magicNum[0] != 'P' || (magicNum[1] != '2' && magicNum[1] != '5')) {
       throw "pgm8::Image::load failed: invalid magic number";
     }
-    kind = static_cast<int>(cstr::to_int(magicNum[1]));
-  }
+    return static_cast<Type>(cstr::ascii_digit_to_int(magicNum[1]));
+  })();
 
   file >> m_width >> m_height;
   {
@@ -94,20 +93,21 @@ void Image::load(std::ifstream &file) {
     m_maxval = static_cast<uint8_t>(maxval);
   }
 
-  // read newline between maxval and pixel raster
+  // read newline between maxval and pixel data
   {
     char newline;
     file.read(&newline, 1);
   }
 
-  const size_t pixelCount = m_width * m_height;
+  const size_t pixelCount =
+    static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
   try {
     m_pixels = new uint8_t[pixelCount];
   } catch (...) {
     throw "pgm8::Image::load failed: not enough memory";
   }
 
-  if (kind == PLAIN_KIND) {
+  if (type == Type::PLAIN) {
     char pixel[4]{};
     for (size_t i = 0; i < pixelCount; ++i) {
       file >> pixel;
@@ -116,8 +116,6 @@ void Image::load(std::ifstream &file) {
   } else {
     file.read(reinterpret_cast<char *>(m_pixels), pixelCount);
   }
-
-  #undef PLAIN_KIND
 }
 
 uint_fast16_t Image::width() const {
