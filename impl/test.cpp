@@ -1,9 +1,7 @@
 #include <iostream>
 #include "../includes/test.hpp"
 
-using
-  test::Assertion,
-  term::printf_colored, term::ColorText;
+using test::Suite;
 
 static bool s_useStdout = true;
 void test::use_stdout(bool const boolean) {
@@ -15,131 +13,77 @@ void test::set_ofstream(std::ofstream *const ofs) {
   s_ofstream = ofs;
 }
 
-size_t
-  Assertion::s_successCount = 0,
-  Assertion::s_failCount = 0;
-size_t Assertion::get_success_count() {
-  return s_successCount;
-}
-size_t Assertion::get_fail_count() {
-  return s_failCount;
-}
-void Assertion::reset_counters() {
-  s_successCount = 0;
-  s_failCount = 0;
+static char const *s_indent = "\t";
+void test::set_indentation(char const *const i) {
+  s_indent = i;
 }
 
-void Assertion::print_summary() {
-  if (s_failCount == 0) {
+static bool s_verboseMode = false;
+void test::set_verbose_mode(bool const b) {
+  s_verboseMode = b;
+}
+
+void Suite::assert(char const *const name, bool const expr) {
+  m_assertions.emplace_back(name, expr);
+}
+
+void Suite::print_assertions() const {
+  auto const print = [](std::ostream *const os, Assertion const &a){
+    bool const passed = a.m_expr;
+    if (!passed || (passed && s_verboseMode)) {
+      *os << s_indent << (passed ? "pass" : "fail") << ": " << a.m_name << '\n';
+    }
+  };
+
+  for (auto const &a : m_assertions) {
     if (s_useStdout) {
-      printf_colored(
-        ColorText::GREEN,
-        "all %zu assertions passed\n\n",
-        s_successCount
-      );
+      print(&std::cout, a);
     }
     if (s_ofstream != nullptr) {
-      *s_ofstream
-        << "all " << s_successCount
-        << " assertions passed\n\n";
-    }
-  } else {
-    if (s_useStdout) {
-      printf_colored(
-        ColorText::YELLOW,
-        "%zu assertions failed, %zu passed\n\n",
-        s_failCount, s_successCount
-      );
-    }
-    if (s_ofstream != nullptr) {
-      *s_ofstream
-        << s_failCount << " assertions failed, "
-        << s_successCount << " passed\n\n";
+      print(s_ofstream, a);
     }
   }
 }
 
-Assertion::Assertion(char const *const name, bool const expr)
-: m_name{name}, m_expr{expr} {}
-
-void Assertion::run(bool const verbose) const {
-  if (m_expr == true) {
-    ++s_successCount;
-
-    if (s_useStdout && verbose) {
-      printf_colored(
-        ColorText::GREEN,
-        "`%s` passed\n",
-        m_name
-      );
+size_t Suite::passes() const {
+  return std::count_if(
+    m_assertions.begin(), m_assertions.end(),
+    [](Assertion const &a){
+      return a.m_expr == true;
     }
+  );
+}
 
-    if (s_ofstream != nullptr && verbose) {
-      *s_ofstream << "`" << m_name << "` passed\n";
+size_t Suite::fails() const {
+  return std::count_if(
+    m_assertions.begin(), m_assertions.end(),
+    [](Assertion const &a){
+      return a.m_expr == false;
     }
-  } else {
-    ++s_failCount;
+  );
+}
+
+static std::vector<Suite> s_suites{};
+void test::register_suite(Suite &&s) {
+  s_suites.push_back(s);
+}
+
+void test::evaluate_suites() {
+  for (auto const &s : s_suites) {
+    auto const printHeader = [&s](std::ostream *const os){
+      size_t const passes = s.passes(), cases = passes + s.fails();
+      *os << s.m_name << " (" << passes << '/' << cases << ")\n";
+    };
 
     if (s_useStdout) {
-      printf_colored(
-        ColorText::RED,
-        "`%s` failed\n",
-        m_name
-      );
+      printHeader(&std::cout);
     }
-
     if (s_ofstream != nullptr) {
-      *s_ofstream << "`" << m_name << "` failed\n";
+      printHeader(s_ofstream);
     }
-  }
-}
 
-template<typename LambdaT>
-void suite_runner(
-  char const *const name,
-  LambdaT const &lambda
-) {
-  if (s_useStdout) {
-    term::printf_colored(term::ColorText::MAGENTA, "=== %s ===\n", name);
-  }
-  if (s_ofstream != nullptr) {
-    *s_ofstream << "=== " << name << " ===\n";
+    s.print_assertions();
   }
 
-  lambda();
-
-  Assertion::print_summary();
-  Assertion::reset_counters();
-}
-
-void test::run_suite(
-  char const *const name,
-  Assertion const assertions[],
-  size_t const assertionCount
-) {
-  suite_runner(name, [&assertions, assertionCount](){
-    for (size_t i = 0; i < assertionCount; ++i) {
-      assertions[i].run();
-    }
-  });
-}
-
-void test::run_suite(
-  char const *const name,
-  std::vector<Assertion> const &assertions
-) {
-  suite_runner(name, [&assertions](){
-    for (auto const &asr : assertions) {
-      asr.run();
-    }
-  });
-}
-
-void test::print_newline() {
-  if (s_useStdout) {
-    std::cout << '\n';
-  }
-  if (s_ofstream != nullptr) {
-    *s_ofstream << '\n';
-  }
+  s_suites.clear();
 }

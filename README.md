@@ -30,4 +30,4 @@ Contains functions for doing fancy stuff in the terminal via ANSI escape sequenc
 
 ## test
 
-A simple testing framework.
+A simple testing library for pure functions.

@@ -9,34 +9,27 @@
 #include "../includes/cstr.hpp"
 #include "../includes/logger.hpp"
 
-using
-  test::Assertion, test::run_suite,
-  term::printf_colored, term::ColorText;
+using term::printf_colored, term::ColorText;
 
 template<typename FstreamType>
-void assert_file(FstreamType const *file, char const *name) {
+void assert_file(FstreamType const *file, char const *fpathname) {
   if (!file->is_open()) {
     printf_colored(
       ColorText::RED,
       "failed to open file `%s`",
-      name
+      fpathname
     );
     exit(-1);
   }
 }
 
 std::string make_full_file_pathname(
-  char const *const dir,
+  char const *const path,
   char const *const fname
 ) {
   std::stringstream ss{};
-  ss << dir << '/' << fname;
+  ss << path << '/' << fname;
   return ss.str();
-}
-
-void oneoff_assertion(char const *const name, bool const expr) {
-  Assertion(name, expr).run(true);
-  Assertion::reset_counters();
 }
 
 // .\bin\test-suite.exe test/out test/out/.log 1
@@ -48,15 +41,13 @@ int main(int const argc, char const *const *const argv) {
     exit(1);
   }
 
-  // put this thing on the heap because we might not use it,
-  // and it's 472 bytes!
-  std::ofstream *result = nullptr;
-  { // setup result file
+  std::ofstream *assertionsFile = nullptr;
+  {
     std::string const pathname
       = make_full_file_pathname(argv[1], "assertions.txt");
-    result = new std::ofstream(pathname);
-    assert_file<std::ofstream>(result, pathname.c_str());
-    test::set_ofstream(result);
+    assertionsFile = new std::ofstream(pathname);
+    assert_file<std::ofstream>(assertionsFile, pathname.c_str());
+    test::set_ofstream(assertionsFile);
   }
 
   if (argc >= 4) {
@@ -73,55 +64,56 @@ int main(int const argc, char const *const *const argv) {
 
   {
     using arr2d::get_1d_idx;
-    Assertion const assertions[] {
-      //                                 w  x  y
-      Assertion(TEST_GEN_NAME(get_1d_idx(1, 0, 0) == 0)),
+    test::Suite s("arr2d::get_1d_idx");
 
-      Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 0) == 0)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(2, 1, 0) == 1)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 1) == 2)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(2, 1, 1) == 3)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(2, 0, 2) == 4)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(2, 1, 2) == 5)),
+    //                       w  x  y
+    s.assert(CASE(get_1d_idx(1, 0, 0) == 0));
 
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 0) == 0)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 0) == 1)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 0) == 2)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 1) == 3)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 1) == 4)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 1) == 5)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 2) == 6)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 2) == 7)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 2) == 8)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 0, 3) == 9)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 1, 3) == 10)),
-      Assertion(TEST_GEN_NAME(get_1d_idx(3, 2, 3) == 11)),
-    };
-    run_suite("arr2d::get_1d_idx", assertions, lengthof(assertions));
+    s.assert(CASE(get_1d_idx(2, 0, 0) == 0));
+    s.assert(CASE(get_1d_idx(2, 1, 0) == 1));
+    s.assert(CASE(get_1d_idx(2, 0, 1) == 2));
+    s.assert(CASE(get_1d_idx(2, 1, 1) == 3));
+    s.assert(CASE(get_1d_idx(2, 0, 2) == 4));
+    s.assert(CASE(get_1d_idx(2, 1, 2) == 5));
+
+    s.assert(CASE(get_1d_idx(3, 0, 0) == 0));
+    s.assert(CASE(get_1d_idx(3, 1, 0) == 1));
+    s.assert(CASE(get_1d_idx(3, 2, 0) == 2));
+    s.assert(CASE(get_1d_idx(3, 0, 1) == 3));
+    s.assert(CASE(get_1d_idx(3, 1, 1) == 4));
+    s.assert(CASE(get_1d_idx(3, 2, 1) == 5));
+    s.assert(CASE(get_1d_idx(3, 0, 2) == 6));
+    s.assert(CASE(get_1d_idx(3, 1, 2) == 7));
+    s.assert(CASE(get_1d_idx(3, 2, 2) == 8));
+    s.assert(CASE(get_1d_idx(3, 0, 3) == 9));
+    s.assert(CASE(get_1d_idx(3, 1, 3) == 10));
+    s.assert(CASE(get_1d_idx(3, 2, 3) == 11));
+
+    test::register_suite(std::move(s));
   }
 
   {
     using arr2d::max;
-    std::vector<Assertion> assertions{};
-    assertions.reserve(6);
+    test::Suite s("arr2d::max");
+
     {
       int const arr1x3[] {
         0,
         1,
         2
       };
-      assertions.emplace_back(TEST_GEN_NAME(max(arr1x3, 1, 3) == 2));
+      s.assert(CASE(max(arr1x3, 1, 3) == 2));
     }
     {
       int const arr5x1[] { 5, 4, 3, 2, 1 };
-      assertions.emplace_back(TEST_GEN_NAME(max(arr5x1, 5, 1, 2) == 3));
+      s.assert(CASE(max(arr5x1, 5, 1, 2) == 3));
     }
     {
       int const arr2x2[] {
         0, 1,
         0, 1,
       };
-      assertions.emplace_back(TEST_GEN_NAME(max(arr2x2, 2, 2) == 1));
+      s.assert(CASE(max(arr2x2, 2, 2) == 1));
     }
     {
       int const arr2x3[] {
@@ -129,14 +121,14 @@ int main(int const argc, char const *const *const argv) {
         4, 5,
         1, 0
       };
-      assertions.emplace_back(TEST_GEN_NAME(max(arr2x3, 2, 3) == 5));
+      s.assert(CASE(max(arr2x3, 2, 3) == 5));
     }
     {
       int const arr3x2[] {
         -1, -2, -3,
         -4, -5,  0
       };
-      assertions.emplace_back(TEST_GEN_NAME(max(arr3x2, 3, 2) == 0));
+      s.assert(CASE(max(arr3x2, 3, 2) == 0));
     }
     {
       int const arr3x3[] {
@@ -144,98 +136,173 @@ int main(int const argc, char const *const *const argv) {
         3, 4, 5,
         6, 7, 8
       };
-      assertions.emplace_back(TEST_GEN_NAME(max(arr3x3, 3, 3) == 8));
+      s.assert(CASE(max(arr3x3, 3, 3) == 8));
     }
-    run_suite("arr2d::max", assertions);
+
+    test::register_suite(std::move(s));
+  }
+
+  {
+    using arr2d::cmp;
+    test::Suite s("arr2d::cmp");
+
+    {
+      int a[] {1, 2, 3};
+      s.assert(CASE(cmp(a, a, 3, 1) == true));
+    }
+    {
+      int a[] {
+        0, 1, 2, 3,
+        4, 5, 6, 7,
+      };
+      s.assert(CASE(cmp(a, a, 4, 2) == true));
+    }
+    {
+      int a[] {
+        0, 1, 2, 3,
+        4, 5, 6, 7,
+      };
+      int b[] {
+        0, 1, 2, 3,
+        4, 5, 6, 100,
+      };
+      s.assert(CASE(cmp(a, b, 4, 2) == false));
+    }
+    {
+      int a[] {
+        0, 1, 2,
+        3, 4, 5,
+        6, 7, 8
+      };
+      int b[] {
+        0, 0, 0,
+        3, 4, 5,
+        6, 7, 8
+      };
+      s.assert(CASE(cmp(a, b, 4, 2, 2) == true));
+    }
+
+    test::register_suite(std::move(s));
+  }
+
+  {
+    using arr2d::is_homogenous;
+    test::Suite s("arr2d::is_homogenous");
+
+    {
+      int a[] {0, 0, 0, 0};
+      s.assert(CASE(is_homogenous(a, 4, 1) == true));
+    }
+    {
+      int a[] {1, 0, 0, 0};
+      s.assert(CASE(is_homogenous(a, 4, 1) == false));
+    }
+    {
+      int a[] {0, 0, 0, 1};
+      s.assert(CASE(is_homogenous(a, 4, 1) == false));
+    }
+    {
+      int a[] {1, 0, 0, 0};
+      s.assert(CASE(is_homogenous(a, 4, 1, 1) == true));
+    }
+
+    test::register_suite(std::move(s));
   }
 
   {
     using cstr::cmp;
-    Assertion const assertions[] {
-      Assertion(TEST_GEN_NAME(cmp("a", "a") == 0)),
-      Assertion(TEST_GEN_NAME(cmp("a", "") == 'a')),
-      Assertion(TEST_GEN_NAME(cmp("", "a") == -'a')),
-      Assertion(TEST_GEN_NAME(cmp("a", "b") == ('a' - 'b'))),
-      Assertion(TEST_GEN_NAME(cmp("b", "a") == ('b' - 'a'))),
-      Assertion(TEST_GEN_NAME(cmp("aa", "a") == 'a')),
-      Assertion(TEST_GEN_NAME(cmp("a", "aa") == -'a')),
-    };
-    run_suite("cstr::cmp", assertions, lengthof(assertions));
+    test::Suite s("cstr::cmp");
+
+    s.assert(CASE(cmp("a", "a") == 0));
+    s.assert(CASE(cmp("a", "") == 'a'));
+    s.assert(CASE(cmp("", "a") == -'a'));
+    s.assert(CASE(cmp("a", "b") == ('a' - 'b')));
+    s.assert(CASE(cmp("b", "a") == ('b' - 'a')));
+    s.assert(CASE(cmp("aa", "a") == 'a'));
+    s.assert(CASE(cmp("a", "aa") == -'a'));
+
+    test::register_suite(std::move(s));
   }
 
   {
     using cstr::count;
-    Assertion const assertions[] {
-      Assertion(TEST_GEN_NAME(count("", 'a') == 0)),
-      Assertion(TEST_GEN_NAME(count("a", 'a') == 1)),
-      Assertion(TEST_GEN_NAME(count("aa", 'a') == 2)),
-      Assertion(TEST_GEN_NAME(count("ab", 'a') == 1)),
-      Assertion(TEST_GEN_NAME(count("aba", 'a') == 2)),
-      Assertion(TEST_GEN_NAME(count("ababa", 'a') == 3)),
-      Assertion(TEST_GEN_NAME(count("bbbbb", 'a') == 0)),
-      Assertion(TEST_GEN_NAME(count("bbbbb", 'b') == 5)),
-    };
-    run_suite("cstr::count", assertions, lengthof(assertions));
+    test::Suite s("cstr::count");
+
+    s.assert(CASE(count("", 'a') == 0));
+    s.assert(CASE(count("a", 'a') == 1));
+    s.assert(CASE(count("aa", 'a') == 2));
+    s.assert(CASE(count("ab", 'a') == 1));
+    s.assert(CASE(count("aba", 'a') == 2));
+    s.assert(CASE(count("ababa", 'a') == 3));
+    s.assert(CASE(count("bbbbb", 'a') == 0));
+    s.assert(CASE(count("bbbbb", 'b') == 5));
+
+    test::register_suite(std::move(s));
   }
 
   {
     using cstr::last_char;
-    Assertion const assertions[] {
-      Assertion(TEST_GEN_NAME(last_char("") == '\0')),
-      Assertion(TEST_GEN_NAME(last_char("a") == 'a')),
-      Assertion(TEST_GEN_NAME(last_char("_a") == 'a')),
-      Assertion(TEST_GEN_NAME(last_char("__b") == 'b')),
-      Assertion(TEST_GEN_NAME(last_char("___c") == 'c')),
-    };
-    run_suite("cstr::last_char", assertions, lengthof(assertions));
+    test::Suite s("cstr::last_char");
+
+    s.assert(CASE(last_char("") == '\0'));
+    s.assert(CASE(last_char("a") == 'a'));
+    s.assert(CASE(last_char("_a") == 'a'));
+    s.assert(CASE(last_char("__b") == 'b'));
+    s.assert(CASE(last_char("___c") == 'c'));
+
+    test::register_suite(std::move(s));
   }
 
   {
     using cstr::len;
-    Assertion const assertions[] {
-      Assertion(TEST_GEN_NAME(len("") == 0)),
-      Assertion(TEST_GEN_NAME(len("_") == 1)),
-      Assertion(TEST_GEN_NAME(len("_-") == 2)),
-      Assertion(TEST_GEN_NAME(len("_-_") == 3)),
-      Assertion(TEST_GEN_NAME(len("_-_-") == 4)),
-      Assertion(TEST_GEN_NAME(len("_-_-_") == 5)),
-    };
-    run_suite("cstr::len", assertions, lengthof(assertions));
+    test::Suite s("cstr::len");
+
+    s.assert(CASE(len("") == 0));
+    s.assert(CASE(len("_") == 1));
+    s.assert(CASE(len("_-") == 2));
+    s.assert(CASE(len("_-_") == 3));
+    s.assert(CASE(len("_-_-") == 4));
+    s.assert(CASE(len("_-_-_") == 5));
+
+    test::register_suite(std::move(s));
   }
 
   {
     using cstr::to_int;
-    Assertion const assertions[] {
-      Assertion(TEST_GEN_NAME(to_int('0') == 0)),
-      Assertion(TEST_GEN_NAME(to_int('1') == 1)),
-      Assertion(TEST_GEN_NAME(to_int('2') == 2)),
-      Assertion(TEST_GEN_NAME(to_int('3') == 3)),
-      Assertion(TEST_GEN_NAME(to_int('4') == 4)),
-      Assertion(TEST_GEN_NAME(to_int('5') == 5)),
-      Assertion(TEST_GEN_NAME(to_int('6') == 6)),
-      Assertion(TEST_GEN_NAME(to_int('7') == 7)),
-      Assertion(TEST_GEN_NAME(to_int('8') == 8)),
-      Assertion(TEST_GEN_NAME(to_int('9') == 9)),
-    };
-    run_suite("cstr::to_int", assertions, lengthof(assertions));
+    test::Suite s("cstr::to_int");
+
+    s.assert(CASE(to_int('0') == 0));
+    s.assert(CASE(to_int('1') == 1));
+    s.assert(CASE(to_int('2') == 2));
+    s.assert(CASE(to_int('3') == 3));
+    s.assert(CASE(to_int('4') == 4));
+    s.assert(CASE(to_int('5') == 5));
+    s.assert(CASE(to_int('6') == 6));
+    s.assert(CASE(to_int('7') == 7));
+    s.assert(CASE(to_int('8') == 8));
+    s.assert(CASE(to_int('9') == 9));
+
+    test::register_suite(std::move(s));
   }
 
   { // pgm8 stuff
-    uint16_t const width = 5, height = 5;
-    uint8_t pixels[height * width] {
-      1, 20, 30, 40, 50,
-      60, 70, 80, 90, 100,
+    uint16_t const w = 5, h = 5;
+    uint8_t const pixels[h * w] {
+      1,   20,  30,  40,  50,
+      60,  70,  80,  90,  100,
       110, 120, 130, 140, 150,
       160, 170, 180, 190, 200,
-      210, 220, 230, 240, 250
+      210, 220, 230, 240, 250,
     };
     uint8_t const maxPixel = arr2d::max<uint8_t>(
       pixels,
-      static_cast<size_t>(width),
-      static_cast<size_t>(height)
+      static_cast<size_t>(w),
+      static_cast<size_t>(h)
     );
 
-    { // ASCII PGM
+    {
+      test::Suite s("pgm8 ASCII");
+
       std::string const pathname
         = make_full_file_pathname(argv[1], "ascii.pgm");
 
@@ -245,11 +312,12 @@ int main(int const argc, char const *const *const argv) {
         // outputted file needs to be manually verified
         pgm8::write_ascii(
           &out,
-          width, height,
+          w, h,
           maxPixel,
           reinterpret_cast<uint8_t const *>(pixels)
         );
       }
+
       { // read
         std::ifstream in(pathname);
         assert_file<std::ifstream>(&in, pathname.c_str());
@@ -260,6 +328,7 @@ int main(int const argc, char const *const *const argv) {
           printf_colored(ColorText::RED, "%s\n", err);
           exit(2);
         }
+
         bool pixelsMatch = true;
         for (size_t i = 0; i < img.pixelCount(); ++i) {
           if (img.pixels()[i] != pixels[i]) {
@@ -267,14 +336,12 @@ int main(int const argc, char const *const *const argv) {
             break;
           }
         }
-        oneoff_assertion("ASCII img read", pixelsMatch);
-      }
-    }
-  }
 
-  if (result != nullptr) {
-    result->close();
-    delete result;
+        s.assert("reading image", pixelsMatch);
+      }
+
+      test::register_suite(std::move(s));
+    }
   }
 
   { // logger module
@@ -307,6 +374,12 @@ int main(int const argc, char const *const *const argv) {
 
     logger::flush();
   }
+
+  test::set_verbose_mode(false);
+  test::set_indentation("   ");
+  test::evaluate_suites();
+  assertionsFile->close();
+  delete assertionsFile;
 
   return 0;
 }
