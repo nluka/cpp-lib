@@ -47,8 +47,8 @@ int main(int const argc, char const *const *const argv) {
       = make_full_file_pathname(argv[1], "assertions.txt");
     assertionsFile = new std::ofstream(pathname);
     assert_file<std::ofstream>(assertionsFile, pathname.c_str());
-    test::set_ofstream(assertionsFile);
   }
+  test::set_ofstream(assertionsFile);
 
   if (argc >= 4) {
     try {
@@ -179,7 +179,7 @@ int main(int const argc, char const *const *const argv) {
         3, 4, 5,
         6, 7, 8
       };
-      s.assert(CASE(cmp(a, b, 4, 2, 2) == true));
+      s.assert(CASE(cmp(a, b, 3, 3, 3) == true));
     }
 
     test::register_suite(std::move(s));
@@ -329,15 +329,10 @@ int main(int const argc, char const *const *const argv) {
           exit(2);
         }
 
-        bool pixelsMatch = true;
-        for (size_t i = 0; i < img.pixelCount(); ++i) {
-          if (img.pixels()[i] != pixels[i]) {
-            pixelsMatch = false;
-            break;
-          }
-        }
-
-        s.assert("reading image", pixelsMatch);
+        s.assert(
+          "reading image",
+          arr2d::cmp(img.pixels(), pixels, img.width(), img.height())
+        );
       }
 
       test::register_suite(std::move(s));
