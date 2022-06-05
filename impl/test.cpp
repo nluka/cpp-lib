@@ -4,8 +4,8 @@
 using test::Suite;
 
 static bool s_useStdout = true;
-void test::use_stdout(bool const boolean) {
-  s_useStdout = boolean;
+void test::use_stdout(bool const b) {
+  s_useStdout = b;
 }
 
 static std::ofstream *s_ofstream = nullptr;

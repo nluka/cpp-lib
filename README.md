@@ -22,7 +22,7 @@ Contains constexpr versions of functions from `<string.h>`, with some additional
 
 ## pgm8
 
-Contains functions for writing 8-bit ASCII PGM image files.
+Contains functions for writing and reading 8-bit ASCII PGM image files.
 
 ## term
 

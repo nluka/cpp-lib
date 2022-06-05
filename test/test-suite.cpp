@@ -294,32 +294,60 @@ int main(int const argc, char const *const *const argv) {
       160, 170, 180, 190, 200,
       210, 220, 230, 240, 250,
     };
-    uint8_t const maxPixel = arr2d::max<uint8_t>(
+    uint8_t const maxval = arr2d::max<uint8_t>(
       pixels,
       static_cast<size_t>(w),
       static_cast<size_t>(h)
     );
 
     {
-      test::Suite s("pgm8 ASCII");
+      test::Suite s("plain PGM");
 
       std::string const pathname
-        = make_full_file_pathname(argv[1], "ascii.pgm");
+        = make_full_file_pathname(argv[1], "plain.pgm");
 
       { // write
         std::ofstream out(pathname);
         assert_file<std::ofstream>(&out, pathname.c_str());
-        // outputted file needs to be manually verified
-        pgm8::write_ascii(
-          &out,
-          w, h,
-          maxPixel,
-          reinterpret_cast<uint8_t const *>(pixels)
-        );
+        // resultant file needs to be manually verified
+        pgm8::write_plain(&out, w, h, maxval, pixels);
       }
 
       { // read
         std::ifstream in(pathname);
+        assert_file<std::ifstream>(&in, pathname.c_str());
+        pgm8::Image img{};
+        try {
+          img.load(in);
+        } catch (char const *err) {
+          printf_colored(ColorText::RED, "%s\n", err);
+          exit(2);
+        }
+
+        s.assert(
+          "reading image",
+          arr2d::cmp(img.pixels(), pixels, img.width(), img.height())
+        );
+      }
+
+      test::register_suite(std::move(s));
+    }
+
+    {
+      test::Suite s("raw PGM");
+
+      std::string const pathname
+        = make_full_file_pathname(argv[1], "raw.pgm");
+
+      { // write
+        std::ofstream out(pathname, std::ios::binary);
+        assert_file<std::ofstream>(&out, pathname.c_str());
+        // resultant file needs to be manually verified
+        pgm8::write_raw(&out, w, h, maxval, pixels);
+      }
+
+      { // read
+        std::ifstream in(pathname, std::ios::binary);
         assert_file<std::ifstream>(&in, pathname.c_str());
         pgm8::Image img{};
         try {
