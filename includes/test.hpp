@@ -3,43 +3,48 @@
 
 #include <fstream>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 #include "term.hpp"
 
 namespace test {
 
-#define TEST_GEN_NAME(asr) #asr, asr
+//                  name
+#define CASE(expr) (#expr), (expr)
 
-void use_stdout(bool boolean);
-void set_ofstream(std::ofstream *ofs);
+void use_stdout(bool);
+void set_ofstream(std::ofstream *);
+void set_indentation(char const *);
+void set_verbose_mode(bool);
 
-class Assertion {
+class Suite {
+  class Assertion {
+  public:
+    std::string const m_name;
+    bool const m_expr;
+
+    Assertion() : m_name{}, m_expr{false} {}
+    Assertion(char const *const name, bool const expr)
+      : m_name{name}, m_expr{expr} {}
+  };
+
 private:
-  static size_t s_successCount, s_failCount;
-
-  char const *const m_name;
-  bool const m_expr;
+  std::vector<Assertion> m_assertions{};
 
 public:
-  static size_t get_success_count();
-  static size_t get_fail_count();
-  static void print_summary();
-  static void reset_counters();
+  std::string const m_name;
 
-  Assertion(char const *name, bool expr);
-  void run(bool verbose = false) const;
+  Suite() = delete;
+  Suite(char const *const name) : m_name{name} {}
+
+  void assert(char const *const name, bool const expr);
+  void print_assertions() const;
+  size_t passes() const;
+  size_t fails() const;
 };
 
-void run_suite(
-  char const *name,
-  Assertion const assertions[],
-  size_t const assertionCount
-);
-void run_suite(
-  char const *name,
-  std::vector<Assertion> const &assertions
-);
-
-void print_newline();
+void register_suite(Suite &&);
+void evaluate_suites();
 
 } // namespace test
 
