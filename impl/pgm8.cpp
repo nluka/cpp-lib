@@ -1,7 +1,8 @@
 #include <string>
 #include <sstream>
-#include "../includes/pgm8.hpp"
+#include <numeric>
 #include "../includes/cstr.hpp"
+#include "../includes/pgm8.hpp"
 
 void pgm8::write(
   std::ofstream *const file,
@@ -44,7 +45,9 @@ void pgm8::write(
       break;
     }
     case Type::RAW: {
-      file->write(reinterpret_cast<char const *>(pixels), width * height);
+      size_t const pixelCount =
+        static_cast<size_t>(width) * static_cast<size_t>(height);
+      file->write(reinterpret_cast<char const *>(pixels), pixelCount);
       break;
     }
     default: {
@@ -65,6 +68,46 @@ RLE::RLE(uint8_t const *pixels, uint16_t const width, uint16_t const height) {
   size_t const pixelCount =
     static_cast<size_t>(width) * static_cast<size_t>(height);
   encode(pixels, pixelCount);
+}
+
+void RLE::encode(uint8_t const *const pixels, size_t const pixelCount) {
+  size_t pos = 0;
+
+  while (pos < pixelCount) {
+    uint8_t const data = pixels[pos];
+    uint32_t count = 0;
+    do {
+      ++count;
+      ++pos;
+    } while (pos < pixelCount && pixels[pos] == data);
+    m_chunks.emplace_back(data, count);
+  }
+}
+
+uint8_t *RLE::decode(std::vector<Chunk> const &chunks) {
+  size_t const pixelCount = ([&chunks](){
+    size_t cnt = 0;
+    for (auto const &chunk : chunks) {
+      cnt += chunk.m_count;
+    }
+    return cnt;
+  })();
+
+  if (pixelCount == 0) {
+    return nullptr;
+  }
+
+  uint8_t *const pixels = new uint8_t[pixelCount];
+  size_t pos = 0;
+  for (auto const &chunk : chunks) {
+    std::fill_n(pixels + pos, chunk.m_count, chunk.m_data);
+    pos += chunk.m_count;
+  }
+  return pixels;
+}
+
+std::vector<RLE::Chunk> const &RLE::chunks() const {
+  return m_chunks;
 }
 
 using pgm8::Image;
@@ -133,7 +176,7 @@ void Image::load(std::ifstream &file) {
   }
 
   if (type == Type::PLAIN) {
-    char pixel[4]{};
+    char pixel[4] {};
     for (size_t i = 0; i < pixelCount; ++i) {
       file >> pixel;
       m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
@@ -149,11 +192,11 @@ uint_fast16_t Image::width() const {
 uint_fast16_t Image::height() const {
   return m_height;
 }
-uint8_t const *Image::pixels() const {
+uint8_t *Image::pixels() const {
   return m_pixels;
 }
 size_t Image::pixel_count() const {
-  return m_width * m_height;
+  return static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
 }
 uint8_t Image::maxval() const {
   return m_maxval;

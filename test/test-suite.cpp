@@ -32,6 +32,22 @@ std::string make_full_file_pathname(
   return ss.str();
 }
 
+template<typename ElemT>
+bool vector_cmp(std::vector<ElemT> const &v1, std::vector<ElemT> const &v2) {
+  if (v1.size() != v2.size()) {
+    return false;
+  }
+
+  for (size_t i = 0; i < v1.size(); ++i) {
+    auto const &left = v1[i];
+    auto const &right = v2[i];
+    if (left != right) {
+      return false;
+    }
+  }
+  return true;
+}
+
 // .\bin\test-suite.exe test/out test/out/.log 1
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(ColorText::DEFAULT);
@@ -285,9 +301,10 @@ int main(int const argc, char const *const *const argv) {
     test::register_suite(std::move(s));
   }
 
-  { // pgm8 stuff
+  // pgm8 basics
+  {
     uint16_t const w = 5, h = 5;
-    uint8_t const pixels[h * w] {
+    uint8_t const pixels[w * h] {
       1,   20,  30,  40,  50,
       60,  70,  80,  90,  100,
       110, 120, 130, 140, 150,
@@ -339,14 +356,16 @@ int main(int const argc, char const *const *const argv) {
       std::string const pathname
         = make_full_file_pathname(argv[1], "raw.pgm");
 
-      { // write
+      // write
+      {
         std::ofstream out(pathname, std::ios::binary);
         assert_file<std::ofstream>(&out, pathname.c_str());
         // resultant file needs to be manually verified
         pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::RAW);
       }
 
-      { // read
+      // read
+      {
         std::ifstream in(pathname, std::ios::binary);
         assert_file<std::ifstream>(&in, pathname.c_str());
         pgm8::Image img{};
@@ -362,6 +381,45 @@ int main(int const argc, char const *const *const argv) {
           arr2d::cmp(img.pixels(), pixels, img.width(), img.height())
         );
       }
+
+      test::register_suite(std::move(s));
+    }
+  }
+
+  // pgm8 compression
+  {
+    uint16_t const w = 5, h = 5;
+    uint8_t const pixels[w * h] {
+      0,   0,   0,   0,   0,
+      10,  10,  10,  10,  10,
+      100, 100, 100, 100, 100,
+      210, 220, 230, 240, 250,
+      255, 255, 255, 255, 255,
+    };
+
+    // RLE
+    {
+      using pgm8::RLE;
+      test::Suite s("pgm8::RLE");
+
+      RLE encoding{};
+      encoding.encode(pixels, w * h);
+      std::vector<RLE::Chunk> expectedChunks {
+        RLE::Chunk(0, 5),
+        RLE::Chunk(10, 5),
+        RLE::Chunk(100, 5),
+        RLE::Chunk(210, 1),
+        RLE::Chunk(220, 1),
+        RLE::Chunk(230, 1),
+        RLE::Chunk(240, 1),
+        RLE::Chunk(250, 1),
+        RLE::Chunk(255, 5),
+      };
+      s.assert(CASE(vector_cmp(encoding.chunks(), expectedChunks)));
+
+      uint8_t const *const decodedPixels = RLE::decode(encoding.chunks());
+      s.assert(CASE(arr2d::cmp(decodedPixels, pixels, w, h)));
+      delete[] decodedPixels;
 
       test::register_suite(std::move(s));
     }
