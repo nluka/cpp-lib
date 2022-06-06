@@ -62,7 +62,7 @@ int main(int const argc, char const *const *const argv) {
     std::string const pathname
       = make_full_file_pathname(argv[1], "assertions.txt");
     assertionsFile = new std::ofstream(pathname);
-    assert_file<std::ofstream>(assertionsFile, pathname.c_str());
+    assert_file(assertionsFile, pathname.c_str());
   }
   test::set_ofstream(assertionsFile);
 
@@ -325,14 +325,14 @@ int main(int const argc, char const *const *const argv) {
 
       { // write
         std::ofstream out(pathname);
-        assert_file<std::ofstream>(&out, pathname.c_str());
+        assert_file(&out, pathname.c_str());
         // resultant file needs to be manually verified
         pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::PLAIN);
       }
 
       { // read
         std::ifstream in(pathname);
-        assert_file<std::ifstream>(&in, pathname.c_str());
+        assert_file(&in, pathname.c_str());
         pgm8::Image img{};
         try {
           img.load(in);
@@ -359,7 +359,7 @@ int main(int const argc, char const *const *const argv) {
       // write
       {
         std::ofstream out(pathname, std::ios::binary);
-        assert_file<std::ofstream>(&out, pathname.c_str());
+        assert_file(&out, pathname.c_str());
         // resultant file needs to be manually verified
         pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::RAW);
       }
@@ -367,7 +367,7 @@ int main(int const argc, char const *const *const argv) {
       // read
       {
         std::ifstream in(pathname, std::ios::binary);
-        assert_file<std::ifstream>(&in, pathname.c_str());
+        assert_file(&in, pathname.c_str());
         pgm8::Image img{};
         try {
           img.load(in);
@@ -403,7 +403,6 @@ int main(int const argc, char const *const *const argv) {
       test::Suite s("pgm8::RLE");
 
       RLE encoding{};
-      encoding.encode(pixels, w * h);
       std::vector<RLE::Chunk> expectedChunks {
         RLE::Chunk(0, 5),
         RLE::Chunk(10, 5),
@@ -415,11 +414,35 @@ int main(int const argc, char const *const *const argv) {
         RLE::Chunk(250, 1),
         RLE::Chunk(255, 5),
       };
-      s.assert(CASE(vector_cmp(encoding.chunks(), expectedChunks)));
+      encoding.encode(pixels, w * h);
+      s.assert("encode", vector_cmp(encoding.chunks(), expectedChunks));
 
-      uint8_t const *const decodedPixels = RLE::decode(encoding.chunks());
-      s.assert(CASE(arr2d::cmp(decodedPixels, pixels, w, h)));
-      delete[] decodedPixels;
+      // validate decoding
+      {
+        uint8_t const *const decodedPixels = RLE::decode(encoding.chunks());
+        s.assert("decode", arr2d::cmp(decodedPixels, pixels, w, h));
+        delete[] decodedPixels;
+      }
+
+      // validate file reading/writing
+      {
+        std::string const pathname
+          = make_full_file_pathname(argv[1], "RLE.chunks");
+        {
+          std::ofstream file(pathname, std::ios::binary);
+          assert_file(&file, pathname.c_str());
+          encoding.write_chunks_to_file(file);
+        }
+        {
+          std::ifstream file(pathname, std::ios::binary);
+          assert_file(&file, pathname.c_str());
+          encoding.load_file_chunks(file);
+        }
+        s.assert(
+          "file write and read",
+          vector_cmp(encoding.chunks(), expectedChunks)
+        );
+      }
 
       test::register_suite(std::move(s));
     }

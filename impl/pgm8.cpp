@@ -106,6 +106,61 @@ uint8_t *RLE::decode(std::vector<Chunk> const &chunks) {
   return pixels;
 }
 
+void RLE::write_chunks_to_file(std::ofstream &file) {
+  if (!file.is_open()) {
+    throw "RLE::write_chunks_to_file failed: file not open";
+  }
+  if (!file.good()) {
+    throw "RLE::write_chunks_to_file failed: bad file";
+  }
+
+  // write number of chunks for easier reading
+  {
+    size_t const chunkCount = m_chunks.size();
+    file.write(
+      reinterpret_cast<char const *>(&chunkCount),
+      sizeof(size_t)
+    );
+  }
+
+  // write chunk data
+  for (auto const &chunk : m_chunks) {
+    file.write(
+      reinterpret_cast<char const *>(&chunk.m_data),
+      sizeof(chunk.m_data)
+    );
+    file.write(
+      reinterpret_cast<char const *>(&chunk.m_count),
+      sizeof(chunk.m_count)
+    );
+  }
+}
+
+void RLE::load_file_chunks(std::ifstream &file) {
+  if (!file.is_open()) {
+    throw "RLE::load_file_chunks failed: file not open";
+  }
+  if (!file.good()) {
+    throw "RLE::load_file_chunks failed: bad file";
+  }
+
+  m_chunks.clear();
+
+  // read number of chunks in file
+  size_t chunkCount = 0;
+  file.read(reinterpret_cast<char *>(&chunkCount), sizeof(size_t));
+  m_chunks.reserve(chunkCount);
+
+  // read chunk data
+  for (uint32_t i = 0; i < chunkCount; ++i) {
+    uint8_t data;
+    file.read(reinterpret_cast<char *>(&data), sizeof(data));
+    uint32_t count;
+    file.read(reinterpret_cast<char *>(&count), sizeof(count));
+    m_chunks.emplace_back(data, count);
+  }
+}
+
 std::vector<RLE::Chunk> const &RLE::chunks() const {
   return m_chunks;
 }
