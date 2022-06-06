@@ -67,7 +67,11 @@ public:
   RLE();
   RLE(uint8_t const *pixels, size_t pixelCount);
   RLE(uint8_t const *pixels, uint16_t width, uint16_t height);
-  void encode(uint8_t const *pixels, size_t pixelCount);
+  void encode(
+    uint8_t const *pixels,
+    size_t pixelCount,
+    bool clearExistingChunks = true
+  );
   static uint8_t *decode(std::vector<Chunk> const &);
   void write_chunks_to_file(std::ofstream &);
   void load_file_chunks(std::ifstream &);

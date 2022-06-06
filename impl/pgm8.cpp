@@ -70,7 +70,15 @@ RLE::RLE(uint8_t const *pixels, uint16_t const width, uint16_t const height) {
   encode(pixels, pixelCount);
 }
 
-void RLE::encode(uint8_t const *const pixels, size_t const pixelCount) {
+void RLE::encode(
+  uint8_t const *const pixels,
+  size_t const pixelCount,
+  bool const clearExistingChunks
+) {
+  if (clearExistingChunks) {
+    m_chunks.clear();
+  }
+
   size_t pos = 0;
 
   while (pos < pixelCount) {
