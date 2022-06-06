@@ -32,6 +32,22 @@ std::string make_full_file_pathname(
   return ss.str();
 }
 
+template<typename ElemT>
+bool vector_cmp(std::vector<ElemT> const &v1, std::vector<ElemT> const &v2) {
+  if (v1.size() != v2.size()) {
+    return false;
+  }
+
+  for (size_t i = 0; i < v1.size(); ++i) {
+    auto const &left = v1[i];
+    auto const &right = v2[i];
+    if (left != right) {
+      return false;
+    }
+  }
+  return true;
+}
+
 // .\bin\test-suite.exe test/out test/out/.log 1
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(ColorText::DEFAULT);
@@ -46,7 +62,7 @@ int main(int const argc, char const *const *const argv) {
     std::string const pathname
       = make_full_file_pathname(argv[1], "assertions.txt");
     assertionsFile = new std::ofstream(pathname);
-    assert_file<std::ofstream>(assertionsFile, pathname.c_str());
+    assert_file(assertionsFile, pathname.c_str());
   }
   test::set_ofstream(assertionsFile);
 
@@ -268,26 +284,27 @@ int main(int const argc, char const *const *const argv) {
   }
 
   {
-    using cstr::to_int;
-    test::Suite s("cstr::to_int");
+    using cstr::ascii_digit_to_int;
+    test::Suite s("cstr::ascii_digit_to_int");
 
-    s.assert(CASE(to_int('0') == 0));
-    s.assert(CASE(to_int('1') == 1));
-    s.assert(CASE(to_int('2') == 2));
-    s.assert(CASE(to_int('3') == 3));
-    s.assert(CASE(to_int('4') == 4));
-    s.assert(CASE(to_int('5') == 5));
-    s.assert(CASE(to_int('6') == 6));
-    s.assert(CASE(to_int('7') == 7));
-    s.assert(CASE(to_int('8') == 8));
-    s.assert(CASE(to_int('9') == 9));
+    s.assert(CASE(ascii_digit_to_int('0') == 0));
+    s.assert(CASE(ascii_digit_to_int('1') == 1));
+    s.assert(CASE(ascii_digit_to_int('2') == 2));
+    s.assert(CASE(ascii_digit_to_int('3') == 3));
+    s.assert(CASE(ascii_digit_to_int('4') == 4));
+    s.assert(CASE(ascii_digit_to_int('5') == 5));
+    s.assert(CASE(ascii_digit_to_int('6') == 6));
+    s.assert(CASE(ascii_digit_to_int('7') == 7));
+    s.assert(CASE(ascii_digit_to_int('8') == 8));
+    s.assert(CASE(ascii_digit_to_int('9') == 9));
 
     test::register_suite(std::move(s));
   }
 
-  { // pgm8 stuff
+  // pgm8 basics
+  {
     uint16_t const w = 5, h = 5;
-    uint8_t const pixels[h * w] {
+    uint8_t const pixels[w * h] {
       1,   20,  30,  40,  50,
       60,  70,  80,  90,  100,
       110, 120, 130, 140, 150,
@@ -308,14 +325,14 @@ int main(int const argc, char const *const *const argv) {
 
       { // write
         std::ofstream out(pathname);
-        assert_file<std::ofstream>(&out, pathname.c_str());
+        assert_file(&out, pathname.c_str());
         // resultant file needs to be manually verified
-        pgm8::write_plain(&out, w, h, maxval, pixels);
+        pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::PLAIN);
       }
 
       { // read
         std::ifstream in(pathname);
-        assert_file<std::ifstream>(&in, pathname.c_str());
+        assert_file(&in, pathname.c_str());
         pgm8::Image img{};
         try {
           img.load(in);
@@ -339,16 +356,18 @@ int main(int const argc, char const *const *const argv) {
       std::string const pathname
         = make_full_file_pathname(argv[1], "raw.pgm");
 
-      { // write
+      // write
+      {
         std::ofstream out(pathname, std::ios::binary);
-        assert_file<std::ofstream>(&out, pathname.c_str());
+        assert_file(&out, pathname.c_str());
         // resultant file needs to be manually verified
-        pgm8::write_raw(&out, w, h, maxval, pixels);
+        pgm8::write(&out, w, h, maxval, pixels, pgm8::Type::RAW);
       }
 
-      { // read
+      // read
+      {
         std::ifstream in(pathname, std::ios::binary);
-        assert_file<std::ifstream>(&in, pathname.c_str());
+        assert_file(&in, pathname.c_str());
         pgm8::Image img{};
         try {
           img.load(in);
@@ -360,6 +379,68 @@ int main(int const argc, char const *const *const argv) {
         s.assert(
           "reading image",
           arr2d::cmp(img.pixels(), pixels, img.width(), img.height())
+        );
+      }
+
+      test::register_suite(std::move(s));
+    }
+  }
+
+  // pgm8 compression
+  {
+    uint16_t const w = 5, h = 5;
+    uint8_t const pixels[w * h] {
+      0,   0,   0,   0,   0,
+      10,  10,  10,  10,  10,
+      100, 100, 100, 100, 100,
+      210, 220, 230, 240, 250,
+      255, 255, 255, 255, 255,
+    };
+
+    // RLE
+    {
+      using pgm8::RLE;
+      test::Suite s("pgm8::RLE");
+
+      RLE encoding{};
+      std::vector<RLE::Chunk> expectedChunks {
+        RLE::Chunk(0, 5),
+        RLE::Chunk(10, 5),
+        RLE::Chunk(100, 5),
+        RLE::Chunk(210, 1),
+        RLE::Chunk(220, 1),
+        RLE::Chunk(230, 1),
+        RLE::Chunk(240, 1),
+        RLE::Chunk(250, 1),
+        RLE::Chunk(255, 5),
+      };
+      encoding.encode(pixels, w * h);
+      s.assert("encode", vector_cmp(encoding.chunks(), expectedChunks));
+
+      // validate decoding
+      {
+        uint8_t const *const decodedPixels = RLE::decode(encoding.chunks());
+        s.assert("decode", arr2d::cmp(decodedPixels, pixels, w, h));
+        delete[] decodedPixels;
+      }
+
+      // validate file reading/writing
+      {
+        std::string const pathname
+          = make_full_file_pathname(argv[1], "RLE.chunks");
+        {
+          std::ofstream file(pathname, std::ios::binary);
+          assert_file(&file, pathname.c_str());
+          encoding.write_chunks_to_file(file);
+        }
+        {
+          std::ifstream file(pathname, std::ios::binary);
+          assert_file(&file, pathname.c_str());
+          encoding.load_file_chunks(file);
+        }
+        s.assert(
+          "file write and read",
+          vector_cmp(encoding.chunks(), expectedChunks)
         );
       }
 
