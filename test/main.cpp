@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "arr2d-tests.hpp"
 #include "cstr-tests.hpp"
+#include "lengthof-tests.hpp"
 #include "pgm8-tests.hpp"
 #include "logger-tests.hpp"
 #include "util.hpp"
@@ -40,6 +41,10 @@ int main(int const argc, char const *const *const argv) {
 
   #if TEST_CSTR
   cstr_tests();
+  #endif
+
+  #if TEST_LENGTHOF
+  lengthof_tests();
   #endif
 
   #if TEST_PGM8
