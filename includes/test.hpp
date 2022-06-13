@@ -12,6 +12,10 @@ namespace test {
 //                  name
 #define CASE(expr) (#expr), (expr)
 
+#define SETUP_SUITE(func) \
+using func; \
+test::Suite s(#func); \
+
 void use_stdout(bool);
 void set_ofstream(std::ofstream *);
 void set_indentation(char const *);
@@ -35,7 +39,8 @@ public:
   std::string const m_name;
 
   Suite() = delete;
-  Suite(char const *const name) : m_name{name} {}
+  Suite(char const *const name);
+  Suite(std::string const &name);
 
   void assert(char const *const name, bool const expr);
   void print_assertions() const;

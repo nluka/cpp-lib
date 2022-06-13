@@ -23,6 +23,9 @@ void test::set_verbose_mode(bool const b) {
   s_verboseMode = b;
 }
 
+Suite::Suite(char const *const name) : m_name{name} {}
+Suite::Suite(std::string const &name) : m_name{name} {}
+
 void Suite::assert(char const *const name, bool const expr) {
   m_assertions.emplace_back(name, expr);
 }
@@ -71,7 +74,9 @@ void test::register_suite(Suite &&s) {
 void test::evaluate_suites() {
   for (auto const &s : s_suites) {
     auto const printHeader = [&s](std::ostream *const os){
-      size_t const passes = s.passes(), cases = passes + s.fails();
+      size_t const
+        passes = s.passes(),
+        cases = passes + s.fails();
       *os << s.m_name << " (" << passes << '/' << cases << ")\n";
     };
 

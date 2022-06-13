@@ -3,3 +3,5 @@ bin
 .vs
 interm
 out
+# all images except `ascending-plain.pgm`
+test/img/[!a]*

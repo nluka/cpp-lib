@@ -1,0 +1,9 @@
+#ifndef CPPLIB_TEST_CONFIG_HPP
+#define CPPLIB_TEST_CONFIG_HPP
+
+#define TEST_CSTR 0
+#define TEST_ARR2D 0
+#define TEST_PGM8 1
+#define TEST_LOGGER 0
+
+#endif // CPPLIB_TEST_CONFIG_HPP

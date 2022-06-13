@@ -1,62 +1,132 @@
 #include <string>
 #include <sstream>
 #include <numeric>
+#include <memory>
+#include "../includes/arr2d.hpp"
 #include "../includes/cstr.hpp"
 #include "../includes/pgm8.hpp"
 
-void pgm8::write(
-  std::ofstream *const file,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxval,
-  uint8_t const *const pixels,
-  Type const type
-) {
-  using pgm8::Type;
+using pgm8::Type, pgm8::RLE, pgm8::Image;
 
-  if (maxval < 1) {
-    throw "pgm8::write failed: maxval must be > 0";
+#pragma region Image
+
+Image::Image()
+: m_width{0}, m_height{0}, m_maxval{0}, m_pixels{nullptr}
+{}
+
+Image::Image(std::ifstream &file, bool const loadPixels)
+: Image::Image()
+{
+  load(file, loadPixels);
+}
+
+Image::~Image() {
+  clear();
+}
+
+void Image::load(std::ifstream &file, bool const loadPixels) {
+  if (!file.is_open()) {
+    throw "pgm8::Image::load failed - file closed";
+  }
+  if (!file.good()) {
+    throw "pgm8::Image::load failed - bad file";
   }
 
-  // header
+  enum class EncodingType {
+    RAW,
+    PLAIN,
+    RLE
+  };
+
+  EncodingType const encType = ([&file](){
+    std::string magicNum{};
+    std::getline(file, magicNum);
+    if (magicNum == "P5") {
+      return EncodingType::RAW;
+    } else if (magicNum == "P2") {
+      return EncodingType::PLAIN;
+    } else if (magicNum == "PGM RLE") {
+      return EncodingType::RLE;
+    } else {
+      throw "pgm8::Image::load failed - invalid magic number";
+    }
+  })();
+
+  clear();
+
+  file >> m_width >> m_height;
   {
-    char magicNum[3] {
-      'P',
-      cstr::int_to_ascii_digit(static_cast<int>(type)),
-      '\0'
-    };
-
-    *file << magicNum << '\n'
-      << std::to_string(width) << ' ' << std::to_string(height) << '\n'
-      << std::to_string(maxval) << '\n';
+    int maxval;
+    file >> maxval;
+    m_maxval = static_cast<uint8_t>(maxval);
   }
 
-  // pixels
-  switch (type) {
-    case Type::PLAIN: {
-      for (uint16_t r = 0; r < height; ++r) {
-        for (uint16_t c = 0; c < width; ++c) {
-          *file
-            << static_cast<int>(pixels[arr2d::get_1d_idx(width, c, r)])
-            << ' ';
-        }
-        *file << '\n';
+  if (!loadPixels) {
+    return;
+  }
+
+  // read the \n between maxval and pixel data
+  {
+    char newline;
+    file.read(&newline, 1);
+  }
+
+  const size_t pixelCount =
+    static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
+  try {
+    m_pixels = new uint8_t[pixelCount];
+  } catch (std::bad_alloc const &) {
+    throw "pgm8::Image::load failed - not enough memory for pixels";
+  }
+
+  switch (encType) {
+    case EncodingType::RAW:
+      file.read(reinterpret_cast<char *>(m_pixels), pixelCount);
+      break;
+    case EncodingType::PLAIN: {
+      char pixel[4] {};
+      for (size_t i = 0; i < pixelCount; ++i) {
+        file >> pixel;
+        m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
       }
       break;
     }
-    case Type::RAW: {
-      size_t const pixelCount =
-        static_cast<size_t>(width) * static_cast<size_t>(height);
-      file->write(reinterpret_cast<char const *>(pixels), pixelCount);
+    case EncodingType::RLE: {
+      RLE encoding{};
+      encoding.load_file_chunks(file);
+      m_pixels = encoding.decode();
       break;
     }
-    default: {
-      throw "pgm8::write failed: `type` is not a valid pgm8::Type";
-    }
+    default:
+      throw "pgm8::Image::load failed (internal error!) - invalid encoding type";
   }
 }
 
-using pgm8::RLE;
+void Image::clear() {
+  delete[] m_pixels;
+  m_pixels = nullptr;
+  m_width = m_height = m_maxval = 0;
+}
+
+uint16_t Image::width() const {
+  return m_width;
+}
+uint16_t Image::height() const {
+  return m_height;
+}
+uint8_t Image::maxval() const {
+  return m_maxval;
+}
+uint8_t *Image::pixels() const {
+  return m_pixels;
+}
+size_t Image::pixel_count() const {
+  return static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
+}
+
+#pragma endregion Image
+
+#pragma region RLE
 
 RLE::RLE() {}
 
@@ -92,10 +162,10 @@ void RLE::encode(
   }
 }
 
-uint8_t *RLE::decode(std::vector<Chunk> const &chunks) {
-  size_t const pixelCount = ([&chunks](){
+uint8_t *RLE::decode() const {
+  size_t const pixelCount = ([this](){
     size_t cnt = 0;
-    for (auto const &chunk : chunks) {
+    for (auto const &chunk : m_chunks) {
       cnt += chunk.m_count;
     }
     return cnt;
@@ -107,19 +177,19 @@ uint8_t *RLE::decode(std::vector<Chunk> const &chunks) {
 
   uint8_t *const pixels = new uint8_t[pixelCount];
   size_t pos = 0;
-  for (auto const &chunk : chunks) {
+  for (auto const &chunk : m_chunks) {
     std::fill_n(pixels + pos, chunk.m_count, chunk.m_data);
     pos += chunk.m_count;
   }
   return pixels;
 }
 
-void RLE::write_chunks_to_file(std::ofstream &file) {
+void RLE::write_chunks_to_file(std::ofstream &file) const {
   if (!file.is_open()) {
-    throw "RLE::write_chunks_to_file failed: file not open";
+    throw "RLE::write_chunks_to_file failed - file not open";
   }
   if (!file.good()) {
-    throw "RLE::write_chunks_to_file failed: bad file";
+    throw "RLE::write_chunks_to_file failed - bad file";
   }
 
   // write number of chunks for easier reading
@@ -146,10 +216,10 @@ void RLE::write_chunks_to_file(std::ofstream &file) {
 
 void RLE::load_file_chunks(std::ifstream &file) {
   if (!file.is_open()) {
-    throw "RLE::load_file_chunks failed: file not open";
+    throw "RLE::load_file_chunks failed - file not open";
   }
   if (!file.good()) {
-    throw "RLE::load_file_chunks failed: bad file";
+    throw "RLE::load_file_chunks failed - bad file";
   }
 
   m_chunks.clear();
@@ -160,10 +230,10 @@ void RLE::load_file_chunks(std::ifstream &file) {
   m_chunks.reserve(chunkCount);
 
   // read chunk data
-  for (uint32_t i = 0; i < chunkCount; ++i) {
-    uint8_t data;
+  for (size_t i = 0; i < chunkCount; ++i) {
+    uint8_t data{};
     file.read(reinterpret_cast<char *>(&data), sizeof(data));
-    uint32_t count;
+    uint32_t count{};
     file.read(reinterpret_cast<char *>(&count), sizeof(count));
     m_chunks.emplace_back(data, count);
   }
@@ -172,95 +242,93 @@ void RLE::load_file_chunks(std::ifstream &file) {
 std::vector<RLE::Chunk> const &RLE::chunks() const {
   return m_chunks;
 }
-
-using pgm8::Image;
-
-Image::Image()
-: m_width{0}, m_height{0}, m_pixels{nullptr}, m_maxval{0}
-{}
-
-Image::Image(std::ifstream &file) : Image::Image() {
-  load(file);
+size_t RLE::pixel_count() const {
+  size_t count = 0;
+  for (auto const &chunk : m_chunks) {
+    count += chunk.m_count;
+  }
+  return count;
 }
 
-Image::~Image() {
-  delete[] m_pixels;
+#pragma endregion RLE
+
+#pragma region standalone_functions
+
+static
+void write_header(
+  std::ofstream &file,
+  char const *const magicNum,
+  uint16_t const width,
+  uint16_t const height,
+  uint8_t const maxval
+) {
+  file << magicNum << '\n'
+    << std::to_string(width) << ' ' << std::to_string(height) << '\n'
+    << std::to_string(maxval) << '\n';
 }
 
-void Image::load(std::ifstream &file) {
-  using pgm8::Type;
+void pgm8::write_uncompressed(
+  std::ofstream &file,
+  uint16_t const width,
+  uint16_t const height,
+  uint8_t const maxval,
+  uint8_t const *const pixels,
+  Type const type
+) {
+  if (maxval < 1) {
+    throw "pgm8::write_uncompressed failed - maxval must be > 0";
+  }
 
-  // clear prev image
-  {
-    if (m_pixels != nullptr) {
-      delete[] m_pixels;
-      m_pixels = nullptr;
+  write_header(file, type == Type::RAW ? "P5" : "P2", width, height, maxval);
+
+  // pixels
+  switch (type) {
+    case Type::PLAIN: {
+      for (size_t r = 0; r < height; ++r) {
+        for (size_t c = 0; c < width; ++c) {
+          file
+            << static_cast<int>(pixels[arr2d::get_1d_idx(width, c, r)])
+            << ' ';
+        }
+        file << '\n';
+      }
+      break;
     }
-    m_width = 0;
-    m_height = 0;
-    m_maxval = 0;
-  }
-
-  if (!file.is_open()) {
-    throw "pgm8::Image::load failed: file closed";
-  }
-  if (!file.good()) {
-    throw "pgm8::Image::load failed: bad file";
-  }
-
-  Type const type = ([&file](){
-    char magicNum[3] {};
-    file.getline(magicNum, sizeof(magicNum));
-    if (magicNum[0] != 'P' || (magicNum[1] != '2' && magicNum[1] != '5')) {
-      throw "pgm8::Image::load failed: invalid magic number";
+    case Type::RAW: {
+      size_t const pixelCount =
+        static_cast<size_t>(width) * static_cast<size_t>(height);
+      file.write(reinterpret_cast<char const *>(pixels), pixelCount);
+      break;
     }
-    return static_cast<Type>(cstr::ascii_digit_to_int(magicNum[1]));
-  })();
-
-  file >> m_width >> m_height;
-  {
-    int maxval;
-    file >> maxval;
-    m_maxval = static_cast<uint8_t>(maxval);
-  }
-
-  // read newline between maxval and pixel data
-  {
-    char newline;
-    file.read(&newline, 1);
-  }
-
-  const size_t pixelCount =
-    static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
-  try {
-    m_pixels = new uint8_t[pixelCount];
-  } catch (...) {
-    throw "pgm8::Image::load failed: not enough memory";
-  }
-
-  if (type == Type::PLAIN) {
-    char pixel[4] {};
-    for (size_t i = 0; i < pixelCount; ++i) {
-      file >> pixel;
-      m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
+    default: {
+      throw "pgm8::write_uncompressed failed - `type` is not a valid pgm8::Type";
     }
-  } else {
-    file.read(reinterpret_cast<char *>(m_pixels), pixelCount);
   }
 }
+void pgm8::write_uncompressed(
+  std::ofstream &file,
+  uint16_t width,
+  uint16_t height,
+  uint8_t maxval,
+  RLE const &encodedPixelData,
+  Type const type
+) {
+  auto const pixels =
+    std::unique_ptr<uint8_t const>(encodedPixelData.decode());
+  pgm8::write_uncompressed(file, width, height, maxval, pixels.get(), type);
+}
 
-uint_fast16_t Image::width() const {
-  return m_width;
+/* Writes a compressed 8-bit PGM image from RLE-encoded pixel data.
+  Make sure `file` is in binary (std::ios::binary) mode! */
+void pgm8::write_compressed(
+  std::ofstream &file,
+  uint16_t const width,
+  uint16_t const height,
+  uint8_t const maxval,
+  RLE const &encodedPixelData
+) {
+  write_header(file, "PGM RLE", width, height, maxval);
+  encodedPixelData.write_chunks_to_file(file);
 }
-uint_fast16_t Image::height() const {
-  return m_height;
-}
-uint8_t *Image::pixels() const {
-  return m_pixels;
-}
-size_t Image::pixel_count() const {
-  return static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
-}
-uint8_t Image::maxval() const {
-  return m_maxval;
-}
+
+#pragma endregion standalone_functions
