@@ -14,7 +14,8 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
   // not in global namespace so it's ok to do this in a header
   namespace fs = std::filesystem;
 
-  std::string const outFilePathname = std::string(resDir) + "/regexglob-log.txt";
+  std::string const outFilePathname =
+    std::string(resDir) + "/regexglob-log.txt";
   std::ofstream outFile(outFilePathname);
   assert_file(&outFile, outFilePathname.c_str());
   regexglob::set_ofstream(&outFile);
@@ -56,7 +57,11 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
         "test\\regexglob\\books\\javascriptBook.md",
         "test\\regexglob\\books\\python_book.md",
       };
-      testCase((std::string(regexglobDir) + "books").c_str(), ".*", expected);
+      testCase(
+        (std::string(regexglobDir) + "books").c_str(),
+        ".*",
+        expected
+      );
     }
     {
       std::vector<fs::path> expected {
@@ -66,27 +71,43 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
         "test\\regexglob\\books\\cpp_book.txt",
         "test\\regexglob\\books\\javaBook.txt",
       };
-      testCase((std::string(regexglobDir) + "books").c_str(), ".*\\.txt", expected);
+      testCase(
+        (std::string(regexglobDir) + "books").c_str(),
+        ".*\\.txt",
+        expected
+      );
     }
     {
       std::vector<fs::path> expected {
         "test\\regexglob\\books\\python_book.md"
       };
-      testCase((std::string(regexglobDir) + "books").c_str(), "python_.*", expected);
+      testCase(
+        (std::string(regexglobDir) + "books").c_str(),
+        "python_.*",
+        expected
+      );
     }
     {
       std::vector<fs::path> expected {
         "test\\regexglob\\books\\javaBook.txt",
         "test\\regexglob\\books\\javascriptBook.md",
       };
-      testCase((std::string(regexglobDir) + "books").c_str(), "java.*[bB]ook\\..*", expected);
+      testCase(
+        (std::string(regexglobDir) + "books").c_str(),
+        "java.*[bB]ook\\..*",
+        expected
+      );
     }
     {
       std::vector<fs::path> expected {
         "test\\regexglob\\books\\advanced\\advancedc.md",
         "test\\regexglob\\books\\advanced\\adv_cpp.txt",
       };
-      testCase((std::string(regexglobDir) + "books").c_str(), "adv(anced)?_?[c](pp)?\\..*", expected);
+      testCase(
+        (std::string(regexglobDir) + "books").c_str(),
+        "adv(anced)?_?[c](pp)?\\..*",
+        expected
+      );
     }
 
     // #if TEST_GLOB_ABSOLUTE
