@@ -5,8 +5,6 @@
 #include "../includes/cstr.hpp"
 #include "../includes/regexglob.hpp"
 
-// reference: https://github.com/begin/globbing
-
 namespace fs = std::filesystem;
 
 static char s_prefSep = '/';
@@ -14,16 +12,12 @@ void regexglob::set_preferred_separator(char const c) {
   s_prefSep = c;
 }
 
-static constexpr char const
-  *const s_globStarRegexEquiv = "[^/]*",
-  *const s_globQuestionRegexEquiv = ".";
-
 #if REGEXGLOB_LOGGING_ENABLED
 static std::ofstream *s_ofstream = nullptr;
 void regexglob::set_ofstream(std::ofstream *const ofs) {
   s_ofstream = ofs;
 }
-#endif
+#endif // REGEXGLOB_LOGGING_ENABLED
 
 std::vector<fs::path> regexglob::fmatch(
   char const *const root,
@@ -48,7 +42,7 @@ std::vector<fs::path> regexglob::fmatch(
       << "<file_pattern>: " << filePattern << '\n'
       << "<files_checked>:\n";
   }
-  #endif
+  #endif // REGEXGLOB_LOGGING_ENABLED
 
   for (
     auto const &entry :
@@ -57,7 +51,7 @@ std::vector<fs::path> regexglob::fmatch(
       fs::directory_options::skip_permission_denied
     )
   ) {
-    // ignore anything that isn't a file
+    // ignore anything that isn't a file or shortcut
     if (
       !entry.is_regular_file() &&
       !entry.is_block_file() &&
@@ -72,7 +66,7 @@ std::vector<fs::path> regexglob::fmatch(
     if (s_ofstream != nullptr) {
       *s_ofstream << "  " << entry.path() << '\n';
     }
-    #endif
+    #endif // REGEXGLOB_LOGGING_ENABLED
 
     {
       std::string path = entry.path().string();
@@ -105,7 +99,7 @@ std::vector<fs::path> regexglob::fmatch(
     }
     *s_ofstream << '\n';
   }
-  #endif
+  #endif // REGEXGLOB_LOGGING_ENABLED
 
   return matchedFiles;
 }

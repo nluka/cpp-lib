@@ -95,7 +95,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     //   std::vector<fs::path> expected{};
     //   testCase("/code/cpp-lib/test/glob/books/", expected);
     // }
-    // #endif
+    // #endif // TEST_GLOB_ABSOLUTE
 
     test::register_suite(std::move(s));
   }

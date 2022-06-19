@@ -1,5 +1,5 @@
-#ifndef CPPLIB_GLOB_H
-#define CPPLIB_GLOB_H
+#ifndef CPPLIB_REGEXGLOB_H
+#define CPPLIB_REGEXGLOB_H
 
 #include <fstream>
 #include <vector>
@@ -13,13 +13,13 @@ void set_preferred_separator(char);
 
 #if REGEXGLOB_LOGGING_ENABLED
 void set_ofstream(std::ofstream *);
-#endif
+#endif // REGEXGLOB_LOGGING_ENABLED
 
 std::vector<std::filesystem::path> fmatch(
   char const *root,
   char const *filePattern
 );
 
-} // namespace glob
+} // namespace regexglob
 
-#endif // CPPLIB_GLOB_H
+#endif // CPPLIB_REGEXGLOB_H
