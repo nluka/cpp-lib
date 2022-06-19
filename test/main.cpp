@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "arr2d-tests.hpp"
 #include "cstr-tests.hpp"
+#include "regexglob-tests.hpp"
 #include "lengthof-tests.hpp"
 #include "pgm8-tests.hpp"
 #include "logger-tests.hpp"
@@ -11,10 +12,10 @@
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(term::ColorText::DEFAULT);
 
-  if (argc < 3) {
+  if (argc < 4) {
     term::printf_colored(
       term::ColorText::YELLOW,
-      "usage: <res_dir> <imgs_dir>"
+      "usage: <res_dir> <imgs_dir> <regexglob_dir>"
     );
     std::exit(1);
   }
@@ -50,10 +51,18 @@ int main(int const argc, char const *const *const argv) {
   #if TEST_PGM8
   // where we store images
   std::string imgsDir(argv[2]);
-  if (imgsDir.back() != '/' || imgsDir.back() != '\\') {
+  if (imgsDir.back() != '/' && imgsDir.back() != '\\') {
     imgsDir += '/';
   }
   pgm8_tests(imgsDir.c_str());
+  #endif
+
+  #if TEST_REGEXGLOB
+  std::string regexglobDir(argv[3]);
+  if (regexglobDir.back() != '/' && regexglobDir.back() != '\\') {
+    regexglobDir += '/';
+  }
+  regexglob_tests(regexglobDir.c_str(), resDir);
   #endif
 
   #if TEST_LOGGER

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\impl\logger.cpp" />
     <ClCompile Include="..\impl\pgm8.cpp" />
+    <ClCompile Include="..\impl\regexglob.cpp" />
     <ClCompile Include="..\impl\term.cpp" />
     <ClCompile Include="..\impl\test.cpp" />
     <ClCompile Include="..\test\main.cpp" />
@@ -31,12 +32,14 @@
     <ClInclude Include="..\includes\lengthof.hpp" />
     <ClInclude Include="..\includes\logger.hpp" />
     <ClInclude Include="..\includes\pgm8.hpp" />
+    <ClInclude Include="..\includes\regexglob.hpp" />
     <ClInclude Include="..\includes\term.hpp" />
     <ClInclude Include="..\includes\test.hpp" />
     <ClInclude Include="..\test\arr2d-tests.hpp" />
     <ClInclude Include="..\test\config.hpp" />
     <ClInclude Include="..\test\cstr-tests.hpp" />
     <ClInclude Include="..\test\logger-tests.hpp" />
+    <ClInclude Include="..\test\regexglob-tests.hpp" />
     <ClInclude Include="..\test\util.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
