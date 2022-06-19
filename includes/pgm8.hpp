@@ -107,6 +107,6 @@ void write_compressed(
   pgm8::RLE const &encodedPixelData
 );
 
-} // namespace pgm
+} // namespace pgm8
 
 #endif // CPPLIB_PGM8_HPP
