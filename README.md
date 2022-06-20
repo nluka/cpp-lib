@@ -54,6 +54,31 @@ Contains constexpr versions of `<cstring>` functions, with some additions. See `
 | ascii_digit_to_int   |
 | int_to_ascii_digit   |
 
+## lengthof
+
+Helper function for getting the size of a static (stack-allocated) C-style array at compile time.
+
+```cpp
+int main() {
+  int arr[] { 1, 2, 3, 4, 5 }; // 5 elements
+
+  auto const lambda = [](int *a, size_t const len){
+    for (size_t i = 0; i < len; ++i) {
+      // do something with each element
+    }
+  }
+
+  // BAD:
+  lambda(arr, 5);
+  // if `arr` changes and we forget to update the `5`, this code breaks
+
+  // GOOD:
+  lambda(arr, lengthof(arr));
+  // `lengthof` returns the correct size at compile time,
+  // so even if `arr` changes this code won't break
+}
+```
+
 ## logger
 
 Simple, threadsafe logging module.
