@@ -128,6 +128,14 @@ size_t Image::pixel_count() const {
 
 #pragma region RLE
 
+RLE::Chunk::Chunk(uint8_t const data, uint32_t const count)
+: m_data{data}, m_count{count}
+{}
+
+bool RLE::Chunk::operator!=(Chunk const &other) const {
+  return (m_data != other.m_data) || (m_count != other.m_count);
+}
+
 RLE::RLE() {}
 
 RLE::RLE(uint8_t const *pixels, size_t const pixelCount) {
@@ -318,8 +326,6 @@ void pgm8::write_uncompressed(
   pgm8::write_uncompressed(file, width, height, maxval, pixels.get(), type);
 }
 
-/* Writes a compressed 8-bit PGM image from RLE-encoded pixel data.
-  Make sure `file` is in binary (std::ios::binary) mode! */
 void pgm8::write_compressed(
   std::ofstream &file,
   uint16_t const width,

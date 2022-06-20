@@ -109,7 +109,67 @@ int main() {
 
 ## pgm8
 
-Contains functions for writing and reading 8-bit ASCII PGM image files.
+Module for functions for reading, writing, encoding, and decoding 8-bit PGM images. Requires [arr2d](#arr2d).
+
+```cpp
+int main() {
+  uint16_t const linesbWidth = 8, linesHeight = 6;
+  uint8_t const lines[linesbWidth * linesHeight] {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+  };
+
+  // write regular (plain) PGM file
+  {
+    std::ofstream outFile("lines.pgm");
+    pgm8::write_uncompressed(
+      outFile,
+      linesWidth,
+      linesHeight,
+      1,
+      lines,
+      pgm8::Type::PLAIN
+    );
+  }
+
+  // write RLE-encoded PGM file
+  {
+    pgm8::RLE encodedPixels(lines, linesWidth, linesHeight);
+    std::ofstream outFile("lines.pgme");
+    pgm8::write_compressed(
+      outFile,
+      linesWidth,
+      linesHeight,
+      1,
+      encoding
+    );
+  }
+
+  // read our regular PGM file
+  {
+    std::ifstream inFile("lines.pgm");
+    pgm8::Image img(inFile);
+    img.width(); // 8
+    img.height(); // 6
+    img.maxval(); // 1
+    img.pixel_count(); // 48
+  }
+
+  // read our RLE-encoded PGM file
+  {
+    std::ifstream inFile("lines.pgme");
+    pgm8::Image img(inFile);
+    img.width(); // 8
+    img.height(); // 6
+    img.maxval(); // 1
+    img.pixel_count(); // 48
+  }
+}
+```
 
 ## term
 
