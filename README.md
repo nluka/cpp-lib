@@ -113,8 +113,8 @@ Module for functions for reading, writing, encoding, and decoding 8-bit PGM imag
 
 ```cpp
 int main() {
-  uint16_t const linesbWidth = 8, linesHeight = 6;
-  uint8_t const lines[linesbWidth * linesHeight] {
+  uint16_t const linesWidth = 8, linesHeight = 6;
+  uint8_t const lines[linesWidth * linesHeight] {
     0, 0, 0, 0, 0, 0, 0, 0,
     1, 1, 1, 1, 1, 1, 1, 1,
     0, 0, 0, 0, 0, 0, 0, 0,
