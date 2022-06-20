@@ -32,9 +32,9 @@ int main() {
     0, 0, 0
   };
 
-  arr2d::is_homogenous(arr, width, height); // false
-  arr2d::is_homogenous(arr2, width, height); // false
-  arr2d::is_homogenous(arr3, width, height); // true
+  arr2d::is_homogenous(arr, width, height);   // false
+  arr2d::is_homogenous(arr2, width, height);  // false
+  arr2d::is_homogenous(arr3, width, height);  // true
 }
 ```
 
@@ -130,7 +130,7 @@ int main() {
       outFile,
       linesWidth,
       linesHeight,
-      1,
+      1, // maxval
       lines,
       pgm8::Type::PLAIN
     );
@@ -144,7 +144,7 @@ int main() {
       outFile,
       linesWidth,
       linesHeight,
-      1,
+      1, // maxval
       encoding
     );
   }
@@ -153,20 +153,20 @@ int main() {
   {
     std::ifstream inFile("lines.pgm");
     pgm8::Image img(inFile);
-    img.width(); // 8
-    img.height(); // 6
-    img.maxval(); // 1
-    img.pixel_count(); // 48
+    img.width();        // 8
+    img.height();       // 6
+    img.maxval();       // 1
+    img.pixel_count();  // 48
   }
 
   // read our RLE-encoded PGM file
   {
     std::ifstream inFile("lines.pgme");
     pgm8::Image img(inFile);
-    img.width(); // 8
-    img.height(); // 6
-    img.maxval(); // 1
-    img.pixel_count(); // 48
+    img.width();        // 8
+    img.height();       // 6
+    img.maxval();       // 1
+    img.pixel_count();  // 48
   }
 }
 ```
