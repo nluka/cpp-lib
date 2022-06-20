@@ -40,17 +40,19 @@ int main() {
 
 ## cstr
 
-Contains constexpr versions of functions from `<string.h>`, with some additional ones thrown in the mix.
+Contains constexpr versions of `<cstring>` functions, with some additions. See `test/cstr-tests.hpp` for usage examples.
 
-| <string.h> | cstr:: |
+| `<cstring>`  | `cstr` equiv |
 | ---------- | ------ |
 | strcmp     | cmp    |
 | strlen     | len    |
 
-| additional func | description |
-| --------------- | ----------- |
-| count           | Returns the number of occurences of a character. |
-| last_char       | Returns the last character of the given string. |
+| additional functions |
+| -------------------- |
+| count                |
+| last_char            |
+| ascii_digit_to_int   |
+| int_to_ascii_digit   |
 
 ## logger
 
