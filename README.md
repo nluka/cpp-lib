@@ -58,7 +58,7 @@ int main() {
 
 ## cstr
 
-Contains constexpr versions of `<cstring>` functions, with some additions. See [test/cstr-tests.hpp](test/cstr-tests.hpp) for usage examples.
+Contains constexpr versions of `<cstring>` functions, with some additions. See [testing/cstr-tests.hpp](testing/cstr-tests.hpp) for usage examples.
 
 ### Files needed
 - [cstr.hpp](includes/cstr.hpp)
