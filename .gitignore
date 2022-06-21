@@ -2,6 +2,7 @@
 bin
 .vs
 interm
+interm2
 out
 # all images except `ascending-plain.pgm`
 test/img/[!a]*
