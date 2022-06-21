@@ -1,8 +1,7 @@
 .vscode
 bin
 .vs
-interm
-interm2
+*/interm
 out
 # all images except `ascending-plain.pgm`
-test/img/[!a]*
+testing/img/[!a]*

@@ -43,19 +43,21 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
       );
     };
 
+    fs::path const root = regexglobDir;
+
     // relative path cases:
     {
       std::vector<fs::path> expected {
-        "test\\regexglob\\books\\advanced\\advancedc.md",
-        "test\\regexglob\\books\\advanced\\advJava.txt",
-        "test\\regexglob\\books\\advanced\\advJavascript.md",
-        "test\\regexglob\\books\\advanced\\adv_cpp.txt",
-        "test\\regexglob\\books\\advanced\\adv_python.md",
-        "test\\regexglob\\books\\cBook.txt",
-        "test\\regexglob\\books\\cpp_book.txt",
-        "test\\regexglob\\books\\javaBook.txt",
-        "test\\regexglob\\books\\javascriptBook.md",
-        "test\\regexglob\\books\\python_book.md",
+        root / "books\\advanced\\advancedc.md",
+        root / "books\\advanced\\advJava.txt",
+        root / "books\\advanced\\advJavascript.md",
+        root / "books\\advanced\\adv_cpp.txt",
+        root / "books\\advanced\\adv_python.md",
+        root / "books\\cBook.txt",
+        root / "books\\cpp_book.txt",
+        root / "books\\javaBook.txt",
+        root / "books\\javascriptBook.md",
+        root / "books\\python_book.md",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -65,11 +67,11 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        "test\\regexglob\\books\\advanced\\advJava.txt",
-        "test\\regexglob\\books\\advanced\\adv_cpp.txt",
-        "test\\regexglob\\books\\cBook.txt",
-        "test\\regexglob\\books\\cpp_book.txt",
-        "test\\regexglob\\books\\javaBook.txt",
+        root / "books\\advanced\\advJava.txt",
+        root / "books\\advanced\\adv_cpp.txt",
+        root / "books\\cBook.txt",
+        root / "books\\cpp_book.txt",
+        root / "books\\javaBook.txt",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -79,7 +81,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        "test\\regexglob\\books\\python_book.md"
+        root / "books\\python_book.md"
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -89,8 +91,8 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        "test\\regexglob\\books\\javaBook.txt",
-        "test\\regexglob\\books\\javascriptBook.md",
+        root / "books\\javaBook.txt",
+        root / "books\\javascriptBook.md",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -100,8 +102,8 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        "test\\regexglob\\books\\advanced\\advancedc.md",
-        "test\\regexglob\\books\\advanced\\adv_cpp.txt",
+        root / "books\\advanced\\advancedc.md",
+        root / "books\\advanced\\adv_cpp.txt",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -109,14 +111,6 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
         expected
       );
     }
-
-    // #if TEST_GLOB_ABSOLUTE
-    // // absolute path cases:
-    // {
-    //   std::vector<fs::path> expected{};
-    //   testCase("/code/cpp-lib/test/glob/books/", expected);
-    // }
-    // #endif // TEST_GLOB_ABSOLUTE
 
     test::register_suite(std::move(s));
   }
