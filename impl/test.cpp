@@ -23,6 +23,14 @@ void test::set_verbose_mode(bool const b) {
   s_verboseMode = b;
 }
 
+Suite::Assertion::Assertion()
+: m_name{"BLANK ASSERTION (did you forget to give it a name?)"}, m_expr{false}
+{}
+
+Suite::Assertion::Assertion(char const *const name, bool const expr)
+: m_name{name}, m_expr{expr}
+{}
+
 Suite::Suite(char const *const name) : m_name{name} {}
 Suite::Suite(std::string const &name) : m_name{name} {}
 

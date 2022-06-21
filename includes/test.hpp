@@ -65,10 +65,9 @@ private:
     std::string const m_name;
     bool const m_expr;
 
-    Assertion() : m_name{}, m_expr{false} {}
+    Assertion();
     // A copy of `name` is made, so you don't have to worry about lifetimes!
-    Assertion(char const *const name, bool const expr)
-      : m_name{name}, m_expr{expr} {}
+    Assertion(char const *name, bool expr);
   };
 
   std::vector<Assertion> m_assertions{};
