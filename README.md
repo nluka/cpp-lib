@@ -2,9 +2,27 @@
 
 A collection of useful C++ functionality not included in the STL.
 
+- No third party dependencies, only the STL is needed
+- Designed with C++20 in mind, although most modules are compatible with earlier standards
+- Super easy to add modules to any project, just copy the files needed
+
+Modules:
+- [arr2d](#arr2d)
+- [cstr](#cstr)
+- [lengthof](#lengthof)
+- [logger](#logger)
+- [pgm8](#pgm8)
+- [term](#term)
+- [test](#test)
+
 ## arr2d
 
 Contains functions for working with 2D arrays which are allocated as a single contiguous block.
+
+### Files needed
+- [arr2d.hpp](includes/arr2d.hpp)
+
+### Example
 
 ```cpp
 int main() {
@@ -40,23 +58,19 @@ int main() {
 
 ## cstr
 
-Contains constexpr versions of `<cstring>` functions, with some additions. See `test/cstr-tests.hpp` for usage examples.
+Contains constexpr versions of `<cstring>` functions, with some additions. See [test/cstr-tests.hpp](test/cstr-tests.hpp) for usage examples.
 
-| `<cstring>`  | `cstr` equiv |
-| ---------- | ------ |
-| strcmp     | cmp    |
-| strlen     | len    |
-
-| additional functions |
-| -------------------- |
-| count                |
-| last_char            |
-| ascii_digit_to_int   |
-| int_to_ascii_digit   |
+### Files needed
+- [cstr.hpp](includes/cstr.hpp)
 
 ## lengthof
 
 Helper function for getting the size of a static (stack-allocated) C-style array at compile time.
+
+### Files needed
+- [lengthof.hpp](includes/lengthof.hpp)
+
+### Example
 
 ```cpp
 int main() {
@@ -82,6 +96,12 @@ int main() {
 ## logger
 
 Simple, threadsafe logging module.
+
+### Files needed
+- [logger.hpp](includes/logger.hpp)
+- [logger.cpp](impl/logger.cpp)
+
+### Example
 
 ```cpp
 int main() {
@@ -110,6 +130,13 @@ int main() {
 ## pgm8
 
 Module for functions for reading, writing, encoding, and decoding 8-bit PGM images. Requires [arr2d](#arr2d).
+
+### Files needed
+- [arr2d.hpp](includes/arr2d.hpp)
+- [pgm8.hpp](includes/pgm8.hpp)
+- [pgm8.cpp](impl/pgm8.cpp)
+
+### Example
 
 ```cpp
 int main() {
@@ -175,6 +202,12 @@ int main() {
 
 Module for doing fancy things in the terminal via ANSI escape sequences. Make sure your terminal supports ANSI escape sequences when using this module!
 
+### Files needed
+- [term.hpp](includes/term.hpp)
+- [term.cpp](impl/term.cpp)
+
+### Example
+
 <img title="term-example.gif" alt="Alt text" src="resources/term-example.gif" width="300">
 
 ```cpp
@@ -238,6 +271,12 @@ int main() {
 ## test
 
 A simple, lightweight testing library. See below for a simple introduction, for a more complex example see [here](https://github.com/nluka/cpp-lib/tree/main/test).
+
+### Files needed
+- [test.hpp](includes/test.hpp)
+- [test.cpp](impl/test.cpp)
+
+### Example
 
 ```cpp
 namespace myfuncs {
