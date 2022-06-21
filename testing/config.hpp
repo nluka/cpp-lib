@@ -8,6 +8,4 @@
 #define TEST_PGM8 1
 #define TEST_LOGGER 1
 
-#define TEST_REGEXGLOB_ABSOLUTE 1
-
 #endif // CPPLIB_TEST_CONFIG_HPP

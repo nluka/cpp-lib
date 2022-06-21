@@ -18,27 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\includes\arr2d.hpp" />
-    <ClInclude Include="..\includes\cstr.hpp" />
-    <ClInclude Include="..\includes\lengthof.hpp" />
-    <ClInclude Include="..\includes\logger.hpp" />
-    <ClInclude Include="..\includes\pgm8.hpp" />
-    <ClInclude Include="..\includes\regexglob.hpp" />
-    <ClInclude Include="..\includes\term.hpp" />
-    <ClInclude Include="..\includes\test.hpp" />
-    <ClInclude Include="..\test\arr2d-tests.hpp" />
-    <ClInclude Include="..\test\config.hpp" />
-    <ClInclude Include="..\test\cstr-tests.hpp" />
-    <ClInclude Include="..\test\logger-tests.hpp" />
-    <ClInclude Include="..\test\regexglob-tests.hpp" />
-    <ClInclude Include="..\test\util.hpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3c712d35-c1c5-4b19-8038-d27f4fc06f1c}</ProjectGuid>
-    <RootNamespace>cpplibvs</RootNamespace>
+    <ProjectGuid>{64263540-1b32-4214-b482-1ef55e7686b5}</ProjectGuid>
+    <RootNamespace>testing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -89,34 +73,35 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <IntDir>..\interm\</IntDir>
-    <TargetName>test-suite</TargetName>
+    <IntDir>.\interm\</IntDir>
+    <TargetName>testing</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <IntDir>..\interm\</IntDir>
-    <TargetName>test-suite</TargetName>
+    <IntDir>.\interm\</IntDir>
+    <TargetName>testing</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <IntDir>..\interm\</IntDir>
-    <TargetName>test-suite</TargetName>
+    <IntDir>.\interm\</IntDir>
+    <TargetName>testing</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <IntDir>..\interm\</IntDir>
-    <TargetName>test-suite</TargetName>
+    <IntDir>.\interm\</IntDir>
+    <TargetName>testing</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,13 +110,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,11 +128,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,13 +142,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,6 +158,31 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\impl\logger.cpp" />
+    <ClCompile Include="..\impl\pgm8.cpp" />
+    <ClCompile Include="..\impl\regexglob.cpp" />
+    <ClCompile Include="..\impl\term.cpp" />
+    <ClCompile Include="..\impl\test.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\includes\arr2d.hpp" />
+    <ClInclude Include="..\includes\cstr.hpp" />
+    <ClInclude Include="..\includes\lengthof.hpp" />
+    <ClInclude Include="..\includes\logger.hpp" />
+    <ClInclude Include="..\includes\pgm8.hpp" />
+    <ClInclude Include="..\includes\regexglob.hpp" />
+    <ClInclude Include="..\includes\term.hpp" />
+    <ClInclude Include="..\includes\test.hpp" />
+    <ClInclude Include="..\test\arr2d-tests.hpp" />
+    <ClInclude Include="..\test\config.hpp" />
+    <ClInclude Include="..\test\cstr-tests.hpp" />
+    <ClInclude Include="..\test\logger-tests.hpp" />
+    <ClInclude Include="..\test\regexglob-tests.hpp" />
+    <ClInclude Include="..\test\util.hpp" />
+    <ClInclude Include="pgm8-tests.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

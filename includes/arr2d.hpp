@@ -3,8 +3,11 @@
 
 #include <cstdlib>
 
-namespace arr2d { // stands for `array 2d`
+// Collection of functions for working with 2D arrays
+// which are allocated as a single contiguous block.
+namespace arr2d {
 
+// Returns a 1-dimensional index into a 2-dimensional array.
 constexpr
 size_t get_1d_idx(
   size_t const arrWidth,
@@ -14,6 +17,7 @@ size_t get_1d_idx(
   return (targetRow * arrWidth) + targetCol;
 }
 
+// Returns the largest value in the array.
 template<typename ElemT>
 constexpr
 ElemT max(
@@ -32,6 +36,8 @@ ElemT max(
   return max;
 }
 
+// Returns true if elements (beginning from `startIdx`) between two arrays
+// are the same, false otherwise.
 template<typename ElemT>
 constexpr
 bool cmp(
@@ -50,6 +56,8 @@ bool cmp(
   return true;
 }
 
+// Returns true if all array elements beginning from `startIdx` are the same,
+// false otherwise.
 template<typename ElemT>
 constexpr
 bool is_homogenous(
