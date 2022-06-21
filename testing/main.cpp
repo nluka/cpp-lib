@@ -8,7 +8,6 @@
 #include "logger-tests.hpp"
 #include "util.hpp"
 
-// .\bin\test-suite.exe test/out/ test/img/
 int main(int const argc, char const *const *const argv) {
   term::set_color_text_default(term::ColorText::DEFAULT);
 
