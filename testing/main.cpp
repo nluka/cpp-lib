@@ -14,7 +14,7 @@ int main(int const argc, char const *const *const argv) {
   if (argc < 4) {
     term::printf_colored(
       term::ColorText::YELLOW,
-      "usage: <res_dir> <imgs_dir> <regexglob_dir>"
+      "usage: <res_dir> <imgs_dir> <regexglob_dir>\n"
     );
     std::exit(1);
   }
