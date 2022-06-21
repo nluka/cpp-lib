@@ -2,9 +2,30 @@
 #include <sstream>
 #include <numeric>
 #include <memory>
+#include <cstring>
 #include "../includes/arr2d.hpp"
 #include "../includes/cstr.hpp"
 #include "../includes/pgm8.hpp"
+
+static
+bool string_starts_with(
+  std::string const &subject,
+  char const *const sequenceToCheck
+) {
+  size_t const len = std::strlen(sequenceToCheck);
+
+  if (subject.length() < len) {
+    return false;
+  }
+
+  for (size_t i = 0; i < len; ++i) {
+    if (subject[i] != sequenceToCheck[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 using pgm8::Type, pgm8::RLE, pgm8::Image;
 
@@ -41,11 +62,11 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
   EncodingType const encType = ([&file](){
     std::string magicNum{};
     std::getline(file, magicNum);
-    if (magicNum == "P5") {
+    if (string_starts_with(magicNum, "P5")) {
       return EncodingType::RAW;
-    } else if (magicNum == "P2") {
+    } else if (string_starts_with(magicNum, "P2")) {
       return EncodingType::PLAIN;
-    } else if (magicNum == "PGM RLE") {
+    } else if (string_starts_with(magicNum, "PGM RLE")) {
       return EncodingType::RLE;
     } else {
       throw "pgm8::Image::load failed - invalid magic number";
