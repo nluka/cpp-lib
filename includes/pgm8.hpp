@@ -56,6 +56,7 @@ public:
   void encode(uint8_t const *pixels, size_t pixelCount, bool clearExistingChunks = true);
   // Decodes the currently contained chunks into a contiguous block of pixels.
   // This function allocates memory on the heap, it's your responsibility to free it!
+  // If there are no encooded pixels, returns nullptr.
   uint8_t *decode() const;
   // Writes the currently contained chunks to an output file stream.
   void write_chunks_to_file(std::ofstream &) const;

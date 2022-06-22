@@ -92,21 +92,23 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
     file.read(&newline, 1);
   }
 
-  const size_t pixelCount =
-    static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
-  try {
-    m_pixels = new uint8_t[pixelCount];
-  } catch (std::bad_alloc const &) {
-    throw "pgm8::Image::load failed - not enough memory for pixels";
-  }
+  auto const tryToAllocatePixels = [this](){
+    try {
+      m_pixels = new uint8_t[pixel_count()];
+    } catch (std::bad_alloc const &) {
+      throw "pgm8::Image::load failed - not enough memory for pixels";
+    }
+  };
 
   switch (encType) {
     case EncodingType::RAW:
-      file.read(reinterpret_cast<char *>(m_pixels), pixelCount);
+      tryToAllocatePixels();
+      file.read(reinterpret_cast<char *>(m_pixels), pixel_count());
       break;
     case EncodingType::PLAIN: {
+      tryToAllocatePixels();
       char pixel[4] {};
-      for (size_t i = 0; i < pixelCount; ++i) {
+      for (size_t i = 0; i < pixel_count(); ++i) {
         file >> pixel;
         m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
       }
@@ -192,24 +194,24 @@ void RLE::encode(
 }
 
 uint8_t *RLE::decode() const {
-  size_t const pixelCount = ([this](){
-    size_t cnt = 0;
-    for (auto const &chunk : m_chunks) {
-      cnt += chunk.m_count;
-    }
-    return cnt;
-  })();
-
-  if (pixelCount == 0) {
+  if (pixel_count() == 0) {
     return nullptr;
   }
 
-  uint8_t *const pixels = new uint8_t[pixelCount];
+  uint8_t *const pixels = ([this](){
+    try {
+      return new uint8_t[pixel_count()];
+    } catch (std::bad_alloc const &) {
+      throw "pgm8::RLE::decode failed - not enough memory for pixels";
+    }
+  })();
+
   size_t pos = 0;
   for (auto const &chunk : m_chunks) {
     std::fill_n(pixels + pos, chunk.m_count, chunk.m_data);
     pos += chunk.m_count;
   }
+
   return pixels;
 }
 

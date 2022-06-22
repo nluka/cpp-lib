@@ -11,7 +11,7 @@
 #include "../includes/regexglob.hpp"
 
 void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
-  // not in global namespace so it's ok to do this in a header
+  // not in global scope, so it's ok to do this in a header file
   namespace fs = std::filesystem;
 
   std::string const outFilePathname =

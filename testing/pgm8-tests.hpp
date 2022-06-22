@@ -120,7 +120,7 @@ void pgm8_tests(char const *const imgsDir) {
     );
 
     auto const decodedPixels =
-      std::unique_ptr<uint8_t const>(encoding.decode());
+      std::unique_ptr<uint8_t const []>(encoding.decode());
     s.assert("decode", arr2d::cmp(pixels, decodedPixels.get(), w, h));
 
     test::register_suite(std::move(s));
