@@ -12,6 +12,37 @@ void regexglob::set_preferred_separator(char const c) {
   s_prefSep = c;
 }
 
+void regexglob::homogenize_path_separators(
+  fs::path &path,
+  char const sep
+) {
+  std::string homogenized = path.string();
+
+  std::replace_if(
+    homogenized.begin(),
+    homogenized.end(),
+    [](char const c){
+      return c == '/' || c == '\\';
+    },
+    sep
+  );
+
+  path = homogenized;
+}
+void regexglob::homogenize_path_separators(
+  std::string &path,
+  char const sep
+) {
+  std::replace_if(
+    path.begin(),
+    path.end(),
+    [](char const c){
+      return c == '/' || c == '\\';
+    },
+    sep
+  );
+}
+
 #if REGEXGLOB_LOGGING_ENABLED
 static std::ofstream *s_ofstream = nullptr;
 void regexglob::set_ofstream(std::ofstream *const ofs) {
@@ -72,15 +103,7 @@ std::vector<fs::path> regexglob::fmatch(
       std::string path = entry.path().string();
       std::string const fileName = entry.path().filename().string();
       if (std::regex_match(fileName, regex)) {
-        // normalize separators
-        std::replace_if(
-          path.begin(),
-          path.end(),
-          [](char const c){
-            return c == '/' || c == '\\';
-          },
-          s_prefSep
-        );
+        regexglob::homogenize_path_separators(path, s_prefSep);
         matchedFiles.emplace_back(path);
       }
     }

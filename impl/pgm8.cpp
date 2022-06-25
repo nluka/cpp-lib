@@ -2,9 +2,30 @@
 #include <sstream>
 #include <numeric>
 #include <memory>
+#include <cstring>
 #include "../includes/arr2d.hpp"
 #include "../includes/cstr.hpp"
 #include "../includes/pgm8.hpp"
+
+static
+bool string_starts_with(
+  std::string const &subject,
+  char const *const sequenceToCheck
+) {
+  size_t const len = std::strlen(sequenceToCheck);
+
+  if (subject.length() < len) {
+    return false;
+  }
+
+  for (size_t i = 0; i < len; ++i) {
+    if (subject[i] != sequenceToCheck[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 using pgm8::Type, pgm8::RLE, pgm8::Image;
 
@@ -41,11 +62,11 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
   EncodingType const encType = ([&file](){
     std::string magicNum{};
     std::getline(file, magicNum);
-    if (magicNum == "P5") {
+    if (string_starts_with(magicNum, "P5")) {
       return EncodingType::RAW;
-    } else if (magicNum == "P2") {
+    } else if (string_starts_with(magicNum, "P2")) {
       return EncodingType::PLAIN;
-    } else if (magicNum == "PGM RLE") {
+    } else if (string_starts_with(magicNum, "PGM RLE")) {
       return EncodingType::RLE;
     } else {
       throw "pgm8::Image::load failed - invalid magic number";
@@ -71,21 +92,23 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
     file.read(&newline, 1);
   }
 
-  const size_t pixelCount =
-    static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
-  try {
-    m_pixels = new uint8_t[pixelCount];
-  } catch (std::bad_alloc const &) {
-    throw "pgm8::Image::load failed - not enough memory for pixels";
-  }
+  auto const tryToAllocatePixels = [this](){
+    try {
+      m_pixels = new uint8_t[pixel_count()];
+    } catch (std::bad_alloc const &) {
+      throw "pgm8::Image::load failed - not enough memory for pixels";
+    }
+  };
 
   switch (encType) {
     case EncodingType::RAW:
-      file.read(reinterpret_cast<char *>(m_pixels), pixelCount);
+      tryToAllocatePixels();
+      file.read(reinterpret_cast<char *>(m_pixels), pixel_count());
       break;
     case EncodingType::PLAIN: {
+      tryToAllocatePixels();
       char pixel[4] {};
-      for (size_t i = 0; i < pixelCount; ++i) {
+      for (size_t i = 0; i < pixel_count(); ++i) {
         file >> pixel;
         m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
       }
@@ -171,24 +194,24 @@ void RLE::encode(
 }
 
 uint8_t *RLE::decode() const {
-  size_t const pixelCount = ([this](){
-    size_t cnt = 0;
-    for (auto const &chunk : m_chunks) {
-      cnt += chunk.m_count;
-    }
-    return cnt;
-  })();
-
-  if (pixelCount == 0) {
+  if (pixel_count() == 0) {
     return nullptr;
   }
 
-  uint8_t *const pixels = new uint8_t[pixelCount];
+  uint8_t *const pixels = ([this](){
+    try {
+      return new uint8_t[pixel_count()];
+    } catch (std::bad_alloc const &) {
+      throw "pgm8::RLE::decode failed - not enough memory for pixels";
+    }
+  })();
+
   size_t pos = 0;
   for (auto const &chunk : m_chunks) {
     std::fill_n(pixels + pos, chunk.m_count, chunk.m_data);
     pos += chunk.m_count;
   }
+
   return pixels;
 }
 

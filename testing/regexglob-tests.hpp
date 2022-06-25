@@ -11,7 +11,7 @@
 #include "../includes/regexglob.hpp"
 
 void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
-  // not in global namespace so it's ok to do this in a header
+  // not in global scope, so it's ok to do this in a header file
   namespace fs = std::filesystem;
 
   std::string const outFilePathname =
@@ -19,7 +19,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
   std::ofstream outFile(outFilePathname);
   assert_file(&outFile, outFilePathname.c_str());
   regexglob::set_ofstream(&outFile);
-  regexglob::set_preferred_separator('\\');
+  regexglob::set_preferred_separator('/');
 
   {
     SETUP_SUITE(regexglob::fmatch)
@@ -35,10 +35,19 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
       std::vector<fs::path> &expected
     ){
       std::vector<fs::path> result = fmatch(root, filePattern);
+
+      for (auto path : result) {
+        regexglob::homogenize_path_separators(path, '/');
+      }
+      for (auto path : expected) {
+        regexglob::homogenize_path_separators(path, '/');
+      }
+
       std::sort(result.begin(), result.end(), sorter);
       std::sort(expected.begin(), expected.end(), sorter);
+
       s.assert(
-        (std::string(root) + filePattern).c_str(),
+        (std::string(root) + '/' + filePattern).c_str(),
         vector_cmp(result, expected)
       );
     };
@@ -48,16 +57,16 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     // relative path cases:
     {
       std::vector<fs::path> expected {
-        root / "books\\advanced\\advancedc.md",
-        root / "books\\advanced\\advJava.txt",
-        root / "books\\advanced\\advJavascript.md",
-        root / "books\\advanced\\adv_cpp.txt",
-        root / "books\\advanced\\adv_python.md",
-        root / "books\\cBook.txt",
-        root / "books\\cpp_book.txt",
-        root / "books\\javaBook.txt",
-        root / "books\\javascriptBook.md",
-        root / "books\\python_book.md",
+        root / "books/advanced/advancedc.md",
+        root / "books/advanced/advJava.txt",
+        root / "books/advanced/advJavascript.md",
+        root / "books/advanced/adv_cpp.txt",
+        root / "books/advanced/adv_python.md",
+        root / "books/cBook.txt",
+        root / "books/cpp_book.txt",
+        root / "books/javaBook.txt",
+        root / "books/javascriptBook.md",
+        root / "books/python_book.md",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -67,11 +76,11 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        root / "books\\advanced\\advJava.txt",
-        root / "books\\advanced\\adv_cpp.txt",
-        root / "books\\cBook.txt",
-        root / "books\\cpp_book.txt",
-        root / "books\\javaBook.txt",
+        root / "books/advanced/advJava.txt",
+        root / "books/advanced/adv_cpp.txt",
+        root / "books/cBook.txt",
+        root / "books/cpp_book.txt",
+        root / "books/javaBook.txt",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -81,7 +90,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        root / "books\\python_book.md"
+        root / "books/python_book.md"
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -91,8 +100,8 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        root / "books\\javaBook.txt",
-        root / "books\\javascriptBook.md",
+        root / "books/javaBook.txt",
+        root / "books/javascriptBook.md",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
@@ -102,8 +111,8 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     }
     {
       std::vector<fs::path> expected {
-        root / "books\\advanced\\advancedc.md",
-        root / "books\\advanced\\adv_cpp.txt",
+        root / "books/advanced/advancedc.md",
+        root / "books/advanced/adv_cpp.txt",
       };
       testCase(
         (std::string(regexglobDir) + "books").c_str(),
