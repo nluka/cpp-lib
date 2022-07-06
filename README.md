@@ -12,6 +12,7 @@ Modules:
 - [lengthof](#lengthof)
 - [logger](#logger)
 - [pgm8](#pgm8)
+- [regexglob](#regexglob)
 - [term](#term)
 - [test](#test)
 
@@ -195,6 +196,48 @@ int main() {
     img.maxval();       // 1
     img.pixel_count();  // 48
   }
+}
+```
+
+## regexglob
+
+Module for glob-like file matching using pure regular expressions.
+
+### Files needed
+- [regexglob.hpp](includes/regexglob.hpp)
+- [regexglob.cpp](impl/regexglob.cpp)
+
+### Example
+
+```
+root
+│  file1.txt
+│  file2.txt
+|
+└───dir1
+│   │  file3.txt
+│   │
+│   └───dir2
+│       │  file4.txt
+│       │  _file.txt
+│
+└───dir3
+    │  file5.txt
+    │  _file.txt
+```
+
+```cpp
+int main() {
+  regexglob::set_preferred_separator('/');
+
+  std::vector<std::filesystem::path> const matches =
+    regexglob::fmatch("root", "file[2-5]\\.txt");
+
+  // `matches`:
+  //  root/file2.text
+  //  root/dir1/file3.txt
+  //  root/dir1/dir2/file4.txt
+  //  root/dir3/file5.txt
 }
 ```
 
