@@ -217,33 +217,19 @@ int main() {
   term::cursor_hide();
 
   {
-    char const loadingMsg[] = "Loading memory leaks";
-
-    ColorText colors[lengthof(loadingMsg)] {
+    char const *loadingMsgWords[] {
+      "Loading",
+      "memory",
+      "leaks"
+    };
+    ColorText const colors[lengthof(loadingMsgWords)] {
       ColorText::CYAN,
-      ColorText::CYAN,
-      ColorText::CYAN,
-      ColorText::CYAN,
-      ColorText::CYAN,
-      ColorText::CYAN,
-      ColorText::CYAN,
-      ColorText::DEFAULT,
       ColorText::YELLOW,
-      ColorText::YELLOW,
-      ColorText::YELLOW,
-      ColorText::YELLOW,
-      ColorText::YELLOW,
-      ColorText::YELLOW,
-      ColorText::DEFAULT,
-      ColorText::RED,
-      ColorText::RED,
-      ColorText::RED,
-      ColorText::RED,
       ColorText::RED,
     };
 
-    for (size_t i = 0; i < lengthof(loadingMsg); ++i) {
-      term::printf_colored(colors[i], "%c", loadingMsg[i]);
+    for (size_t i = 0; i < lengthof(loadingMsgWords); ++i) {
+      term::printf_colored(colors[i], "%s ", loadingMsgWords[i]);
     }
     printf("\n");
   }
