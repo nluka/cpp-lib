@@ -9,7 +9,7 @@ namespace arr2d {
 // Returns a 1-dimensional index into a 2-dimensional array.
 // `targetCol` and `targetRow` are zero-indexed, meaning (0, 0) is the first element.
 constexpr
-size_t get_1d_idx(
+[[nodiscard]] size_t get_1d_idx(
   size_t const arrWidth,
   size_t const targetCol,
   size_t const targetRow
@@ -20,7 +20,7 @@ size_t get_1d_idx(
 // Returns the largest value.
 template<typename ElemT>
 constexpr
-ElemT max(
+[[nodiscard]] ElemT max(
   ElemT const *const arr,
   size_t const width,
   size_t const height,
@@ -40,7 +40,7 @@ ElemT max(
 // are the same, false otherwise.
 template<typename ElemT>
 constexpr
-bool cmp(
+[[nodiscard]] bool cmp(
   ElemT const *const arr1,
   ElemT const *const arr2,
   size_t const width,
@@ -60,7 +60,7 @@ bool cmp(
 // false otherwise.
 template<typename ElemT>
 constexpr
-bool is_homogenous(
+[[nodiscard]] bool is_homogenous(
   ElemT const *const arr,
   size_t const width,
   size_t const height,
