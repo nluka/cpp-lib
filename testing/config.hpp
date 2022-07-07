@@ -5,6 +5,7 @@
 #define TEST_CSTR 1
 #define TEST_REGEXGLOB 1
 #define TEST_LENGTHOF 1
+#define TEST_ONSCOPEEXIT 1
 #define TEST_PGM8 1
 #define TEST_LOGGER 1
 
