@@ -9,11 +9,13 @@
 #include "util.hpp"
 
 int main(int const argc, char const *const *const argv) {
-  term::set_color_text_default(term::ColorText::DEFAULT);
+  using term::printf_colored, term::ColorText;
+
+  term::set_color_text_default(ColorText::DEFAULT);
 
   if (argc < 4) {
-    term::printf_colored(
-      term::ColorText::YELLOW,
+    printf_colored(
+      ColorText::YELLOW,
       "usage: <res_dir> <imgs_dir> <regexglob_dir>\n"
     );
     std::exit(1);
@@ -72,20 +74,20 @@ int main(int const argc, char const *const *const argv) {
 
     test::evaluate_suites();
 
-    std::exit(0);
+    return 0;
 
   } catch (char const *const err) {
-    term::printf_colored(term::ColorText::RED, "uncaught exception: %s\n", err);
+    printf_colored(ColorText::RED, "uncaught exception: %s\n", err);
   } catch (std::string const &err) {
-    term::printf_colored(term::ColorText::RED, "uncaught exception: %s\n", err.c_str());
+    printf_colored(ColorText::RED, "uncaught exception: %s\n", err.c_str());
   } catch (std::runtime_error const &err) {
-    term::printf_colored(
-      term::ColorText::RED,
+    printf_colored(
+      ColorText::RED,
       (std::string("uncaught exception: ") + err.what()).c_str()
     );
   } catch (...) {
-    term::printf_colored(term::ColorText::RED, "uncaught exception: ...");
+    printf_colored(ColorText::RED, "uncaught exception: ...");
   }
 
-  std::exit(1);
+  return 1;
 }

@@ -85,7 +85,9 @@ public:
 };
 
 static std::vector<Event> s_events{};
+#if LOGGER_THREADSAFE
 static std::mutex s_eventsMutex{};
+#endif
 
 static
 void assert_file_opened(std::ofstream const &file) {
@@ -98,7 +100,9 @@ void assert_file_opened(std::ofstream const &file) {
 
 void logger::write(EventType const evType, char const *const fmt, ...) {
   {
+    #if LOGGER_THREADSAFE
     std::scoped_lock const lock{s_eventsMutex};
+    #endif
 
     va_list varArgs;
     va_start(varArgs, fmt);
@@ -124,7 +128,9 @@ void logger::flush() {
     s_isFileReady = true;
   }
 
+  #if LOGGER_THREADSAFE
   std::scoped_lock const lock{s_eventsMutex};
+  #endif
 
   if (s_events.empty()) {
     return;

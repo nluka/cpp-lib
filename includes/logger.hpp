@@ -3,6 +3,10 @@
 
 #include <string>
 
+// Setting this to 0 disables thread safety for `logger::write`
+// and `logger::flush`.
+#define LOGGER_THREADSAFE 1
+
 // Simple module for writing logs to a file.
 namespace logger {
 

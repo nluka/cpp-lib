@@ -13,45 +13,58 @@
 #include "../includes/logger.hpp"
 
 void logger_tests(char const *const outPathname) {
-  size_t const numThreads = static_cast<size_t>(logger::EventType::COUNT);
-  size_t const numLogsPerThread = 100;
+  using logger::EventType;
+
   std::string const logFilePathname(std::string(outPathname) + "/.log");
+  size_t const numLogsPerEventType = 100;
+
+  logger::set_out_pathname(logFilePathname);
+  logger::set_delim("\n");
+
+  auto const logTask = [](EventType const evType){
+    std::ostringstream oss{};
+    oss << std::this_thread::get_id();
+    std::string const threadId = oss.str();
+
+    for (size_t i = 1; i <= numLogsPerEventType; ++i) {
+      logger::write(
+        evType,
+        "message %zu from thread %s",
+        i, threadId.c_str()
+      );
+    }
+  };
 
   // populate log file
+  #if LOGGER_THREADSAFE
   {
-    using logger::EventType;
-
-    logger::set_out_pathname(logFilePathname);
-    logger::set_delim("\n");
+    // enable autoflushing so we can test the locking mechanism
     logger::set_autoflush(true);
 
-    auto const logTask = [](EventType const evType){
-      std::ostringstream oss{};
-      oss << std::this_thread::get_id();
-
-      for (size_t i = 1; i <= numLogsPerThread; ++i) {
-        logger::write(
-          evType,
-          "message %zu from thread %s",
-          i,
-          oss.str().c_str()
-        );
-      }
-    };
-
-    std::array<std::thread, numThreads> threads{
+    // create a separate thread for each event type
+    std::array<std::thread, static_cast<size_t>(EventType::COUNT)> threads{
       std::thread(logTask, EventType::INF),
       std::thread(logTask, EventType::WRN),
       std::thread(logTask, EventType::ERR),
       std::thread(logTask, EventType::FTL)
     };
 
+    // join threads
     for (auto &t : threads) {
       t.join();
     }
-
-    logger::flush();
   }
+  #else // not LOGGER_THREADSAFE
+  logTask(EventType::INF);
+  logTask(EventType::WRN);
+  logTask(EventType::ERR);
+  logTask(EventType::FTL);
+  #endif // LOGGER_THREADSAFE
+
+  // do this a few times to test flushing an empty event buffer
+  logger::flush();
+  logger::flush();
+  logger::flush();
 
   // validate log file content
   {
@@ -78,7 +91,8 @@ void logger_tests(char const *const outPathname) {
         ++lineCount;
       }
 
-      return lineCount == (numThreads * numLogsPerThread);
+      return lineCount ==
+        (static_cast<size_t>(EventType::COUNT) * numLogsPerEventType);
     })());
 
     test::register_suite(std::move(s));
