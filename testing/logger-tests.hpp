@@ -68,7 +68,7 @@ void logger_tests(char const *const outPathname) {
 
   // validate log file content
   {
-    test::Suite s("logger");
+    SETUP_SUITE("logger")
 
     std::ifstream logFile(logFilePathname);
     assert_file(&logFile, logFilePathname.c_str());
@@ -94,8 +94,6 @@ void logger_tests(char const *const outPathname) {
       return lineCount ==
         (static_cast<size_t>(EventType::COUNT) * numLogsPerEventType);
     })());
-
-    test::register_suite(std::move(s));
   }
 }
 

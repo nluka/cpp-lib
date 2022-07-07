@@ -23,7 +23,7 @@ void pgm8_tests(char const *const imgsDir) {
     pgm8::write_uncompressed;
 
   {
-    test::Suite s("pgm8::Image");
+    SETUP_SUITE("pgm8::Image")
 
     Image img{};
     s.assert(
@@ -35,13 +35,11 @@ void pgm8_tests(char const *const imgsDir) {
       img.pixel_count() == 0
     );
 
-    fs::path fpathname = imgsDir;
-    fpathname.replace_filename("ascending-plain");
-    fpathname.replace_extension("pgm");
+    std::string const fpathname = std::string(imgsDir) + "ascending-plain.pgm";
 
     {
       std::ifstream file(fpathname);
-      assert_file(&file, fpathname.string().c_str());
+      assert_file(&file, fpathname.c_str());
       img.load(file, false);
       s.assert(
         "load w/o pixels",
@@ -53,7 +51,7 @@ void pgm8_tests(char const *const imgsDir) {
     }
     {
       std::ifstream file(fpathname);
-      assert_file(&file, fpathname.string().c_str());
+      assert_file(&file, fpathname.c_str());
       img.load(file);
       uint8_t const expectedPixels[4 * 4] {
         1,  2,  3,  4,
@@ -84,12 +82,10 @@ void pgm8_tests(char const *const imgsDir) {
       img.pixel_count() == 0 &&
       img.pixels() == nullptr
     );
-
-    test::register_suite(std::move(s));
   }
 
   {
-    test::Suite s("pgm8::RLE");
+    SETUP_SUITE("pgm8::RLE")
 
     uint16_t const w = 5, h = 5;
     uint8_t const maxcal = 1, pixels[w * h] {
@@ -122,8 +118,6 @@ void pgm8_tests(char const *const imgsDir) {
     auto const decodedPixels =
       std::unique_ptr<uint8_t const []>(encoding.decode());
     s.assert("decode", arr2d::cmp(pixels, decodedPixels.get(), w, h));
-
-    test::register_suite(std::move(s));
   }
 
   // lambda for testing:
@@ -138,7 +132,7 @@ void pgm8_tests(char const *const imgsDir) {
     uint8_t const maxval,
     uint8_t const *const pixels
   ){
-    test::Suite s(std::string("pgm8 E2E ") + caseName);
+    SETUP_SUITE(std::string("pgm8 E2E ") + caseName)
 
     fs::path fpathname = imgsDir;
 
@@ -206,8 +200,6 @@ void pgm8_tests(char const *const imgsDir) {
 
     typeTestCase(Type::PLAIN);
     typeTestCase(Type::RAW);
-
-    test::register_suite(std::move(s));
   };
 
   {

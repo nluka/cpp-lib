@@ -10,7 +10,7 @@
 
 void arr2d_tests() {
   {
-    SETUP_SUITE(arr2d::get_1d_idx);
+    SETUP_SUITE_USING(arr2d::get_1d_idx);
 
     //                       w  x  y
     s.assert(CASE(get_1d_idx(1, 0, 0) == 0));
@@ -34,12 +34,10 @@ void arr2d_tests() {
     s.assert(CASE(get_1d_idx(3, 0, 3) == 9));
     s.assert(CASE(get_1d_idx(3, 1, 3) == 10));
     s.assert(CASE(get_1d_idx(3, 2, 3) == 11));
-
-    test::register_suite(std::move(s));
   }
 
   {
-    SETUP_SUITE(arr2d::max);
+    SETUP_SUITE_USING(arr2d::max);
 
     {
       int const arr1x3[] {
@@ -83,12 +81,10 @@ void arr2d_tests() {
       };
       s.assert(CASE(max(arr3x3, 3, 3) == 8));
     }
-
-    test::register_suite(std::move(s));
   }
 
   {
-    SETUP_SUITE(arr2d::cmp)
+    SETUP_SUITE_USING(arr2d::cmp)
 
     {
       int a[] {1, 2, 3};
@@ -125,12 +121,10 @@ void arr2d_tests() {
       };
       s.assert(CASE(cmp(a, b, 3, 3, 3) == true));
     }
-
-    test::register_suite(std::move(s));
   }
 
   {
-    SETUP_SUITE(arr2d::is_homogenous)
+    SETUP_SUITE_USING(arr2d::is_homogenous)
 
     {
       int a[] {0, 0, 0, 0};
@@ -148,8 +142,6 @@ void arr2d_tests() {
       int a[] {1, 0, 0, 0};
       s.assert(CASE(is_homogenous(a, 4, 1, 1) == true));
     }
-
-    test::register_suite(std::move(s));
   }
 }
 

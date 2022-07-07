@@ -9,7 +9,7 @@
 #include "../includes/lengthof.hpp"
 
 void lengthof_tests() {
-  test::Suite s("lengthof");
+  SETUP_SUITE("lengthof")
 
   {
     int a1[1];
@@ -27,8 +27,6 @@ void lengthof_tests() {
     int a100[100];
     s.assert(CASE(lengthof(a100) == 100));
   }
-
-  test::register_suite(std::move(s));
 }
 
 #endif // TEST_LENGTHOF

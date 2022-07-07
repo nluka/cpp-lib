@@ -22,7 +22,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
   regexglob::set_preferred_separator('/');
 
   {
-    SETUP_SUITE(regexglob::fmatch)
+    SETUP_SUITE_USING(regexglob::fmatch)
 
     // don't really care which order, as long as things are sorted
     auto const sorter = [](fs::path const &left, fs::path const &right){
@@ -120,8 +120,6 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
         expected
       );
     }
-
-    test::register_suite(std::move(s));
   }
 }
 

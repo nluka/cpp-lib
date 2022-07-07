@@ -318,42 +318,44 @@ namespace myfuncs {
 }
 
 int main() {
-  // set true if you want passing assertions to be printed
-  test::set_verbose_mode(false);
+  test::set_verbose_mode(false);  // set true if you want passing assertions to be printed
+  test::set_indent("  ");         // indent printed assertions with 2 spaces
+  test::use_stdout(true);         // print output to console, set false if not wanted
+  std::atexit([](){
+    test::evaluate_suites();
+  });
 
-  test::set_indent("  "); // indent printed assertions with 2 spaces
-
-  test::use_stdout(true); // print output to console, set false if not wanted
   // optionally, you can register an output file using `test::set_ofstream`
+
+  // with convenience macros:
+  {
+    SETUP_SUITE_USING(myfuncs::subtract)
+    s.assert(CASE(subtract(3, 1) == 2));    // pass!
+    s.assert(CASE(subtract(2, 2) == 100));  // fail!
+  }
+  {
+    SETUP_SUITE("misc")
+    s.assert(CASE(1 == 1)); // pass!
+  }
 
   // without convenience macros:
   {
     using myfuncs::add;
     test::Suite s("myfuncs::add");
 
-    s.assert("first assertion", add(1, 2) == 3); // pass!
+    s.assert("first assertion", add(1, 2) == 3);  // pass!
     s.assert("second assertion", add(3, 4) == 0); // fail!
 
+    // necessary step when not using convenience macros!
     test::register_suite(std::move(s));
   }
 
-  // with convenience macros:
-  {
-    SETUP_SUITE(myfuncs::subtract)
-
-    s.assert(CASE(subtract(3, 1) == 2)); // pass!
-    s.assert(CASE(subtract(2, 2) == 100)); // fail!
-
-    test::register_suite(std::move(s));
-  }
-
-  test::evaluate_suites(); // don't forget to do this!
-
-  /* output:
-    myfuncs::add (1/2)
-      fail: second assertion
+  /* OUTPUT:
     myfuncs::subtract (1/2)
       fail: subtract(2, 2) == 100
+    misc (1/1)
+    myfuncs::add (1/2)
+      fail: second assertion
   */
 }
 ```

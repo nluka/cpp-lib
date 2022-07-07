@@ -6,16 +6,40 @@
 #include <iostream>
 #include <algorithm>
 
+//
+#define TEST_THREADSAFE_REGISTRATION 1
+#define TEST_THREADSAFE_ASSERTS 0
+
 // Simple module for testing your code.
 namespace test {
 
 // Convenience macro which generates a generic name for an assertion.
 #define CASE(expr) (#expr), (expr)
 
-// Convenience macro which creates a "using" statement and test suite.
-#define SETUP_SUITE(func) \
+template <typename F>
+struct ScopeExit {
+  ScopeExit(F f) : f(f) {}
+  ~ScopeExit() { f(); }
+  F f;
+};
+
+template <typename F>
+ScopeExit<F> make_scope_exit(F f) {
+  return ScopeExit<F>(f);
+};
+
+// Convenience macro which creates and registers a test suite.
+#define SETUP_SUITE(name) \
+test::Suite s(name); \
+auto const registerSuite = test::make_scope_exit([&s](){ \
+  test::register_suite(std::move(s)); \
+});
+
+// Convenience macro which creates a "using" statement, a test suite,
+// and registers the created test suite.
+#define SETUP_SUITE_USING(func) \
 using func; \
-test::Suite s(#func); \
+SETUP_SUITE(#func)
 
 // Controls whether results are printed to the standard output.
 void use_stdout(bool);
@@ -31,11 +55,27 @@ void set_indentation(char const *);
 // failing assertions are always printed.
 void set_verbose_mode(bool);
 
-// A class for grouping assertions.
-// Don't forget to register your suites with `test::register_suite`!
+// A set of related assertions.
 class Suite {
+private:
+  class Assertion {
+  public:
+    Assertion() = delete;
+    // A copy of `name` is made, so you don't have to worry about lifetimes!
+    Assertion(char const *name, bool expr);
+
+    [[nodiscard]] std::string const &name() const noexcept;
+    [[nodiscard]] bool expr() const noexcept;
+
+  private:
+    std::string m_name;
+    bool m_expr;
+  };
+
+  std::vector<Assertion> m_assertions{};
+
 public:
-  std::string const m_name;
+  std::string m_name;
 
   Suite() = delete;
   // A copy of `name` is made, so you don't have to worry about lifetimes!
@@ -50,26 +90,13 @@ public:
   void assert(char const *const name, bool const expr);
   // This is called internally, you aren't required to do this!
   // But if you want, you can print the output of all currently stored assertions.
-  void print_assertions() const;
+  void print_assertions(std::ostream *os) const;
   // Returns the number of currently stored assertions which are passing.
   // Used internally, you probably don't need to call this yourself.
-  size_t passes() const;
+  [[nodiscard]] size_t passes() const noexcept;
   // Returns the number of currently stored assertions which are failing.
   // Used internally, you probably don't need to call this yourself.
-  size_t fails() const;
-
-private:
-  class Assertion {
-  public:
-    std::string const m_name;
-    bool const m_expr;
-
-    Assertion();
-    // A copy of `name` is made, so you don't have to worry about lifetimes!
-    Assertion(char const *name, bool expr);
-  };
-
-  std::vector<Assertion> m_assertions{};
+  [[nodiscard]] size_t fails() const noexcept;
 };
 
 // Registers a suite for later evaluation.
