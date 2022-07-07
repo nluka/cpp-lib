@@ -11,7 +11,8 @@
 namespace pgm8 {
 
 // Class for reading 8-bit PGM image files.
-// Capable of reading standard (unencoded) and encoded files.
+// Capable of reading standard (unencoded) files, as well as files encoded by
+// the `pgm8` module.
 class Image {
 public:
   Image();
@@ -33,8 +34,10 @@ public:
   Image &operator=(Image &&other) noexcept  = delete; // move assignment
 
 private:
-  uint16_t m_width, m_height;
-  uint8_t m_maxval, *m_pixels;
+  uint16_t m_width;
+  uint16_t m_height;
+  uint8_t m_maxval;
+  uint8_t *m_pixels;
 };
 
 // A Run-length encoding for an image.

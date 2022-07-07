@@ -3,11 +3,11 @@
 
 #include <cstdlib>
 
-// Collection of functions for working with 2D arrays
-// which are allocated as a single contiguous block.
+// Collection of pure functions for working with contiguously allocated 2D arrays.
 namespace arr2d {
 
 // Returns a 1-dimensional index into a 2-dimensional array.
+// `targetCol` and `targetRow` are zero-indexed, meaning (0, 0) is the first element.
 constexpr
 size_t get_1d_idx(
   size_t const arrWidth,
@@ -17,7 +17,7 @@ size_t get_1d_idx(
   return (targetRow * arrWidth) + targetCol;
 }
 
-// Returns the largest value in the array.
+// Returns the largest value.
 template<typename ElemT>
 constexpr
 ElemT max(
@@ -26,14 +26,14 @@ ElemT max(
   size_t const height,
   size_t const startIdx = 0
 ) {
-  ElemT max = arr[startIdx];
+  ElemT const *max = &arr[startIdx];
   size_t const len = width * height;
   for (size_t i = startIdx + 1; i < len; ++i) {
-    if (arr[i] > max) {
-      max = arr[i];
+    if (arr[i] > *max) {
+      max = &arr[i];
     }
   }
-  return max;
+  return *max;
 }
 
 // Returns true if elements (beginning from `startIdx`) between two arrays

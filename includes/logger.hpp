@@ -7,7 +7,7 @@
 // and `logger::flush`.
 #define LOGGER_THREADSAFE 1
 
-// Simple module for writing logs to a file.
+// Simple module for writing logs to a file in a threadsafe manner.
 namespace logger {
 
 // Sets the pathname of the file for the `logger` module to write logs to.
@@ -21,7 +21,7 @@ void set_out_pathname(std::string const &);
 void set_max_msg_len(size_t);
 
 // Sets the character sequence used to separate events.
-// The default is "\n".
+// The default is \n.
 void set_delim(char const *);
 
 // When enabled, events will be flushed after each `logger::write`.
@@ -47,6 +47,6 @@ void write(EventType, char const *fmt, ...);
 // Flushes the event log in a threadsafe manner.
 void flush();
 
-} // namespace log
+} // namespace logger
 
 #endif // CPPLIB_LOGGER_HPP

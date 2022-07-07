@@ -65,8 +65,8 @@ int ascii_digit_to_int(char const c) {
 #pragma warning(disable: 4244)
 // Converts an int digit (0-9) to ASCII ('0'-'9').
 constexpr
-char int_to_ascii_digit(int const num) {
-  return '0' + num;
+char int_to_ascii_digit(int const digit) {
+  return '0' + digit;
 }
 #pragma warning(pop)
 
