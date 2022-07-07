@@ -12,7 +12,7 @@ namespace cstr {
 // Returns the difference between two strings.
 // 0 means the strings are identical.
 constexpr
-int cmp(char const *s1, char const *s2) {
+[[nodiscard]] int cmp(char const *s1, char const *s2) {
   // from https://stackoverflow.com/a/34873406/16471560
   while(*s1 && (*s1 == *s2)) {
     ++s1;
@@ -23,7 +23,7 @@ int cmp(char const *s1, char const *s2) {
 
 // Returns the length of a string.
 constexpr
-size_t len(char const *const str) {
+[[nodiscard]] size_t len(char const *const str) {
   size_t i = 0;
   while (str[i] != '\0') {
     ++i;
@@ -37,7 +37,7 @@ size_t len(char const *const str) {
 
 // Returns the number of occurences of a character.
 constexpr
-size_t count(char const *const str, char const c) {
+[[nodiscard]] size_t count(char const *const str, char const c) {
   size_t i = 0, count = 0;
   while (str[i] != '\0') {
     if (str[i] == c) {
@@ -50,14 +50,14 @@ size_t count(char const *const str, char const c) {
 
 // Returns the last character a string.
 constexpr
-char last_char(char const *const str) {
+[[nodiscard]] char last_char(char const *const str) {
   size_t const slen = len(str);
   return slen > 0 ? str[slen - 1] : '\0';
 }
 
 // Converts an ASCII number ('1') to an integer (1).
 constexpr
-int ascii_digit_to_int(char const c) {
+[[nodiscard]] int ascii_digit_to_int(char const c) {
   return static_cast<int>(c) - 48;
 }
 
@@ -65,7 +65,7 @@ int ascii_digit_to_int(char const c) {
 #pragma warning(disable: 4244)
 // Converts an int digit (0-9) to ASCII ('0'-'9').
 constexpr
-char int_to_ascii_digit(int const digit) {
+[[nodiscard]] char int_to_ascii_digit(int const digit) {
   return '0' + digit;
 }
 #pragma warning(pop)
