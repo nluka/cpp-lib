@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <thread>
+#include <iostream>
 #include "../includes/everything.hpp"
 #include "config.hpp"
 #include "arr2d-tests.hpp"
@@ -29,7 +30,7 @@ int main(int const argc, char const *const *const argv) {
 
   try {
 
-    Timer const timer("execution");
+    ScopedTimer<TimerUnit::SECONDS> const timer("execution", std::cout);
 
     // where we store assertions and logs
     char const *const resDir = argv[1];
