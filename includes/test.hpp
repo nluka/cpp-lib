@@ -5,33 +5,16 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include "on-scope-exit.hpp"
 
-//
+// Configuration:
 #define TEST_THREADSAFE_REGISTRATION 1
 #define TEST_THREADSAFE_ASSERTS 0
-
-// Simple module for testing your code.
-namespace test {
-
-// Convenience macro which generates a generic name for an assertion.
-#define CASE(expr) (#expr), (expr)
-
-template <typename F>
-struct ScopeExit {
-  ScopeExit(F f) : f(f) {}
-  ~ScopeExit() { f(); }
-  F f;
-};
-
-template <typename F>
-ScopeExit<F> make_scope_exit(F f) {
-  return ScopeExit<F>(f);
-};
 
 // Convenience macro which creates and registers a test suite.
 #define SETUP_SUITE(name) \
 test::Suite s(name); \
-auto const registerSuite = test::make_scope_exit([&s](){ \
+auto const registerSuiteOnScopeExit = make_on_scope_exit([&s](){ \
   test::register_suite(std::move(s)); \
 });
 
@@ -40,6 +23,12 @@ auto const registerSuite = test::make_scope_exit([&s](){ \
 #define SETUP_SUITE_USING(func) \
 using func; \
 SETUP_SUITE(#func)
+
+// Convenience macro which generates a generic name for an assertion.
+#define CASE(expr) (#expr), (expr)
+
+// Simple module for writing tests for your code.
+namespace test {
 
 // Controls whether results are printed to the standard output.
 void use_stdout(bool);
