@@ -72,16 +72,20 @@ int main(int const argc, char const *const *const argv) {
 
     test::evaluate_suites();
 
+    std::exit(0);
+
   } catch (char const *const err) {
     term::printf_colored(term::ColorText::RED, "uncaught exception: %s\n", err);
-    std::exit(1);
   } catch (std::string const &err) {
     term::printf_colored(term::ColorText::RED, "uncaught exception: %s\n", err.c_str());
-    std::exit(1);
+  } catch (std::runtime_error const &err) {
+    term::printf_colored(
+      term::ColorText::RED,
+      (std::string("uncaught exception: ") + err.what()).c_str()
+    );
   } catch (...) {
     term::printf_colored(term::ColorText::RED, "uncaught exception: ...");
-    std::exit(1);
   }
 
-  return 0;
+  std::exit(1);
 }

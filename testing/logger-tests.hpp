@@ -7,40 +7,82 @@
 
 #include <thread>
 #include <sstream>
+#include <regex>
+#include <array>
 #include "../includes/test.hpp"
 #include "../includes/logger.hpp"
 
 void logger_tests(char const *const outPathname) {
-  using logger::EventType;
+  size_t const numThreads = static_cast<size_t>(logger::EventType::COUNT);
+  size_t const numLogsPerThread = 100;
+  std::string const logFilePathname(std::string(outPathname) + "/.log");
 
-  logger::set_out_pathname(std::string(outPathname) + "/.log");
-  logger::set_delim("\n");
+  // populate log file
+  {
+    using logger::EventType;
 
-  auto const logTask = [](EventType const evType){
-    std::ostringstream oss{};
-    oss << std::this_thread::get_id();
-    for (size_t i = 1; i <= 100; ++i) {
-      logger::write(
-        evType,
-        "message %zu from thread %s",
-        i,
-        oss.str().c_str()
-      );
+    logger::set_out_pathname(logFilePathname);
+    logger::set_delim("\n");
+    logger::set_autoflush(true);
+
+    auto const logTask = [](EventType const evType){
+      std::ostringstream oss{};
+      oss << std::this_thread::get_id();
+
+      for (size_t i = 1; i <= numLogsPerThread; ++i) {
+        logger::write(
+          evType,
+          "message %zu from thread %s",
+          i,
+          oss.str().c_str()
+        );
+      }
+    };
+
+    std::array<std::thread, numThreads> threads{
+      std::thread(logTask, EventType::INF),
+      std::thread(logTask, EventType::WRN),
+      std::thread(logTask, EventType::ERR),
+      std::thread(logTask, EventType::FTL)
+    };
+
+    for (auto &t : threads) {
+      t.join();
     }
-  };
 
-  std::thread
-    t1(logTask, EventType::INF),
-    t2(logTask, EventType::WRN),
-    t3(logTask, EventType::ERR),
-    t4(logTask, EventType::FTL);
+    logger::flush();
+  }
 
-  t1.join();
-  t2.join();
-  t3.join();
-  t4.join();
+  // validate log file content
+  {
+    test::Suite s("logger");
 
-  logger::flush();
+    std::ifstream logFile(logFilePathname);
+    assert_file(&logFile, logFilePathname.c_str());
+
+    s.assert("log file content", ([&logFile](){
+      // what each log should look like
+      std::regex const logRegex(
+        "\\[((INFO)|(WARNING)|(ERROR)|(FATAL))\\] " // event type
+        "\\([0-9]{4}-[0-9]{1,2}-[0-9]{1,2} "        // date
+        "[0-9]{1,2}:[0-9]{2}:[0-9]{2}\\) "          // time
+        "message [0-9]+ from thread [0-9]+"         // message
+      );
+
+      size_t lineCount = 0;
+      std::string line{};
+      while (std::getline(logFile, line)) {
+        if (!std::regex_match(line, logRegex)) {
+          return false;
+        }
+        ++lineCount;
+      }
+
+      return lineCount == (numThreads * numLogsPerThread);
+    })());
+
+    test::register_suite(std::move(s));
+  }
 }
 
 #endif // TEST_LOGGER

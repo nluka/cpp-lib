@@ -13,14 +13,15 @@ void set_out_pathname(std::string const &);
 
 // Sets the maximum allowed message length.
 // Messages longer than set limit will be cut short.
+// Default is 512.
 void set_max_msg_len(size_t);
 
-// Sets the character sequence used to delimit individual logs.
+// Sets the character sequence used to separate events.
 // The default is "\n".
 void set_delim(char const *);
 
-// If set true, logs will be flushed as soon as they are written via
-// `logger::write`.
+// When enabled, events will be flushed after each `logger::write`.
+// Off by default.
 void set_autoflush(bool);
 
 enum class EventType {
@@ -31,13 +32,15 @@ enum class EventType {
   // Error
   ERR,
   // Fatal
-  FTL
+  FTL,
+  // Number of event types
+  COUNT,
 };
 
 // Writes an event (with formatted message) to the log in a threadsafe manner.
 void write(EventType, char const *fmt, ...);
 
-// Flushes the log buffer in a threadsafe manner.
+// Flushes the event log in a threadsafe manner.
 void flush();
 
 } // namespace log

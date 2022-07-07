@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <fstream>
 #include <cstdarg>
+#include <memory>
 #include "../includes/logger.hpp"
 
 static std::string s_outPathname{};
@@ -17,7 +18,7 @@ void logger::set_out_pathname(std::string const &pathname) {
   s_outPathname = pathname;
 }
 
-static size_t s_maxMsgLen = 100;
+static size_t s_maxMsgLen = 512;
 void logger::set_max_msg_len(size_t const maxLen) {
   s_maxMsgLen = maxLen;
 }
@@ -84,7 +85,7 @@ public:
 };
 
 static std::vector<Event> s_events{};
-static bool s_isFileReady = false;
+static std::mutex s_eventsMutex{};
 
 static
 void assert_file_opened(std::ofstream const &file) {
@@ -97,14 +98,7 @@ void assert_file_opened(std::ofstream const &file) {
 
 void logger::write(EventType const evType, char const *const fmt, ...) {
   {
-    static std::mutex mutex;
-    std::scoped_lock const lock{mutex};
-
-    if (!s_isFileReady) {
-      std::ofstream file(s_outPathname); // clear file
-      assert_file_opened(file);
-      s_isFileReady = true;
-    }
+    std::scoped_lock const lock{s_eventsMutex};
 
     va_list varArgs;
     va_start(varArgs, fmt);
@@ -123,15 +117,25 @@ void logger::write(EventType const evType, char const *const fmt, ...) {
 }
 
 void logger::flush() {
-  static std::mutex mutex;
-  std::scoped_lock const lock{mutex};
+  static bool s_isFileReady = false;
+  if (!s_isFileReady) {
+    std::ofstream file(s_outPathname); // clear file
+    assert_file_opened(file);
+    s_isFileReady = true;
+  }
+
+  std::scoped_lock const lock{s_eventsMutex};
+
+  if (s_events.empty()) {
+    return;
+  }
 
   std::ofstream file(s_outPathname, std::ios_base::app);
   assert_file_opened(file);
 
   for (auto const &evt : s_events) {
     if (!file.good()) {
-      throw "bad file";
+      throw "logger::flush failed - bad file";
     }
     file << evt.stringify() << s_delim;
   }
