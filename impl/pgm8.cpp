@@ -31,7 +31,7 @@ using pgm8::Type, pgm8::RLE, pgm8::Image;
 
 #pragma region Image
 
-Image::Image()
+Image::Image() noexcept
 : m_width{0}, m_height{0}, m_maxval{0}, m_pixels{nullptr}
 {}
 
@@ -125,25 +125,25 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
   }
 }
 
-void Image::clear() {
+void Image::clear() noexcept {
   delete[] m_pixels;
   m_pixels = nullptr;
   m_width = m_height = m_maxval = 0;
 }
 
-uint16_t Image::width() const {
+uint16_t Image::width() const noexcept {
   return m_width;
 }
-uint16_t Image::height() const {
+uint16_t Image::height() const noexcept {
   return m_height;
 }
-uint8_t Image::maxval() const {
+uint8_t Image::maxval() const noexcept {
   return m_maxval;
 }
-uint8_t *Image::pixels() const {
+uint8_t *Image::pixels() const noexcept {
   return m_pixels;
 }
-size_t Image::pixel_count() const {
+size_t Image::pixel_count() const noexcept {
   return static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
 }
 
@@ -151,15 +151,15 @@ size_t Image::pixel_count() const {
 
 #pragma region RLE
 
-RLE::Chunk::Chunk(uint8_t const data, uint32_t const count)
+RLE::Chunk::Chunk(uint8_t const data, uint32_t const count) noexcept
 : m_data{data}, m_count{count}
 {}
 
-bool RLE::Chunk::operator!=(Chunk const &other) const {
+bool RLE::Chunk::operator!=(Chunk const &other) const noexcept {
   return (m_data != other.m_data) || (m_count != other.m_count);
 }
 
-RLE::RLE() {}
+RLE::RLE() noexcept {}
 
 RLE::RLE(uint8_t const *pixels, size_t const pixelCount) {
   encode(pixels, pixelCount);
@@ -270,10 +270,10 @@ void RLE::load_file_chunks(std::ifstream &file) {
   }
 }
 
-std::vector<RLE::Chunk> const &RLE::chunks() const {
+std::vector<RLE::Chunk> const &RLE::chunks() const noexcept {
   return m_chunks;
 }
-size_t RLE::pixel_count() const {
+size_t RLE::pixel_count() const noexcept {
   size_t count = 0;
   for (auto const &chunk : m_chunks) {
     count += chunk.m_count;

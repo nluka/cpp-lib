@@ -15,16 +15,16 @@ namespace pgm8 {
 // the `pgm8` module.
 class Image {
 public:
-  Image();
+  Image() noexcept;
   Image(std::ifstream &file, bool loadPixels = true);
   ~Image();
   void load(std::ifstream &file, bool loadPixels = true);
-  void clear();
-  uint16_t width() const;
-  uint16_t height() const;
-  uint8_t maxval() const;
-  uint8_t *pixels() const;
-  size_t pixel_count() const;
+  void clear() noexcept;
+  [[nodiscard]] uint16_t width() const noexcept;
+  [[nodiscard]] uint16_t height() const noexcept;
+  [[nodiscard]] uint8_t maxval() const noexcept;
+  [[nodiscard]] uint8_t *pixels() const noexcept;
+  [[nodiscard]] size_t pixel_count() const noexcept;
 
   // TODO: implement move and copy ops...
 
@@ -44,32 +44,33 @@ private:
 class RLE {
 public:
   struct Chunk {
-    uint8_t const m_data;
-    uint32_t const m_count;
+    uint8_t m_data;
+    uint32_t m_count;
 
-    Chunk(uint8_t data, uint32_t count);
-    bool operator!=(Chunk const &other) const;
+    Chunk(uint8_t data, uint32_t count) noexcept;
+    [[nodiscard]] bool operator==(Chunk const &other) const noexcept;
+    [[nodiscard]] bool operator!=(Chunk const &other) const noexcept;
   };
 
-  RLE();
+  RLE() noexcept;
   RLE(uint8_t const *pixels, size_t pixelCount);
   RLE(uint8_t const *pixels, uint16_t width, uint16_t height);
   // Encodes a set of pixels. If `clearExistingChunks` is false,
   // new chunks will be appended after any existing chunks.
   void encode(uint8_t const *pixels, size_t pixelCount, bool clearExistingChunks = true);
-  // Decodes the currently contained chunks into a contiguous block of pixels.
+  // Decodes the current chunks into a contiguous set of pixels.
   // This function allocates memory on the heap, it's your responsibility to free it!
   // If there are no encooded pixels, returns nullptr.
-  uint8_t *decode() const;
+  [[nodiscard]] uint8_t *decode() const;
   // Writes the currently contained chunks to an output file stream.
   void write_chunks_to_file(std::ofstream &) const;
   // Loads chunks from an input file stream.
   void load_file_chunks(std::ifstream &);
-  // Returns an immutable reference to the currently contained chunks.
-  std::vector<Chunk> const &chunks() const;
+  // Returns an immutable reference to the current chunks.
+  [[nodiscard]] std::vector<Chunk> const &chunks() const noexcept;
   // Returns the number of actual pixels currently encoded.
   // Beware: value is not cached and gets computed on each call.
-  size_t pixel_count() const;
+  [[nodiscard]] size_t pixel_count() const noexcept;
 
 private:
   std::vector<Chunk> m_chunks{};
