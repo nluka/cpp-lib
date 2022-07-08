@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_REGEXGLOB_TESTS_HPP
-#define CPPLIB_TEST_REGEXGLOB_TESTS_HPP
+#ifndef CPPLIB_REGEXGLOB_TESTS_HPP
+#define CPPLIB_REGEXGLOB_TESTS_HPP
 
 #include "config.hpp"
 #include "util.hpp"
@@ -125,4 +125,4 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
 
 #endif // TEST_REGEXGLOB
 
-#endif // CPPLIB_TEST_REGEXGLOB_TESTS_HPP
+#endif // CPPLIB_REGEXGLOB_TESTS_HPP

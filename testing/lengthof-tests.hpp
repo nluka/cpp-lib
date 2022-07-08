@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_LENGTHOF_TESTS_HPP
-#define CPPLIB_TEST_LENGTHOF_TESTS_HPP
+#ifndef CPPLIB_LENGTHOF_TESTS_HPP
+#define CPPLIB_LENGTHOF_TESTS_HPP
 
 #include "config.hpp"
 
@@ -31,4 +31,4 @@ void lengthof_tests() {
 
 #endif // TEST_LENGTHOF
 
-#endif // CPPLIB_TEST_LENGTHOF_TESTS_HPP
+#endif // CPPLIB_LENGTHOF_TESTS_HPP

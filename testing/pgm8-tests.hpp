@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_PGM8_TESTS_HPP
-#define CPPLIB_TEST_PGM8_TESTS_HPP
+#ifndef CPPLIB_PGM8_TESTS_HPP
+#define CPPLIB_PGM8_TESTS_HPP
 
 #include "config.hpp"
 
@@ -259,4 +259,4 @@ void pgm8_tests(char const *const imgsDir) {
 
 #endif // TEST_PGM8
 
-#endif // CPPLIB_TEST_PGM8_TESTS_HPP
+#endif // CPPLIB_PGM8_TESTS_HPP

@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_LOGGER_TESTS_HPP
-#define CPPLIB_TEST_LOGGER_TESTS_HPP
+#ifndef CPPLIB_LOGGER_TESTS_HPP
+#define CPPLIB_LOGGER_TESTS_HPP
 
 #include "config.hpp"
 
@@ -99,4 +99,4 @@ void logger_tests(char const *const outPathname) {
 
 #endif // TEST_LOGGER
 
-#endif // CPPLIB_TEST_LOGGER_TESTS_HPP
+#endif // CPPLIB_LOGGER_TESTS_HPP

@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_ARR2D_TESTS_HPP
-#define CPPLIB_TEST_ARR2D_TESTS_HPP
+#ifndef CPPLIB_ARR2D_TESTS_HPP
+#define CPPLIB_ARR2D_TESTS_HPP
 
 #include "config.hpp"
 
@@ -147,4 +147,4 @@ void arr2d_tests() {
 
 #endif // TEST_ARR2D
 
-#endif // CPPLIB_TEST_ARR2D_TESTS_HPP
+#endif // CPPLIB_ARR2D_TESTS_HPP

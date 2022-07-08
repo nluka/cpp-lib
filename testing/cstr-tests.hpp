@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_CSTR_TESTS_HPP
-#define CPPLIB_TEST_CSTR_TESTS_HPP
+#ifndef CPPLIB_CSTR_TESTS_HPP
+#define CPPLIB_CSTR_TESTS_HPP
 
 #include "config.hpp"
 
@@ -73,4 +73,4 @@ void cstr_tests() {
 
 #endif // TEST_CSTR
 
-#endif // CPPLIB_TEST_CSTR_TESTS_HPP
+#endif // CPPLIB_CSTR_TESTS_HPP

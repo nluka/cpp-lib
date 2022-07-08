@@ -1,5 +1,5 @@
-#ifndef CPPLIB_TEST_UTIL_HPP
-#define CPPLIB_TEST_UTIL_HPP
+#ifndef CPPLIB_TESTING_UTIL_HPP
+#define CPPLIB_TESTING_UTIL_HPP
 
 #include <string>
 #include <sstream>
@@ -35,4 +35,4 @@ bool vector_cmp(std::vector<ElemT> const &v1, std::vector<ElemT> const &v2) {
   return true;
 }
 
-#endif // CPPLIB_TEST_UTIL_HPP
+#endif // CPPLIB_TESTING_UTIL_HPP
