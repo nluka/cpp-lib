@@ -15,11 +15,6 @@ void set_out_pathname(char const *);
 // Sets the pathname of the file for the `logger` module to write logs to.
 void set_out_pathname(std::string const &);
 
-// Sets the maximum allowed message length.
-// Messages longer than set limit will be cut short.
-// Default is 512.
-void set_max_msg_len(size_t);
-
 // Sets the character sequence used to separate events.
 // The default is \n.
 void set_delim(char const *);

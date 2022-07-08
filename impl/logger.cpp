@@ -10,17 +10,15 @@
 #include <memory>
 #include "../includes/logger.hpp"
 
+// Configuration:
+#define MAX_MSG_LEN 1000
+
 static std::string s_outPathname{};
 void logger::set_out_pathname(char const *const pathname) {
   s_outPathname = pathname;
 }
 void logger::set_out_pathname(std::string const &pathname) {
   s_outPathname = pathname;
-}
-
-static size_t s_maxMsgLen = 512;
-void logger::set_max_msg_len(size_t const maxLen) {
-  s_maxMsgLen = maxLen;
 }
 
 static char const *s_delim = "\n";
@@ -106,13 +104,12 @@ void logger::write(EventType const evType, char const *const fmt, ...) {
 
     va_list varArgs;
     va_start(varArgs, fmt);
-    size_t const len = s_maxMsgLen + 1; // +1 for NUL
-    char *const msg = new char[len];
+    constexpr size_t len = MAX_MSG_LEN + 1; // +1 for NUL
+    char msg[len];
     vsnprintf(msg, len, fmt, varArgs);
     va_end(varArgs);
 
     s_events.emplace_back(evType, msg);
-    delete[] msg;
   }
 
   if (s_autoFlush) {
