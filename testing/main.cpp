@@ -1,15 +1,17 @@
 #include <filesystem>
-#include <thread>
 #include <iostream>
+#include <thread>
+
 #include "../includes/everything.hpp"
-#include "config.hpp"
+
 #include "arr2d-tests.hpp"
+#include "config.hpp"
 #include "cstr-tests.hpp"
 #include "regexglob-tests.hpp"
 #include "lengthof-tests.hpp"
+#include "logger-tests.hpp"
 #include "on-scope-exit-tests.hpp"
 #include "pgm8-tests.hpp"
-#include "logger-tests.hpp"
 #include "util.hpp"
 
 #define MULTITHREADED 1

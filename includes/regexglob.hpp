@@ -1,9 +1,9 @@
 #ifndef CPPLIB_REGEXGLOB_H
 #define CPPLIB_REGEXGLOB_H
 
+#include <filesystem>
 #include <fstream>
 #include <vector>
-#include <filesystem>
 
 #define REGEXGLOB_LOGGING_ENABLED 1
 

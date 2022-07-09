@@ -1,10 +1,10 @@
 #ifndef CPPLIB_TEST_HPP
 #define CPPLIB_TEST_HPP
 
-#include <fstream>
-#include <vector>
-#include <iostream>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 #include "on-scope-exit.hpp"
 
 // Configuration:

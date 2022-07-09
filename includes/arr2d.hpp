@@ -18,7 +18,7 @@ constexpr
 }
 
 // Returns the largest value.
-template<typename ElemT>
+template <typename ElemT>
 constexpr
 [[nodiscard]] ElemT max(
   ElemT const *const arr,
@@ -38,7 +38,7 @@ constexpr
 
 // Returns true if elements (beginning from `startIdx`) between two arrays
 // are the same, false otherwise.
-template<typename ElemT>
+template <typename ElemT>
 constexpr
 [[nodiscard]] bool cmp(
   ElemT const *const arr1,
@@ -58,7 +58,7 @@ constexpr
 
 // Returns true if all array elements beginning from `startIdx` are the same,
 // false otherwise.
-template<typename ElemT>
+template <typename ElemT>
 constexpr
 [[nodiscard]] bool is_homogenous(
   ElemT const *const arr,

@@ -1,24 +1,24 @@
 #ifndef CPPLIB_ONSCOPEEXIT_HPP
 #define CPPLIB_ONSCOPEEXIT_HPP
 
-template <typename F>
+template <typename Func>
 class OnScopeExit {
 public:
   OnScopeExit() = delete;
 
-  OnScopeExit(F f) : f(f) {}
+  OnScopeExit(Func fn) : m_fn(fn) {}
 
   ~OnScopeExit() {
-    f();
+    m_fn();
   }
 
 private:
-  F f;
+  Func const m_fn;
 };
 
-template <typename F>
-OnScopeExit<F> make_on_scope_exit(F f) {
-  return OnScopeExit<F>(f);
+template <typename Func>
+OnScopeExit<Func> make_on_scope_exit(Func const &fn) {
+  return OnScopeExit<Func>(fn);
 };
 
 #endif // CPPLIB_ONSCOPEEXIT_HPP

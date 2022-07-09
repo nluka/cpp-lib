@@ -5,8 +5,8 @@
 
 #if TEST_CSTR
 
-#include "../includes/test.hpp"
 #include "../includes/cstr.hpp"
+#include "../includes/test.hpp"
 
 void cstr_tests() {
   {

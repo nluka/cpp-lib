@@ -1,13 +1,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <vector>
 #include <chrono>
+#include <cstdarg>
+#include <fstream>
+#include <iomanip>
+#include <memory>
 #include <mutex>
 #include <sstream>
-#include <iomanip>
-#include <fstream>
-#include <cstdarg>
-#include <memory>
+#include <vector>
 #include "../includes/logger.hpp"
 
 // Configuration:

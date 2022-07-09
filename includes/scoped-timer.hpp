@@ -1,9 +1,9 @@
 #ifndef CPPLIB_TIMER_HPP
 #define CPPLIB_TIMER_HPP
 
-#include <string_view>
 #include <chrono>
 #include <ostream>
+#include <string_view>
 
 enum class TimerUnit {
   SECONDS       = 1,

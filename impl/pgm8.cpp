@@ -1,8 +1,9 @@
-#include <string>
-#include <sstream>
-#include <numeric>
-#include <memory>
 #include <cstring>
+#include <memory>
+#include <numeric>
+#include <sstream>
+#include <string>
+
 #include "../includes/arr2d.hpp"
 #include "../includes/cstr.hpp"
 #include "../includes/pgm8.hpp"
@@ -27,7 +28,9 @@ bool string_starts_with(
   return true;
 }
 
+
 using pgm8::Type, pgm8::RLE, pgm8::Image;
+
 
 #pragma region Image
 
@@ -148,6 +151,10 @@ size_t Image::pixel_count() const noexcept {
 }
 
 #pragma endregion Image
+
+
+
+
 
 #pragma region RLE
 
@@ -282,6 +289,10 @@ size_t RLE::pixel_count() const noexcept {
 }
 
 #pragma endregion RLE
+
+
+
+
 
 #pragma region standalone_functions
 

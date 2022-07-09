@@ -5,8 +5,8 @@
 
 #if TEST_LENGTHOF
 
-#include "../includes/test.hpp"
 #include "../includes/lengthof.hpp"
+#include "../includes/test.hpp"
 
 void lengthof_tests() {
   SETUP_SUITE("lengthof")

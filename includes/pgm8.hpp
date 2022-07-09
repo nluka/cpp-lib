@@ -1,8 +1,8 @@
 #ifndef CPPLIB_PGM8_HPP
 #define CPPLIB_PGM8_HPP
 
-#include <fstream>
 #include <cinttypes>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -22,9 +22,9 @@ public:
   void clear() noexcept;
   [[nodiscard]] uint16_t width() const noexcept;
   [[nodiscard]] uint16_t height() const noexcept;
-  [[nodiscard]] uint8_t maxval() const noexcept;
+  [[nodiscard]] uint8_t  maxval() const noexcept;
   [[nodiscard]] uint8_t *pixels() const noexcept;
-  [[nodiscard]] size_t pixel_count() const noexcept;
+  [[nodiscard]] size_t   pixel_count() const noexcept;
 
   // TODO: implement move and copy ops...
 
@@ -36,7 +36,7 @@ public:
 private:
   uint16_t m_width;
   uint16_t m_height;
-  uint8_t m_maxval;
+  uint8_t  m_maxval;
   uint8_t *m_pixels;
 };
 
@@ -44,7 +44,7 @@ private:
 class RLE {
 public:
   struct Chunk {
-    uint8_t m_data;
+    uint8_t  m_data;
     uint32_t m_count;
 
     Chunk(uint8_t data, uint32_t count) noexcept;

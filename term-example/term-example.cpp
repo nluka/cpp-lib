@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <thread>
 #include <chrono>
-#include "../includes/term.hpp"
+#include <cstdio>
+#include <thread>
 #include "../includes/lengthof.hpp"
+#include "../includes/term.hpp"
 
 int main() {
   using term::ColorText;

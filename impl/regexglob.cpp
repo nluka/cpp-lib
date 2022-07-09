@@ -1,8 +1,8 @@
-#include <string>
-#include <regex>
 #include <algorithm>
+#include <regex>
 #include <sstream>
-#include "../includes/cstr.hpp"
+#include <string>
+
 #include "../includes/regexglob.hpp"
 
 namespace fs = std::filesystem;

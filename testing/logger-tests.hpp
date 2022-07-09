@@ -5,12 +5,12 @@
 
 #if TEST_LOGGER
 
-#include <thread>
-#include <sstream>
-#include <regex>
 #include <array>
-#include "../includes/test.hpp"
+#include <regex>
+#include <sstream>
+#include <thread>
 #include "../includes/logger.hpp"
+#include "../includes/test.hpp"
 
 void logger_tests(char const *const outPathname) {
   using logger::EventType;

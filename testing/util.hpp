@@ -5,9 +5,10 @@
 #include <sstream>
 #include <vector>
 #include <chrono>
+
 #include "../includes/term.hpp"
 
-template<typename FstreamType>
+template <typename FstreamType>
 void assert_file(FstreamType const *file, char const *const fpathname) {
   if (!file->is_open()) {
     term::printf_colored(
@@ -19,7 +20,7 @@ void assert_file(FstreamType const *file, char const *const fpathname) {
   }
 }
 
-template<typename ElemT>
+template <typename ElemT>
 bool vector_cmp(std::vector<ElemT> const &v1, std::vector<ElemT> const &v2) {
   if (v1.size() != v2.size()) {
     return false;
