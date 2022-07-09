@@ -70,15 +70,71 @@ void pgm8_tests(char const *const imgsDir) {
       );
     }
 
-    // TODO:
-    // - copy ops
-    // - move ops
+    // copy assignment
+    {
+      Image img2{};
+      img2 = img;
+      Image img3{};
+      img3 = img2;
+      s.assert("copy assign", img == img2 && img2 == img3);
+    }
+
+    // copy constructor
+    {
+      Image const img2(img);
+      Image const img3(img2);
+      s.assert("copy ctor", img == img2 && img2 == img3);
+    }
+
+    // move assign
+    {
+      Image const imgBackup(img);
+
+      Image img2{};
+      img2 = std::move(img);
+      {
+        bool const moveSuccessful = img2 == imgBackup;
+        bool const cannibalized = img != imgBackup;
+        s.assert("move assign part 1", moveSuccessful && cannibalized);
+      }
+      Image img3{};
+      img3 = std::move(img2);
+      {
+        bool const moveSuccessful = img3 == imgBackup;
+        bool const cannibalized = img3 != img2;
+        s.assert("move assign part 2", moveSuccessful && cannibalized);
+      }
+
+      // restore `img` after cannibalization
+      img = std::move(imgBackup);
+    }
+
+    // move constructor
+    {
+      Image const imgBackup(img);
+
+      Image img2(std::move(img));
+      {
+        bool const moveSuccessful = img2 == imgBackup;
+        bool const cannibalized = img != imgBackup;
+        s.assert("move ctor part 1", moveSuccessful && cannibalized);
+      }
+      Image img3(std::move(img2));
+      {
+        bool const moveSuccessful = img3 == imgBackup;
+        bool const cannibalized = img3 != img2;
+        s.assert("move ctor part 2", moveSuccessful && cannibalized);
+      }
+
+      // restore `img` after cannibalization
+      img = std::move(imgBackup);
+    }
 
     img.clear();
     s.assert(
       "clear",
-      img.width() ==0 &&
-      img.height() ==0 &&
+      img.width() == 0 &&
+      img.height() == 0 &&
       img.maxval() == 0 &&
       img.pixel_count() == 0 &&
       img.pixels() == nullptr
@@ -168,7 +224,9 @@ void pgm8_tests(char const *const imgsDir) {
         Image img(file);
         file.close();
         s.assert(
-          "RAW, write_uncompressed -> Image",
+          type == Type::PLAIN
+            ? "write_uncompressed PLAIN"
+            : "write_uncompressed RAW",
           img.width() == width &&
           img.height() == height &&
           img.maxval() == maxval &&
@@ -190,7 +248,7 @@ void pgm8_tests(char const *const imgsDir) {
         Image img(file);
         file.close();
         s.assert(
-          "RAW, write_compressed -> Image",
+          "write_compressed RLE",
           img.width() == width &&
           img.height() == height &&
           img.maxval() == maxval &&

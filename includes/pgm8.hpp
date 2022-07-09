@@ -18,20 +18,23 @@ public:
   Image() noexcept;
   Image(std::ifstream &file, bool loadPixels = true);
   ~Image();
-  void load(std::ifstream &file, bool loadPixels = true);
-  void clear() noexcept;
+
+  Image(Image const &other);                // copy constructor
+  Image &operator=(Image const &other);     // copy assignment
+  Image(Image &&other) noexcept;            // move constructor
+  Image &operator=(Image &&other) noexcept; // move assignment
+
   [[nodiscard]] uint16_t width() const noexcept;
   [[nodiscard]] uint16_t height() const noexcept;
   [[nodiscard]] uint8_t  maxval() const noexcept;
   [[nodiscard]] uint8_t *pixels() const noexcept;
   [[nodiscard]] size_t   pixel_count() const noexcept;
 
-  // TODO: implement move and copy ops...
+  void load(std::ifstream &file, bool loadPixels = true);
+  void clear() noexcept;
 
-  Image(Image const &other)                 = delete; // copy constructor
-  Image &operator=(Image const &other)      = delete; // copy assignment
-  Image(Image &&other) noexcept             = delete; // move constructor
-  Image &operator=(Image &&other) noexcept  = delete; // move assignment
+  bool operator==(Image const &other) const noexcept;
+  bool operator!=(Image const &other) const noexcept;
 
 private:
   uint16_t m_width;
@@ -48,6 +51,7 @@ public:
     uint32_t m_count;
 
     Chunk(uint8_t data, uint32_t count) noexcept;
+
     [[nodiscard]] bool operator==(Chunk const &other) const noexcept;
     [[nodiscard]] bool operator!=(Chunk const &other) const noexcept;
   };
@@ -55,25 +59,31 @@ public:
   RLE() noexcept;
   RLE(uint8_t const *pixels, size_t pixelCount);
   RLE(uint8_t const *pixels, uint16_t width, uint16_t height);
+
   // Encodes a set of pixels. If `clearExistingChunks` is false,
   // new chunks will be appended after any existing chunks.
   void encode(uint8_t const *pixels, size_t pixelCount, bool clearExistingChunks = true);
+
   // Decodes the current chunks into a contiguous set of pixels.
   // This function allocates memory on the heap, it's your responsibility to free it!
   // If there are no encooded pixels, returns nullptr.
   [[nodiscard]] uint8_t *decode() const;
-  // Writes the currently contained chunks to an output file stream.
+
+  // Writes the currently contained chunks to a file stream.
   void write_chunks_to_file(std::ofstream &) const;
-  // Loads chunks from an input file stream.
+
+  // Loads chunks from a file stream.
   void load_file_chunks(std::ifstream &);
+
   // Returns an immutable reference to the current chunks.
   [[nodiscard]] std::vector<Chunk> const &chunks() const noexcept;
+
   // Returns the number of actual pixels currently encoded.
   // Beware: value is not cached and gets computed on each call.
   [[nodiscard]] size_t pixel_count() const noexcept;
 
 private:
-  std::vector<Chunk> m_chunks{};
+  std::vector<Chunk> m_chunks;
 };
 
 // Types of unencoded (standard) image file formats.
