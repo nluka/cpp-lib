@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 
+// Compression module.
 namespace compr {
 
 // Run-length encoding.
@@ -38,12 +39,31 @@ public:
     size_t const elemCount,
     bool const clearExistingChunks = true
   ) {
+    if (elemCount == 0) {
+      throw "compr::RLE::encode failed - elemCount must be > 0";
+    }
+
     if (clearExistingChunks) {
       m_chunks.clear();
     }
 
-    size_t pos = 0;
+    // scan elements to determine number of chunks needed
+    size_t const chunkCount = ([elems, elemCount](){
+      size_t dataSwitches = 0;
+      uint8_t prevChunkData = elems[0];
+      for (size_t i = 1; i < elemCount; ++i) {
+        uint8_t const elem = elems[i];
+        if (elem != prevChunkData) {
+          ++dataSwitches;
+          prevChunkData = elem;
+        }
+      }
+      return dataSwitches + 1;
+    })();
 
+    m_chunks.reserve(chunkCount);
+
+    size_t pos = 0;
     while (pos < elemCount) {
       uint8_t const data = elems[pos];
       uint32_t count = 0;
@@ -57,7 +77,7 @@ public:
 
   // Decodes the current chunks into a contiguous set of elements.
   // This function allocates memory on the heap, it's your responsibility to free it!
-  // If there are no encooded elements, nullptr is returned.
+  // If no elements are encoded, nullptr is returned.
   uint8_t *decode() const {
     if (elem_count() == 0) {
       return nullptr;
