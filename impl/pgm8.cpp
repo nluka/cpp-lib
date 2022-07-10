@@ -52,7 +52,7 @@ Image::~Image() {
 }
 
 // copy constructor
-Image::Image(Image const &other) {
+Image::Image(Image const &other) : Image::Image() {
   *this = other;
 }
 
