@@ -19,6 +19,6 @@ private:
 template <typename Func>
 OnScopeExit<Func> make_on_scope_exit(Func const &fn) {
   return OnScopeExit<Func>(fn);
-};
+}
 
 #endif // CPPLIB_ONSCOPEEXIT_HPP
