@@ -87,7 +87,7 @@ void pgm8_tests(char const *const imgsDir) {
 
     // move assign
     {
-      Image const imgBackup(img);
+      Image imgBackup(img);
 
       Image img2{};
       img2 = std::move(img);
@@ -110,7 +110,7 @@ void pgm8_tests(char const *const imgsDir) {
 
     // move constructor
     {
-      Image const imgBackup(img);
+      Image imgBackup(img);
 
       Image img2(std::move(img));
       {
