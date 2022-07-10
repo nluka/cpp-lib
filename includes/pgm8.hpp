@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "compression.hpp"
+
 // Module for reading, writing, encoding, and decoding
 // 8-bit PGM images.
 namespace pgm8 {
@@ -44,47 +46,7 @@ private:
 };
 
 // A Run-length encoding for an image.
-class RLE {
-public:
-  struct Chunk {
-    uint8_t  m_data;
-    uint32_t m_count;
 
-    Chunk(uint8_t data, uint32_t count) noexcept;
-
-    [[nodiscard]] bool operator==(Chunk const &other) const noexcept;
-    [[nodiscard]] bool operator!=(Chunk const &other) const noexcept;
-  };
-
-  RLE() noexcept;
-  RLE(uint8_t const *pixels, size_t pixelCount);
-  RLE(uint8_t const *pixels, uint16_t width, uint16_t height);
-
-  // Encodes a set of pixels. If `clearExistingChunks` is false,
-  // new chunks will be appended after any existing chunks.
-  void encode(uint8_t const *pixels, size_t pixelCount, bool clearExistingChunks = true);
-
-  // Decodes the current chunks into a contiguous set of pixels.
-  // This function allocates memory on the heap, it's your responsibility to free it!
-  // If there are no encooded pixels, returns nullptr.
-  [[nodiscard]] uint8_t *decode() const;
-
-  // Writes the currently contained chunks to a file stream.
-  void write_chunks_to_file(std::ofstream &) const;
-
-  // Loads chunks from a file stream.
-  void load_file_chunks(std::ifstream &);
-
-  // Returns an immutable reference to the current chunks.
-  [[nodiscard]] std::vector<Chunk> const &chunks() const noexcept;
-
-  // Returns the number of actual pixels currently encoded.
-  // Beware: value is not cached and gets computed on each call.
-  [[nodiscard]] size_t pixel_count() const noexcept;
-
-private:
-  std::vector<Chunk> m_chunks;
-};
 
 // Types of unencoded (standard) image file formats.
 // Specifications for each can be found at:
@@ -115,7 +77,7 @@ void write_uncompressed(
   uint16_t width,
   uint16_t height,
   uint8_t maxval,
-  pgm8::RLE const &encodedPixelData,
+  compr::RLE<uint8_t, uint32_t> const &encodedPixelData,
   pgm8::Type type
 );
 
@@ -126,7 +88,7 @@ void write_compressed(
   uint16_t width,
   uint16_t height,
   uint8_t maxval,
-  pgm8::RLE const &encodedPixelData
+  compr::RLE<uint8_t, uint32_t> const &encodedPixelData
 );
 
 } // namespace pgm8

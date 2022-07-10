@@ -18,7 +18,6 @@ namespace fs = std::filesystem;
 void pgm8_tests(char const *const imgsDir) {
   using
     pgm8::Image,
-    pgm8::RLE,
     pgm8::Type,
     pgm8::write_compressed,
     pgm8::write_uncompressed;
@@ -141,42 +140,6 @@ void pgm8_tests(char const *const imgsDir) {
     );
   }
 
-  {
-    SETUP_SUITE("pgm8::RLE")
-
-    uint16_t const w = 5, h = 5;
-    uint8_t const maxcal = 1, pixels[w * h] {
-      0,   0,   0,   0,   0,
-      10,  10,  10,  10,  10,
-      100, 100, 100, 100, 100,
-      210, 220, 230, 240, 250,
-      255, 255, 255, 255, 255,
-    };
-
-    RLE encoding{};
-    std::vector<RLE::Chunk> const expectedChunks {
-      RLE::Chunk(0, 5),
-      RLE::Chunk(10, 5),
-      RLE::Chunk(100, 5),
-      RLE::Chunk(210, 1),
-      RLE::Chunk(220, 1),
-      RLE::Chunk(230, 1),
-      RLE::Chunk(240, 1),
-      RLE::Chunk(250, 1),
-      RLE::Chunk(255, 5),
-    };
-    encoding.encode(pixels, w * h);
-    s.assert("encode", vector_cmp(encoding.chunks(), expectedChunks));
-    s.assert(
-      "pixel_count",
-      encoding.pixel_count() == static_cast<size_t>(w) * static_cast<size_t>(h)
-    );
-
-    auto const decodedPixels =
-      std::unique_ptr<uint8_t const []>(encoding.decode());
-    s.assert("decode", arr2d::cmp(pixels, decodedPixels.get(), w, h));
-  }
-
   // lambda for testing:
   // - write_uncompressed (with both PLAIN and RAW image types)
   // - write_compressed
@@ -237,7 +200,7 @@ void pgm8_tests(char const *const imgsDir) {
       // compressed write and read second:
       fpathname.replace_extension("pgme");
       {
-        RLE encoding(pixels, width, height);
+        compr::RLE<uint8_t, uint32_t> encoding(pixels, static_cast<size_t>(width) * height);
         std::ofstream file(fpathname);
         assert_file(&file, fpathname.string().c_str());
         write_compressed(file, width, height, maxval, encoding);

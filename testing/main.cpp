@@ -6,6 +6,7 @@
 
 #include "arr2d-tests.hpp"
 #include "config.hpp"
+#include "compression-tests.hpp"
 #include "cstr-tests.hpp"
 #include "regexglob-tests.hpp"
 #include "lengthof-tests.hpp"
@@ -91,6 +92,10 @@ int main(int const argc, char const *const *const argv) {
 
     #if TEST_ARR2D
       arr2d_tests();
+    #endif
+
+    #if TEST_COMPRESSION
+      compression_tests();
     #endif
 
     #if TEST_CSTR
