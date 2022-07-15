@@ -8,7 +8,7 @@ namespace RLE {
 
 std::vector<uint8_t> encode(uint8_t const *data, size_t size);
 
-// void decode(Bytes const &encoding);
+std::vector<uint8_t> decode(uint8_t const *encoded, size_t size);
 
 // void encode_to_file(
 //   std::ofstream &file,

@@ -125,3 +125,34 @@ std::vector<uint8_t> RLE::encode(uint8_t const *const data, size_t const size) {
 
   return encoded;
 }
+
+std::vector<uint8_t> RLE::decode(
+  uint8_t const *const encoded,
+  size_t const size
+) {
+  std::vector<uint8_t> decoded{};
+
+  size_t chunkStartPos = 0;
+  while (chunkStartPos < size) {
+    uint8_t const count = encoded[chunkStartPos];
+
+    if (count == 0) { // hetero chunk
+      uint8_t const len = encoded[chunkStartPos + 1];
+      uint8_t const *first = encoded + chunkStartPos + 2;
+      uint8_t const *const last = encoded + chunkStartPos + 2 + len;
+      while (first < last) {
+        decoded.push_back(*first);
+        ++first;
+      }
+      chunkStartPos += (2 + len);
+    } else { // homog chunk
+      uint8_t const data = encoded[chunkStartPos + 1];
+      for (size_t i = 1; i <= count; ++i) {
+        decoded.push_back(data);
+      }
+      chunkStartPos += 2;
+    }
+  }
+
+  return decoded;
+}
