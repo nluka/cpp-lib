@@ -6,10 +6,10 @@
 #include <utility>
 
 #include "../includes/arr2d.hpp"
-#include "../includes/compression.hpp"
 #include "../includes/pgm8.hpp"
+#include "../includes/RLE.hpp"
 
-using pgm8::Type, pgm8::Image;
+using pgm8::Format, pgm8::Image;
 
 static
 bool string_starts_with(
@@ -30,10 +30,6 @@ bool string_starts_with(
 
   return true;
 }
-
-
-
-
 
 Image::Image() noexcept
 : m_width{0}, m_height{0}, m_maxval{0}, m_pixels{nullptr}
@@ -56,21 +52,14 @@ Image::Image(Image const &other) : Image::Image() {
 
 // copy assignment
 Image &Image::operator=(Image const &other) {
-  // check for self assignment
+  // prevent self assignment
   if (this == &other) {
     return *this;
   }
 
   clear();
 
-  // attempt allocation
-  m_pixels = ([&other](){
-    try {
-      return new uint8_t[other.pixel_count()];
-    } catch (std::bad_alloc const &) {
-      throw "pgm8::Image copy assignment failed - not enough memory for pixels";
-    }
-  })();
+  m_pixels = new uint8_t[other.pixel_count()];
 
   // shallow copy
   m_width = other.width();
@@ -90,7 +79,7 @@ Image::Image(Image &&other) noexcept {
 
 // move assignment
 Image &pgm8::Image::operator=(Image &&other) noexcept {
-  // check for self assignment
+  // prevent self assignment
   if (this == &other) {
     return *this;
   }
@@ -127,34 +116,28 @@ uint8_t *Image::pixels() const noexcept {
   return m_pixels;
 }
 size_t Image::pixel_count() const noexcept {
-  return static_cast<size_t>(m_width) * static_cast<size_t>(m_height);
+  return static_cast<size_t>(m_width) * m_height;
 }
 
 void Image::load(std::ifstream &file, bool const loadPixels) {
   if (!file.is_open()) {
-    throw "pgm8::Image::load failed - file closed";
+    throw std::runtime_error("`file` not open");
   }
   if (!file.good()) {
-    throw "pgm8::Image::load failed - bad file";
+    throw std::runtime_error("`file` not in good state");
   }
 
-  enum class EncodingType {
-    RAW,
-    PLAIN,
-    RLE
-  };
-
-  EncodingType const encType = ([&file](){
+  Format const format = ([&file](){
     std::string magicNum{};
     std::getline(file, magicNum);
     if (string_starts_with(magicNum, "P5")) {
-      return EncodingType::RAW;
+      return Format::RAW;
     } else if (string_starts_with(magicNum, "P2")) {
-      return EncodingType::PLAIN;
-    } else if (string_starts_with(magicNum, "PGM RLE")) {
-      return EncodingType::RLE;
+      return Format::PLAIN;
+    } else if (string_starts_with(magicNum, "PGM_RLE")) {
+      return Format::RLE;
     } else {
-      throw "pgm8::Image::load failed - invalid magic number";
+      throw std::runtime_error("invalid magic number");
     }
   })();
 
@@ -177,36 +160,28 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
     file.read(&newline, 1);
   }
 
-  auto const tryToAllocatePixels = [this](){
-    try {
-      return new uint8_t[pixel_count()];
-    } catch (std::bad_alloc const &) {
-      throw "pgm8::Image::load failed - not enough memory for pixels";
-    }
-  };
+  size_t const pixelCount = pixel_count();
 
-  switch (encType) {
-    case EncodingType::RAW:
-      m_pixels = tryToAllocatePixels();
-      file.read(reinterpret_cast<char *>(m_pixels), pixel_count());
+  switch (format) {
+    case Format::RAW:
+      m_pixels = new uint8_t[pixelCount];
+      file.read(reinterpret_cast<char *>(m_pixels),pixelCount);
       break;
-    case EncodingType::PLAIN: {
-      m_pixels = tryToAllocatePixels();
+    case Format::PLAIN: {
+      m_pixels = new uint8_t[pixelCount];
       char pixel[4] {};
-      for (size_t i = 0; i < pixel_count(); ++i) {
+      for (size_t i = 0; i < pixelCount; ++i) {
         file >> pixel;
         m_pixels[i] = static_cast<uint8_t>(std::stoul(pixel));
       }
       break;
     }
-    case EncodingType::RLE: {
-      compr::RLE<uint8_t, uint32_t> encoding{};
-      encoding.load_file_chunks(file);
-      m_pixels = encoding.decode();
+    case Format::RLE: {
+      // m_pixels = RLE::decode_from_file(file);
       break;
     }
     default:
-      throw "pgm8::Image::load failed (internal error!) - invalid encoding type";
+      throw std::runtime_error("invalid encoding type");
   }
 }
 
@@ -237,9 +212,9 @@ bool Image::operator==(Image const &other) const noexcept {
 
   switch (numImagesWithoutPixels) {
     case 0: return arr2d::cmp(m_pixels, other.pixels(), m_width, m_height);
+    default:
     case 1: return false;
     case 2: return true;
-    default: std::exit(100);
   }
 }
 bool Image::operator!=(Image const &other) const noexcept {
@@ -247,40 +222,37 @@ bool Image::operator!=(Image const &other) const noexcept {
   return !areImagesEqual;
 }
 
-
-
-
-
-static
-void write_header(
-  std::ofstream &file,
-  char const *const magicNum,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxval
-) {
-  file << magicNum << '\n'
-    << std::to_string(width) << ' ' << std::to_string(height) << '\n'
-    << std::to_string(maxval) << '\n';
-}
-
-void pgm8::write_uncompressed(
+void pgm8::write(
   std::ofstream &file,
   uint16_t const width,
   uint16_t const height,
   uint8_t const maxval,
   uint8_t const *const pixels,
-  Type const type
+  Format const format
 ) {
   if (maxval < 1) {
-    throw "pgm8::write_uncompressed failed - maxval must be > 0";
+    throw std::runtime_error("maxval must be > 0");
   }
 
-  write_header(file, type == Type::RAW ? "P5" : "P2", width, height, maxval);
+  // header
+  {
+    char const *const magicNum = [format](){
+      switch (format) {
+        case Format::PLAIN: return "P2";
+        case Format::RAW: return "P5";
+        case Format::RLE: return "PGM_RLE";
+        default: throw std::runtime_error("bad `format`");
+      }
+    }();
+
+    file << magicNum << '\n'
+      << std::to_string(width) << ' ' << std::to_string(height) << '\n'
+      << std::to_string(maxval) << '\n';
+  }
 
   // pixels
-  switch (type) {
-    case Type::PLAIN: {
+  switch (format) {
+    case Format::PLAIN: {
       for (size_t r = 0; r < height; ++r) {
         for (size_t c = 0; c < width; ++c) {
           file
@@ -291,37 +263,18 @@ void pgm8::write_uncompressed(
       }
       break;
     }
-    case Type::RAW: {
-      size_t const pixelCount =
-        static_cast<size_t>(width) * static_cast<size_t>(height);
+    case Format::RAW: {
+      size_t const pixelCount = static_cast<size_t>(width) * height;
       file.write(reinterpret_cast<char const *>(pixels), pixelCount);
       break;
     }
+    case Format::RLE: {
+      // size_t const pixelCount = static_cast<size_t>(width) * height;
+      // RLE::encode_to_file(file, pixels, pixelCount);
+      break;
+    }
     default: {
-      throw "pgm8::write_uncompressed failed - `type` is not a valid pgm8::Type";
+      throw std::runtime_error("bad `format`");
     }
   }
-}
-void pgm8::write_uncompressed(
-  std::ofstream &file,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxval,
-  compr::RLE<uint8_t, uint32_t> const &encodedPixelData,
-  Type const type
-) {
-  auto const pixels =
-    std::unique_ptr<uint8_t const>(encodedPixelData.decode());
-  pgm8::write_uncompressed(file, width, height, maxval, pixels.get(), type);
-}
-
-void pgm8::write_compressed(
-  std::ofstream &file,
-  uint16_t const width,
-  uint16_t const height,
-  uint8_t const maxval,
-  compr::RLE<uint8_t, uint32_t> const &encodedPixelData
-) {
-  write_header(file, "PGM RLE", width, height, maxval);
-  encodedPixelData.write_chunks_to_file(file);
 }

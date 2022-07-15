@@ -33,12 +33,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\impl\RLE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\includes\arr2d.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\test\config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\includes\cstr.hpp">
@@ -83,10 +83,13 @@
     <ClInclude Include="util.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="compression-tests.hpp">
+    <ClInclude Include="config.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\includes\compression.hpp">
+    <ClInclude Include="RLE-tests.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\includes\RLE.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

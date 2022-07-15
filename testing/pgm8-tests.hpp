@@ -18,9 +18,8 @@ namespace fs = std::filesystem;
 void pgm8_tests(char const *const imgsDir) {
   using
     pgm8::Image,
-    pgm8::Type,
-    pgm8::write_compressed,
-    pgm8::write_uncompressed;
+    pgm8::Format,
+    pgm8::write;
 
   {
     SETUP_SUITE("pgm8::Image")
@@ -167,19 +166,25 @@ void pgm8_tests(char const *const imgsDir) {
       &fpathname
     ](
       // params
-      Type const type
+      Format const format
     ){
       fpathname.replace_filename(
         std::string(caseName) +
-        (type == Type::PLAIN ? "-plain" : "-raw")
+        [format](){
+          switch (format) {
+            case Format::PLAIN: return "-plain";
+            case Format::RAW: return "-raw";
+            case Format::RLE: return "-RLE";
+            default: throw std::runtime_error("bad `format`");
+          }
+        }()
       );
 
-      // uncompressed write and read first:
       fpathname.replace_extension("pgm");
       {
         std::ofstream file(fpathname);
         assert_file(&file, fpathname.string().c_str());
-        write_uncompressed(file, width, height, maxval, pixels, type);
+        write(file, width, height, maxval, pixels, format);
       }
       {
         std::ifstream file(fpathname);
@@ -187,31 +192,14 @@ void pgm8_tests(char const *const imgsDir) {
         Image img(file);
         file.close();
         s.assert(
-          type == Type::PLAIN
-            ? "write_uncompressed PLAIN"
-            : "write_uncompressed RAW",
-          img.width() == width &&
-          img.height() == height &&
-          img.maxval() == maxval &&
-          arr2d::cmp(img.pixels(), pixels, width, height)
-        );
-      }
-
-      // compressed write and read second:
-      fpathname.replace_extension("pgme");
-      {
-        compr::RLE<uint8_t, uint32_t> encoding(pixels, static_cast<size_t>(width) * height);
-        std::ofstream file(fpathname);
-        assert_file(&file, fpathname.string().c_str());
-        write_compressed(file, width, height, maxval, encoding);
-      }
-      {
-        std::ifstream file(fpathname);
-        assert_file(&file, fpathname.string().c_str());
-        Image img(file);
-        file.close();
-        s.assert(
-          "write_compressed RLE",
+          [format](){
+            switch (format) {
+              case Format::PLAIN: return "write-plain";
+              case Format::RAW: return "write-raw";
+              case Format::RLE: return "write-RLE";
+              default: throw std::runtime_error("bad `format`");
+            }
+          }(),
           img.width() == width &&
           img.height() == height &&
           img.maxval() == maxval &&
@@ -220,8 +208,9 @@ void pgm8_tests(char const *const imgsDir) {
       }
     };
 
-    typeTestCase(Type::PLAIN);
-    typeTestCase(Type::RAW);
+    typeTestCase(Format::PLAIN);
+    typeTestCase(Format::RAW);
+    typeTestCase(Format::RLE);
   };
 
   {

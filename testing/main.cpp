@@ -6,13 +6,13 @@
 
 #include "arr2d-tests.hpp"
 #include "config.hpp"
-#include "compression-tests.hpp"
 #include "cstr-tests.hpp"
 #include "regexglob-tests.hpp"
 #include "lengthof-tests.hpp"
 #include "logger-tests.hpp"
 #include "on-scope-exit-tests.hpp"
 #include "pgm8-tests.hpp"
+#include "RLE-tests.hpp"
 #include "util.hpp"
 
 #define MULTITHREADED 1
@@ -53,8 +53,8 @@ int main(int const argc, char const *const *const argv) {
     test::set_indentation("  ");
 
     #if MULTITHREADED
-    std::vector<std::thread> threads{};
-    threads.reserve(3);
+      std::vector<std::thread> threads{};
+      threads.reserve(3);
     #endif
 
     #if TEST_PGM8
@@ -94,10 +94,6 @@ int main(int const argc, char const *const *const argv) {
       arr2d_tests();
     #endif
 
-    #if TEST_COMPRESSION
-      compression_tests();
-    #endif
-
     #if TEST_CSTR
       cstr_tests();
     #endif
@@ -110,10 +106,14 @@ int main(int const argc, char const *const *const argv) {
       on_scope_exit_tests();
     #endif
 
+    #if TEST_RLE
+      RLE_tests();
+    #endif
+
     #if MULTITHREADED
-    for (auto &t : threads) {
-      t.join();
-    }
+      for (auto &t : threads) {
+        t.join();
+      }
     #endif
 
     test::evaluate_suites();

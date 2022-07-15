@@ -166,28 +166,29 @@
     <ClCompile Include="..\impl\logger.cpp" />
     <ClCompile Include="..\impl\pgm8.cpp" />
     <ClCompile Include="..\impl\regexglob.cpp" />
+    <ClCompile Include="..\impl\RLE.cpp" />
     <ClCompile Include="..\impl\term.cpp" />
     <ClCompile Include="..\impl\test.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\includes\arr2d.hpp" />
-    <ClInclude Include="..\includes\compression.hpp" />
     <ClInclude Include="..\includes\cstr.hpp" />
     <ClInclude Include="..\includes\lengthof.hpp" />
     <ClInclude Include="..\includes\logger.hpp" />
     <ClInclude Include="..\includes\pgm8.hpp" />
     <ClInclude Include="..\includes\regexglob.hpp" />
+    <ClInclude Include="..\includes\RLE.hpp" />
     <ClInclude Include="..\includes\term.hpp" />
     <ClInclude Include="..\includes\test.hpp" />
-    <ClInclude Include="..\test\config.hpp" />
     <ClInclude Include="arr2d-tests.hpp" />
-    <ClInclude Include="compression-tests.hpp" />
+    <ClInclude Include="config.hpp" />
     <ClInclude Include="cstr-tests.hpp" />
     <ClInclude Include="lengthof-tests.hpp" />
     <ClInclude Include="logger-tests.hpp" />
     <ClInclude Include="pgm8-tests.hpp" />
     <ClInclude Include="regexglob-tests.hpp" />
+    <ClInclude Include="RLE-tests.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

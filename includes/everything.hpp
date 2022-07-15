@@ -5,6 +5,7 @@
 #include "on-scope-exit.hpp"
 #include "pgm8.hpp"
 #include "regexglob.hpp"
+#include "RLE.hpp"
 #include "scoped-timer.hpp"
 #include "term.hpp"
 #include "test.hpp"
