@@ -92,5 +92,11 @@
     <ClInclude Include="..\includes\RLE.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sequence-gen-tests.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\includes\sequence-gen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

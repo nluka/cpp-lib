@@ -1,5 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <filesystem>
 #include <iostream>
+#include <sstream>
+#include <string>
 #include <thread>
 
 #include "../includes/everything.hpp"
@@ -13,6 +17,7 @@
 #include "on-scope-exit-tests.hpp"
 #include "pgm8-tests.hpp"
 #include "RLE-tests.hpp"
+#include "sequence-gen-tests.hpp"
 #include "util.hpp"
 
 #define MULTITHREADED 1
@@ -110,6 +115,10 @@ int main(int const argc, char const *const *const argv) {
       RLE_tests();
     #endif
 
+    #if TEST_SEQUENCEGEN
+      seqgen_tests();
+    #endif
+
     #if MULTITHREADED
       for (auto &t : threads) {
         t.join();
@@ -125,10 +134,10 @@ int main(int const argc, char const *const *const argv) {
   } catch (std::string const &err) {
     printf_colored(ColorText::RED, "uncaught exception: %s\n", err.c_str());
   } catch (std::runtime_error const &err) {
-    printf_colored(
-      ColorText::RED,
-      (std::string("uncaught exception: ") + err.what()).c_str() + '\n'
-    );
+    std::stringstream ss{};
+    ss << "uncaught exception: " << err.what() << '\n';
+    std::string const fullMsg = ss.str();
+    printf_colored(ColorText::RED, fullMsg.c_str());
   } catch (...) {
     printf_colored(ColorText::RED, "uncaught exception: ...\n");
   }
