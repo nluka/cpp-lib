@@ -115,11 +115,7 @@ std::vector<uint8_t> RLE::encode(uint8_t const *const data, size_t const size) {
         encoded.push_back(data[i]);
       }
 
-      // if (nextHomogChunk == nullptr) {
-      //   break;
-      // } else {
-        pos += chunkLen;
-      // }
+      pos += chunkLen;
     }
   }
 
