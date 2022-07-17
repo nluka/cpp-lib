@@ -49,6 +49,16 @@ char last_char(char const *const str) {
   return slen > 0 ? str[slen - 1] : '\0';
 }
 
+// Removes any characters that match by `std::isspace`.
+void remove_spaces(char *s) {
+  char *d = s;
+  do {
+    while (std::isspace(*d)) {
+      ++d;
+    }
+  } while (*s++ = *d++);
+}
+
 // Converts an ASCII number ('1') to an integer (1).
 constexpr
 int ascii_digit_to_int(char const c) {

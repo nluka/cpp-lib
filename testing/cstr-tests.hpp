@@ -56,6 +56,34 @@ void cstr_tests() {
   }
 
   {
+    SETUP_SUITE_USING(cstr::remove_spaces)
+
+    auto const testCase = [&s](
+      char const *const input,
+      char const *const expected
+    ){
+      std::stringstream name{};
+      name << '"' << input << '"';
+
+      size_t const len = std::strlen(input) + 1; // +1 for NUL
+      auto const subject = std::unique_ptr<char []>(new char[len]);
+      std::strncpy(subject.get(), expected, len);
+
+      remove_spaces(subject.get());
+
+      s.assert(
+        name.str().c_str(),
+        std::strlen(subject.get()) == std::strlen(expected) &&
+        std::strcmp(subject.get(), expected) == 0
+      );
+    };
+
+    testCase("1 2 3", "123");
+    testCase(" 1 2 3 ", "123");
+    testCase("   ", "");
+  }
+
+  {
     SETUP_SUITE_USING(cstr::ascii_digit_to_int)
 
     s.assert(CASE(ascii_digit_to_int('0') == 0));
@@ -68,6 +96,21 @@ void cstr_tests() {
     s.assert(CASE(ascii_digit_to_int('7') == 7));
     s.assert(CASE(ascii_digit_to_int('8') == 8));
     s.assert(CASE(ascii_digit_to_int('9') == 9));
+  }
+
+  {
+    SETUP_SUITE_USING(cstr::int_to_ascii_digit)
+
+    s.assert(CASE(int_to_ascii_digit(0) == '0'));
+    s.assert(CASE(int_to_ascii_digit(1) == '1'));
+    s.assert(CASE(int_to_ascii_digit(2) == '2'));
+    s.assert(CASE(int_to_ascii_digit(3) == '3'));
+    s.assert(CASE(int_to_ascii_digit(4) == '4'));
+    s.assert(CASE(int_to_ascii_digit(5) == '5'));
+    s.assert(CASE(int_to_ascii_digit(6) == '6'));
+    s.assert(CASE(int_to_ascii_digit(7) == '7'));
+    s.assert(CASE(int_to_ascii_digit(8) == '8'));
+    s.assert(CASE(int_to_ascii_digit(9) == '9'));
   }
 }
 
