@@ -20,7 +20,8 @@ auto const registerSuiteOnScopeExit = make_on_scope_exit([&s](){ \
 });
 
 // Convenience macro which creates a "using" statement, a test suite,
-// and registers the created test suite.
+// and automatically registers the created test suite at the end of the
+// current scope.
 #define SETUP_SUITE_USING(func) \
 using func; \
 SETUP_SUITE(#func)
@@ -51,25 +52,30 @@ private:
   class Assertion {
   public:
     Assertion() = delete;
+
     // A copy of `name` is made, so you don't have to worry about lifetimes!
     Assertion(char const *name, bool expr);
 
-    [[nodiscard]] std::string const &name() const noexcept;
-    [[nodiscard]] bool expr() const noexcept;
+    [[nodiscard]]
+    std::string const &name() const noexcept;
+
+    [[nodiscard]]
+    bool expr() const noexcept;
 
   private:
     std::string m_name;
     bool m_expr;
   };
 
+  std::string m_name;
   std::vector<Assertion> m_assertions{};
 
 public:
-  std::string m_name;
-
   Suite() = delete;
+
   // A copy of `name` is made, so you don't have to worry about lifetimes!
   Suite(char const *const name);
+
   // A copy of `name` is made, so you don't have to worry about lifetimes!
   Suite(std::string const &name);
 
@@ -78,15 +84,23 @@ public:
   // `expr` is your assertion which you want to be true, for example:
   // add(1, 2) == 3
   void assert(char const *const name, bool const expr);
+
   // This is called internally, you aren't required to do this!
   // But if you want, you can print the output of all currently stored assertions.
   void print_assertions(std::ostream *os) const;
+
+  [[nodiscard]]
+  std::string const &name() const noexcept;
+
   // Returns the number of currently stored assertions which are passing.
   // Used internally, you probably don't need to call this yourself.
-  [[nodiscard]] size_t passes() const noexcept;
+  [[nodiscard]]
+  size_t passes() const noexcept;
+
   // Returns the number of currently stored assertions which are failing.
   // Used internally, you probably don't need to call this yourself.
-  [[nodiscard]] size_t fails() const noexcept;
+  [[nodiscard]]
+  size_t fails() const noexcept;
 };
 
 // Registers a suite for later evaluation by `test::evaluate_suites`.

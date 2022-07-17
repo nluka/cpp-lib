@@ -63,6 +63,10 @@ void Suite::print_assertions(std::ostream *const os) const {
   }
 }
 
+std::string const &Suite::name() const noexcept {
+  return m_name;
+}
+
 size_t Suite::passes() const noexcept {
   return std::count_if(
     m_assertions.begin(), m_assertions.end(),
@@ -98,7 +102,7 @@ void test::evaluate_suites() {
       size_t const
         passes = s.passes(),
         cases = passes + s.fails();
-      *os << s.m_name << " (" << passes << '/' << cases << ")\n";
+      *os << s.name() << " (" << passes << '/' << cases << ")\n";
     };
 
     if (s_useStdout) {
