@@ -6,9 +6,8 @@
 #define TEST_LENGTHOF 1
 #define TEST_LOGGER 1
 #define TEST_ONSCOPEEXIT 1
-#define TEST_PGM8 0
+#define TEST_PGM8 1
 #define TEST_REGEXGLOB 1
-#define TEST_RLE 1
 #define TEST_SEQUENCEGEN 1
 
 #endif // CPPLIB_TESTING_CONFIG_HPP

@@ -16,7 +16,6 @@
 #include "logger-tests.hpp"
 #include "on-scope-exit-tests.hpp"
 #include "pgm8-tests.hpp"
-#include "RLE-tests.hpp"
 #include "sequence-gen-tests.hpp"
 #include "util.hpp"
 
@@ -109,10 +108,6 @@ int main(int const argc, char const *const *const argv) {
 
     #if TEST_ONSCOPEEXIT
       on_scope_exit_tests();
-    #endif
-
-    #if TEST_RLE
-      RLE_tests();
     #endif
 
     #if TEST_SEQUENCEGEN

@@ -164,32 +164,9 @@ int main() {
     );
   }
 
-  // write RLE-encoded PGM file
-  {
-    pgm8::RLE encodedPixels(lines, linesWidth, linesHeight);
-    std::ofstream outFile("lines.pgme");
-    pgm8::write_compressed(
-      outFile,
-      linesWidth,
-      linesHeight,
-      1, // maxval
-      encoding
-    );
-  }
-
   // read our regular PGM file
   {
     std::ifstream inFile("lines.pgm");
-    pgm8::Image img(inFile);
-    img.width();        // 8
-    img.height();       // 6
-    img.maxval();       // 1
-    img.pixel_count();  // 48
-  }
-
-  // read our RLE-encoded PGM file
-  {
-    std::ifstream inFile("lines.pgme");
     pgm8::Image img(inFile);
     img.width();        // 8
     img.height();       // 6

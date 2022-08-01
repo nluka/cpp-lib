@@ -7,7 +7,6 @@
 
 #include "../includes/arr2d.hpp"
 #include "../includes/pgm8.hpp"
-#include "../includes/RLE.hpp"
 
 using pgm8::Format, pgm8::Image;
 
@@ -134,8 +133,6 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
       return Format::RAW;
     } else if (string_starts_with(magicNum, "P2")) {
       return Format::PLAIN;
-    } else if (string_starts_with(magicNum, "PGM_RLE")) {
-      return Format::RLE;
     } else {
       throw std::runtime_error("invalid magic number");
     }
@@ -176,12 +173,7 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
       }
       break;
     }
-    case Format::RLE: {
-      // m_pixels = RLE::decode_from_file(file);
-      break;
-    }
-    default:
-      throw std::runtime_error("invalid encoding type");
+    default: throw std::runtime_error("bad `format`");
   }
 }
 
@@ -231,7 +223,7 @@ void pgm8::write(
   Format const format
 ) {
   if (maxval < 1) {
-    throw std::runtime_error("maxval must be > 0");
+    throw std::runtime_error("`maxval` must be > 0");
   }
 
   // header
@@ -240,7 +232,6 @@ void pgm8::write(
       switch (format) {
         case Format::PLAIN: return "P2";
         case Format::RAW: return "P5";
-        case Format::RLE: return "PGM_RLE";
         default: throw std::runtime_error("bad `format`");
       }
     }();
@@ -268,13 +259,6 @@ void pgm8::write(
       file.write(reinterpret_cast<char const *>(pixels), pixelCount);
       break;
     }
-    case Format::RLE: {
-      // size_t const pixelCount = static_cast<size_t>(width) * height;
-      // RLE::encode_to_file(file, pixels, pixelCount);
-      break;
-    }
-    default: {
-      throw std::runtime_error("bad `format`");
-    }
+    default: throw std::runtime_error("bad `format`");
   }
 }

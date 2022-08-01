@@ -174,18 +174,21 @@ void pgm8_tests(char const *const imgsDir) {
           switch (format) {
             case Format::PLAIN: return "-plain";
             case Format::RAW: return "-raw";
-            case Format::RLE: return "-RLE";
             default: throw std::runtime_error("bad `format`");
           }
         }()
       );
 
       fpathname.replace_extension("pgm");
+
+      // write
       {
         std::ofstream file(fpathname);
         assert_file(&file, fpathname.string().c_str());
         write(file, width, height, maxval, pixels, format);
       }
+
+      // read
       {
         std::ifstream file(fpathname);
         assert_file(&file, fpathname.string().c_str());
@@ -196,7 +199,6 @@ void pgm8_tests(char const *const imgsDir) {
             switch (format) {
               case Format::PLAIN: return "write-plain";
               case Format::RAW: return "write-raw";
-              case Format::RLE: return "write-RLE";
               default: throw std::runtime_error("bad `format`");
             }
           }(),
@@ -210,7 +212,6 @@ void pgm8_tests(char const *const imgsDir) {
 
     typeTestCase(Format::PLAIN);
     typeTestCase(Format::RAW);
-    typeTestCase(Format::RLE);
   };
 
   {

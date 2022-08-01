@@ -166,7 +166,6 @@
     <ClCompile Include="..\impl\logger.cpp" />
     <ClCompile Include="..\impl\pgm8.cpp" />
     <ClCompile Include="..\impl\regexglob.cpp" />
-    <ClCompile Include="..\impl\RLE.cpp" />
     <ClCompile Include="..\impl\term.cpp" />
     <ClCompile Include="..\impl\test.cpp" />
     <ClCompile Include="main.cpp" />
@@ -178,7 +177,6 @@
     <ClInclude Include="..\includes\logger.hpp" />
     <ClInclude Include="..\includes\pgm8.hpp" />
     <ClInclude Include="..\includes\regexglob.hpp" />
-    <ClInclude Include="..\includes\RLE.hpp" />
     <ClInclude Include="..\includes\sequence-gen.hpp" />
     <ClInclude Include="..\includes\term.hpp" />
     <ClInclude Include="..\includes\test.hpp" />
@@ -189,7 +187,6 @@
     <ClInclude Include="logger-tests.hpp" />
     <ClInclude Include="pgm8-tests.hpp" />
     <ClInclude Include="regexglob-tests.hpp" />
-    <ClInclude Include="RLE-tests.hpp" />
     <ClInclude Include="sequence-gen-tests.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>

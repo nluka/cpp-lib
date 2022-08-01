@@ -48,7 +48,6 @@ enum class Format {
   PLAIN = 2,
   // Pixels stored in binary raster.
   RAW = 5,
-  RLE,
 };
 
 void write(
