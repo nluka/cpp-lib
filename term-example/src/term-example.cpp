@@ -16,14 +16,16 @@ int main() {
       "memory",
       "leaks"
     };
-    ColorText const colors[lengthof(loadingMsgWords)] {
+    ColorText const wordColors[lengthof(loadingMsgWords)] {
       ColorText::CYAN,
       ColorText::YELLOW,
       ColorText::RED,
     };
 
     for (size_t i = 0; i < lengthof(loadingMsgWords); ++i) {
-      term::printf_colored(colors[i], "%s ", loadingMsgWords[i]);
+      char const *const word = loadingMsgWords[i];
+      ColorText const color = wordColors[i];
+      term::printf_colored(color, "%s ", word);
     }
     printf("\n");
   }
