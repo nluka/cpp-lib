@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdarg>
 
-#include "../includes/term.hpp"
+#include "../include/term.hpp"
 
 using term::ColorText;
 

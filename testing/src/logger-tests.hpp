@@ -9,8 +9,8 @@
 #include <regex>
 #include <sstream>
 #include <thread>
-#include "../includes/logger.hpp"
-#include "../includes/test.hpp"
+#include "../../include/logger.hpp"
+#include "../../include/test.hpp"
 
 void logger_tests(char const *const outPathname) {
   using logger::EventType;

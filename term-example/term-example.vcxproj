@@ -18,6 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\lengthof.hpp" />
+    <ClInclude Include="..\include\term.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\impl\term.cpp" />
+    <ClCompile Include="src\term-example.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -162,13 +170,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\impl\term.cpp" />
-    <ClCompile Include="term-example.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\includes\term.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

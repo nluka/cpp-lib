@@ -5,9 +5,9 @@
 
 #if TEST_SEQUENCEGEN
 
-#include "../includes/lengthof.hpp"
-#include "../includes/sequence-gen.hpp"
-#include "../includes/test.hpp"
+#include "../../include/lengthof.hpp"
+#include "../../include/sequence-gen.hpp"
+#include "../../include/test.hpp"
 
 void seqgen_tests() {
   SETUP_SUITE_USING(seqgen::populate);

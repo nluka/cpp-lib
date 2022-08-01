@@ -5,8 +5,8 @@
 #include <string>
 #include <utility>
 
-#include "../includes/arr2d.hpp"
-#include "../includes/pgm8.hpp"
+#include "../include/arr2d.hpp"
+#include "../include/pgm8.hpp"
 
 using pgm8::Format, pgm8::Image;
 

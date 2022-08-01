@@ -9,8 +9,8 @@
 #include <filesystem>
 #include <memory>
 
-#include "../includes/pgm8.hpp"
-#include "../includes/test.hpp"
+#include "../../include/pgm8.hpp"
+#include "../../include/test.hpp"
 #include "util.hpp"
 
 namespace fs = std::filesystem;

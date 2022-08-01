@@ -6,9 +6,9 @@
 
 #if TEST_REGEXGLOB
 
-#include "../includes/regexglob.hpp"
-#include "../includes/term.hpp"
-#include "../includes/test.hpp"
+#include "../../include/regexglob.hpp"
+#include "../../include/term.hpp"
+#include "../../include/test.hpp"
 
 void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
   // not in global scope, so it's ok to do this in a header file

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <mutex>
 
-#include "../includes/test.hpp"
+#include "../include/test.hpp"
 
 using test::Suite;
 

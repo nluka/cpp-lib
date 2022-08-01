@@ -6,7 +6,7 @@
 #include <vector>
 #include <chrono>
 
-#include "../includes/term.hpp"
+#include "../../include/term.hpp"
 
 template <typename FstreamType>
 void assert_file(FstreamType const *file, char const *const fpathname) {

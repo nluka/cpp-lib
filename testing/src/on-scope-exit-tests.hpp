@@ -5,8 +5,8 @@
 
 #if TEST_ONSCOPEEXIT
 
-#include "../includes/on-scope-exit.hpp"
-#include "../includes/test.hpp"
+#include "../../include/on-scope-exit.hpp"
+#include "../../include/test.hpp"
 
 void on_scope_exit_tests() {
   SETUP_SUITE("on-scope-exit")

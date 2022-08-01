@@ -6,7 +6,7 @@
 #include <string>
 #include <thread>
 
-#include "../includes/everything.hpp"
+#include "../../include/everything.hpp"
 
 #include "arr2d-tests.hpp"
 #include "config.hpp"

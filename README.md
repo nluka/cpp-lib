@@ -21,7 +21,7 @@ Modules:
 Contains functions for working with 2D arrays which are allocated as a single contiguous block.
 
 ### Files needed
-- [arr2d.hpp](includes/arr2d.hpp)
+- [arr2d.hpp](include/arr2d.hpp)
 
 ### Example
 
@@ -62,14 +62,14 @@ int main() {
 Contains constexpr versions of `<cstring>` functions, with some additions. See [testing/cstr-tests.hpp](testing/cstr-tests.hpp) for usage examples.
 
 ### Files needed
-- [cstr.hpp](includes/cstr.hpp)
+- [cstr.hpp](include/cstr.hpp)
 
 ## lengthof
 
 Helper function for getting the size of a static (stack-allocated) C-style array at compile time.
 
 ### Files needed
-- [lengthof.hpp](includes/lengthof.hpp)
+- [lengthof.hpp](include/lengthof.hpp)
 
 ### Example
 
@@ -99,7 +99,7 @@ int main() {
 Simple, threadsafe logging module.
 
 ### Files needed
-- [logger.hpp](includes/logger.hpp)
+- [logger.hpp](include/logger.hpp)
 - [logger.cpp](impl/logger.cpp)
 
 ### Example
@@ -133,8 +133,8 @@ int main() {
 Module for functions for reading, writing, encoding, and decoding 8-bit PGM images. Requires [arr2d](#arr2d).
 
 ### Files needed
-- [arr2d.hpp](includes/arr2d.hpp)
-- [pgm8.hpp](includes/pgm8.hpp)
+- [arr2d.hpp](include/arr2d.hpp)
+- [pgm8.hpp](include/pgm8.hpp)
 - [pgm8.cpp](impl/pgm8.cpp)
 
 ### Example
@@ -181,7 +181,7 @@ int main() {
 Module for glob-like file matching using pure regular expressions.
 
 ### Files needed
-- [regexglob.hpp](includes/regexglob.hpp)
+- [regexglob.hpp](include/regexglob.hpp)
 - [regexglob.cpp](impl/regexglob.cpp)
 
 ### Example
@@ -223,7 +223,7 @@ int main() {
 Module for doing fancy things in the terminal via ANSI escape sequences. Make sure your terminal supports ANSI escape sequences when using this module!
 
 ### Files needed
-- [term.hpp](includes/term.hpp)
+- [term.hpp](include/term.hpp)
 - [term.cpp](impl/term.cpp)
 
 ### Example
@@ -279,7 +279,7 @@ int main() {
 A simple, lightweight testing library. See below for a simple introduction, for a more complex example see [here](https://github.com/nluka/cpp-lib/tree/main/test).
 
 ### Files needed
-- [test.hpp](includes/test.hpp)
+- [test.hpp](include/test.hpp)
 - [test.cpp](impl/test.cpp)
 
 ### Example

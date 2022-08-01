@@ -5,8 +5,8 @@
 
 #if TEST_ARR2D
 
-#include "../includes/arr2d.hpp"
-#include "../includes/test.hpp"
+#include "../../include/arr2d.hpp"
+#include "../../include/test.hpp"
 
 void arr2d_tests() {
   {
