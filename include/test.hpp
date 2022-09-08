@@ -8,8 +8,11 @@
 
 #include "on-scope-exit.hpp"
 
+// Module for writing tests for your code.
+namespace test {
+
 // Configuration:
-#define TEST_THREADSAFE_REGISTRATION 1
+#define TEST_THREADSAFE_REGISTRATION_AND_EVALUATION 1
 #define TEST_THREADSAFE_ASSERTS 0
 
 // Convenience macro which creates and registers a test suite.
@@ -29,9 +32,6 @@ SETUP_SUITE(#func)
 // Convenience macro which generates a generic name for an assertion.
 #define CASE(expr) (#expr), (expr)
 
-// Simple module for writing tests.
-namespace test {
-
 // Controls whether results are printed to the standard output.
 void use_stdout(bool);
 
@@ -43,10 +43,10 @@ void set_ofstream(std::ofstream *);
 void set_indentation(char const *);
 
 // If true, passing assertions will be printed - they are not printed by default.
-// failing assertions are always printed.
+// Failing assertions are always printed.
 void set_verbose_mode(bool);
 
-// A set of related assertions.
+// A named collection of assertions.
 class Suite {
 private:
   class Assertion {
@@ -81,8 +81,8 @@ public:
 
   // Adds an assertions to this suite.
   // You can use the convenience macro `CASE` to generate a generic `name` automatically.
-  // `expr` is your assertion which you want to be true, for example:
-  // add(1, 2) == 3
+  // `expr` is your assertion which you want to be true, for example: add(1, 2) == 3.
+  // If `TEST_THREADSAFE_ASSERTS` is non-zero, this operation is threadsafe.
   void assert(char const *const name, bool const expr);
 
   // This is called internally, you aren't required to do this!
@@ -93,25 +93,24 @@ public:
   std::string const &name() const noexcept;
 
   // Returns the number of currently stored assertions which are passing.
-  // Used internally, you probably don't need to call this yourself.
   [[nodiscard]]
   size_t passes() const noexcept;
 
   // Returns the number of currently stored assertions which are failing.
-  // Used internally, you probably don't need to call this yourself.
   [[nodiscard]]
   size_t fails() const noexcept;
 };
 
 // Registers a suite for later evaluation by `test::evaluate_suites`.
-// Takes an r-value reference, the passed suite will be cannibalized!
+// Takes an r-value reference - the passed suite will be cannibalized!
+// If `TEST_THREADSAFE_REGISTRATION_AND_EVALUATION` is non-zero,
+// this operation is threadsafe.
 void register_suite(Suite &&);
 
-// Evaluates all currently registered suites in a threadsafe manner
-// and prints their results. After evaluation, all suites are cleared.
-// You can call this function once at the end of your "tester" program,
-// or multiple times if you have assertions which can throw exceptions
-// and thus crash the "tester" program.
+// Evaluates all currently registered suites prints their results.
+// After evaluation, all suites are cleared.
+// If `TEST_THREADSAFE_REGISTRATION_AND_EVALUATION` is non-zero,
+// this operation is threadsafe.
 void evaluate_suites();
 
 } // namespace test

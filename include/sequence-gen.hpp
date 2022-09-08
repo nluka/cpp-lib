@@ -12,25 +12,29 @@
 
 #include "cstr.hpp"
 
+// Module for generating long, semi-complex integer sequences using a simple and
+// concise syntax.
 namespace seqgen {
 
+// Populates a block of memory using a pattern. The caller is responsible in
+// ensuring `out` has enough room for the sequence described by `pattern`.
 template <typename Ty>
 requires std::integral<Ty> && (std::is_same<Ty, bool>::value == false)
-void populate(Ty *const out, char const *const pattern_) {
-  if (cstr::len(pattern_) == 0) {
+void populate(Ty *const out, char const *const pattern) {
+  if (cstr::len(pattern) == 0) {
     throw std::runtime_error("empty pattern");
   }
 
-  auto const pattern = [pattern_](){
-    size_t const len = cstr::len(pattern_) + 1; // +1 for NUL
+  auto const pattern_ = [pattern](){
+    size_t const len = cstr::len(pattern) + 1; // +1 for NUL
     char *buf = new char[len];
-    std::strncpy(buf, pattern_, len);
+    std::strncpy(buf, pattern, len);
     return std::unique_ptr<char []>(buf);
   }();
 
-  cstr::remove_spaces(pattern.get());
+  cstr::remove_spaces(pattern_.get());
 
-  if (cstr::len(pattern.get()) == 0) {
+  if (cstr::len(pattern_.get()) == 0) {
     throw std::runtime_error("empty pattern");
   }
 
@@ -40,7 +44,7 @@ void populate(Ty *const out, char const *const pattern_) {
 
   size_t pos = 0;
 
-  char *piece = std::strtok(pattern.get(), ",");
+  char *piece = std::strtok(pattern_.get(), ",");
   while (piece != nullptr) {
     auto const parseNum = [](char const *const str){
       if constexpr (std::is_signed_v<Ty>) {

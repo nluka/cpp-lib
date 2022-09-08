@@ -59,13 +59,13 @@ void remove_spaces(char *s) {
   } while (*s++ = *d++);
 }
 
-// Converts an ASCII number ('1') to an integer (1).
+// Converts an ASCII number ('0'-'9') to an integer (0-9).
 constexpr
 int ascii_digit_to_int(char const c) {
   return static_cast<int>(c) - 48;
 }
 
-// Converts an int digit (0-9) to ASCII ('0'-'9').
+// Converts an integer (0-9) to ASCII ('0'-'9').
 constexpr
 char int_to_ascii_digit(int const digit) {
   return static_cast<char>(static_cast<int>('0') + (digit));

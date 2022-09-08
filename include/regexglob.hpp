@@ -5,9 +5,9 @@
 #include <fstream>
 #include <vector>
 
-#define REGEXGLOB_LOGGING_ENABLED 1
-
 namespace regexglob {
+
+#define REGEXGLOB_LOGGING_ENABLED 1
 
 void set_preferred_separator(char);
 

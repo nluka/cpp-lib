@@ -2,7 +2,7 @@
 #define CPPLIB_TERM_HPP
 
 // Module for doing fancy things in the terminal via ANSI escape sequences.
-// Make sure your terminal supports ANSI escape sequences when using this module!
+// Make sure your terminal supports ANSI escape sequences if using this module!
 namespace term {
 
 enum class ColorText {

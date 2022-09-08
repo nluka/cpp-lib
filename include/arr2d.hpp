@@ -36,7 +36,7 @@ ElemT max(
   return *max;
 }
 
-// Returns true if elements (beginning from `startIdx`) between two arrays
+// Returns true if elements (beginning from `startIdx`) between the two arrays
 // are the same, false otherwise.
 template <typename ElemT>
 constexpr

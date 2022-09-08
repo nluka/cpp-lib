@@ -11,8 +11,6 @@
 namespace pgm8 {
 
 // Class for reading 8-bit PGM image files.
-// Capable of reading standard (unencoded) files, as well as files encoded by
-// the `pgm8` module.
 class Image {
 public:
   Image() noexcept;
