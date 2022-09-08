@@ -256,9 +256,6 @@ int main() {
   test::set_verbose_mode(false);  // set true if you want passing assertions to be printed
   test::set_indent("  ");         // indent printed assertions with 2 spaces
   test::use_stdout(true);         // print output to console, set false if not wanted
-  std::atexit([](){
-    test::evaluate_suites();
-  });
 
   // optionally, you can register an output file using `test::set_ofstream`
 
@@ -284,6 +281,8 @@ int main() {
     // necessary step when not using convenience macros!
     test::register_suite(std::move(s));
   }
+
+  test::evaluate_suites();
 
   /* OUTPUT:
     myfuncs::subtract (1/2)
