@@ -43,12 +43,10 @@ void regexglob::homogenize_path_separators(
   );
 }
 
-#if REGEXGLOB_LOGGING_ENABLED
 static std::ofstream *s_ofstream = nullptr;
 void regexglob::set_ofstream(std::ofstream *const ofs) {
   s_ofstream = ofs;
 }
-#endif // REGEXGLOB_LOGGING_ENABLED
 
 std::vector<fs::path> regexglob::fmatch(
   char const *const root,
@@ -66,14 +64,12 @@ std::vector<fs::path> regexglob::fmatch(
   std::vector<fs::path> matchedFiles{};
   std::regex const regex(filePattern);
 
-  #if REGEXGLOB_LOGGING_ENABLED
   if (s_ofstream != nullptr) {
     *s_ofstream
       << "<root>: " << root << '\n'
       << "<file_pattern>: " << filePattern << '\n'
       << "<files_checked>:\n";
   }
-  #endif // REGEXGLOB_LOGGING_ENABLED
 
   for (
     auto const &entry :
@@ -93,11 +89,9 @@ std::vector<fs::path> regexglob::fmatch(
       continue;
     }
 
-    #if REGEXGLOB_LOGGING_ENABLED
     if (s_ofstream != nullptr) {
       *s_ofstream << "  " << entry.path() << '\n';
     }
-    #endif // REGEXGLOB_LOGGING_ENABLED
 
     {
       std::string path = entry.path().string();
@@ -109,7 +103,6 @@ std::vector<fs::path> regexglob::fmatch(
     }
   }
 
-  #if REGEXGLOB_LOGGING_ENABLED
   if (s_ofstream != nullptr) {
     *s_ofstream << "<files_matched>:";
     if (matchedFiles.empty()) {
@@ -122,7 +115,6 @@ std::vector<fs::path> regexglob::fmatch(
     }
     *s_ofstream << '\n';
   }
-  #endif // REGEXGLOB_LOGGING_ENABLED
 
   return matchedFiles;
 }

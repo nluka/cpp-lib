@@ -6,6 +6,7 @@
 
 #if TEST_REGEXGLOB
 
+#define REGEXGLOB_LOGGING_ENABLED
 #include "../../include/regexglob.hpp"
 #include "../../include/term.hpp"
 #include "../../include/test.hpp"
