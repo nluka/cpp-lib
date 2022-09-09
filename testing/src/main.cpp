@@ -24,13 +24,12 @@
 namespace fs = std::filesystem;
 
 int main(int const argc, char const *const *const argv) {
-  using term::printf_colored, term::ColorText;
-
-  term::set_color_text_default(ColorText::DEFAULT);
+  using term::printf_colored, term::ColorFG, term::ColorBG;
 
   if (argc < 4) {
     printf_colored(
-      ColorText::YELLOW,
+      ColorFG::YELLOW,
+      ColorBG::BLACK,
       "usage: <res_dir> <imgs_dir> <regexglob_dir>\n"
     );
     std::exit(1);
@@ -125,16 +124,16 @@ int main(int const argc, char const *const *const argv) {
     return 0;
 
   } catch (char const *const err) {
-    printf_colored(ColorText::RED, "uncaught exception: %s\n", err);
+    printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: %s\n", err);
   } catch (std::string const &err) {
-    printf_colored(ColorText::RED, "uncaught exception: %s\n", err.c_str());
+    printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: %s\n", err.c_str());
   } catch (std::runtime_error const &err) {
     std::stringstream ss{};
     ss << "uncaught exception: " << err.what() << '\n';
     std::string const fullMsg = ss.str();
-    printf_colored(ColorText::RED, fullMsg.c_str());
+    printf_colored(ColorFG::RED, ColorBG::BLACK, fullMsg.c_str());
   } catch (...) {
-    printf_colored(ColorText::RED, "uncaught exception: ...\n");
+    printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: ...\n");
   }
 
   return 1;

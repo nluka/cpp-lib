@@ -37,10 +37,10 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     ){
       std::vector<fs::path> result = fmatch(root, filePattern);
 
-      for (auto path : result) {
+      for (auto &path : result) {
         regexglob::homogenize_path_separators(path, '/');
       }
-      for (auto path : expected) {
+      for (auto &path : expected) {
         regexglob::homogenize_path_separators(path, '/');
       }
 

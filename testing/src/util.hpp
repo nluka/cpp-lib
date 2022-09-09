@@ -8,11 +8,12 @@
 
 #include "../../include/term.hpp"
 
-template <typename FstreamType>
-void assert_file(FstreamType const *file, char const *const fpathname) {
+template <typename FileStreamTy>
+void assert_file(FileStreamTy const *file, char const *const fpathname) {
   if (!file->is_open()) {
     term::printf_colored(
-      term::ColorText::RED,
+      term::ColorFG::RED,
+      term::ColorBG::BLACK,
       "failed to open file `%s`\n",
       fpathname
     );
