@@ -79,7 +79,7 @@ public:
   // A copy of `name` is made, so you don't have to worry about lifetimes!
   Suite(std::string const &name);
 
-  // Adds an assertions to this suite.
+  // Adds an assertion to this suite.
   // You can use the convenience macro `CASE` to generate a generic `name` automatically.
   // `expr` is your assertion which you want to be true, for example: add(1, 2) == 3.
   // If `TEST_THREADSAFE_ASSERTS` is non-zero, this operation is threadsafe.
@@ -112,6 +112,12 @@ void register_suite(Suite &&);
 // If `TEST_THREADSAFE_REGISTRATION_AND_EVALUATION` is non-zero,
 // this operation is threadsafe.
 void evaluate_suites();
+
+// Returns the total number of assertions passed.
+size_t assertions_passed();
+
+// Returns the total number of assertions failed.
+size_t assertions_failed();
 
 } // namespace test
 

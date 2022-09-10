@@ -121,7 +121,7 @@ int main(int const argc, char const *const *const argv) {
 
     test::evaluate_suites();
 
-    return 0;
+    return test::assertions_failed();
 
   } catch (char const *const err) {
     printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: %s\n", err);
@@ -136,5 +136,5 @@ int main(int const argc, char const *const *const argv) {
     printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: ...\n");
   }
 
-  return 1;
+  return -1;
 }
