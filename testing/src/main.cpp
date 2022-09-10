@@ -37,7 +37,7 @@ int main(int const argc, char const *const *const argv) {
 
   try {
 
-    ScopedTimer<TimerUnit::SECONDS> const timer("execution", std::cout);
+    timer::Scoped<timer::Unit::MILLISECONDS> timer("execution", std::cout);
 
     // where we store assertions and logs
     char const *const resDir = argv[1];
@@ -121,7 +121,7 @@ int main(int const argc, char const *const *const argv) {
 
     test::evaluate_suites();
 
-    return test::assertions_failed();
+    return static_cast<int>(test::assertions_failed());
 
   } catch (char const *const err) {
     printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: %s\n", err);
