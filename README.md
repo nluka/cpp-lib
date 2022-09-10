@@ -4,7 +4,7 @@ A collection of useful C++ functionality not included in the STL.
 
 - No third party dependencies, only the STL is needed
 - Designed with C++20 in mind, although many modules are compatible with earlier standards
-- Super easy to add modules to any project, just copy the files needed
+- Super easy to add modules to any project, just drop in the necessary files
 
 Modules:
 - [arr2d](#arr2d)
@@ -27,6 +27,8 @@ Contains functions for working with 2D arrays which are allocated as a single co
 ### Example
 
 ```cpp
+#include "arr2d.hpp"
+
 int main() {
   int const width = 3, height = 3;
   int arr[width * height] {
@@ -52,9 +54,9 @@ int main() {
     0, 0, 0
   };
 
-  arr2d::is_homogenous(arr, width, height);   // false
-  arr2d::is_homogenous(arr2, width, height);  // false
-  arr2d::is_homogenous(arr3, width, height);  // true
+  arr2d::is_homogenous(arr, width, height);  // false
+  arr2d::is_homogenous(arr2, width, height); // false
+  arr2d::is_homogenous(arr3, width, height); // true
 }
 ```
 
@@ -75,6 +77,8 @@ Helper function for getting the size of a static (stack-allocated) C-style array
 ### Example
 
 ```cpp
+#include "lengthof.hpp"
+
 int main() {
   int arr[] { 1, 2, 3, 4, 5 }; // 5 elements
 
@@ -106,6 +110,8 @@ Simple, threadsafe logging module.
 ### Example
 
 ```cpp
+#include "logger.hpp"
+
 int main() {
   logger::set_out_pathname("mylogs.log"); // write logs to this file
   logger::set_delim("\r\n"); // I want CRLFs, default is \n
@@ -141,6 +147,10 @@ Module for functions for reading, writing, encoding, and decoding 8-bit PGM imag
 ### Example
 
 ```cpp
+#include <cstdint>
+#include <fstream>
+#include "pgm8.hpp"
+
 int main() {
   uint16_t const linesWidth = 8, linesHeight = 6;
   uint8_t const lines[linesWidth * linesHeight] {
@@ -169,10 +179,10 @@ int main() {
   {
     std::ifstream inFile("lines.pgm");
     pgm8::Image img(inFile);
-    img.width();        // 8
-    img.height();       // 6
-    img.maxval();       // 1
-    img.pixel_count();  // 48
+    img.width();       // 8
+    img.height();      // 6
+    img.maxval();      // 1
+    img.pixel_count(); // 48
   }
 }
 ```
@@ -205,6 +215,9 @@ root
 ```
 
 ```cpp
+#include <vector>
+#include "regexglob.hpp"
+
 int main() {
   regexglob::set_preferred_separator('/');
 
@@ -238,6 +251,8 @@ A simple, lightweight testing library. See below for a simple introduction, for 
 ### Example
 
 ```cpp
+#include "test.hpp"
+
 namespace myfuncs {
   int add(int a, int b) {
     return a + b;
