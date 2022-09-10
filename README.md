@@ -226,12 +226,6 @@ Module for doing fancy things in the terminal via ANSI escape sequences. Make su
 - [term.hpp](include/term.hpp)
 - [term.cpp](impl/term.cpp)
 
-### Example
-
-<img title="term-example.gif" alt="Alt text" src="resources/term-example.gif" width="300">
-
-See [term-example.hpp](term-example/src/term-example.cpp) for source code.
-
 ## test
 
 A simple, lightweight testing library. See below for a simple introduction, for a more complex example see [here](https://github.com/nluka/cpp-lib/tree/main/test).

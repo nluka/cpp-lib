@@ -1,5 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS
-
 #include <filesystem>
 #include <iostream>
 #include <sstream>
@@ -21,19 +20,19 @@
 
 #define MULTITHREADED 1
 
-namespace fs = std::filesystem;
-
 int main(int const argc, char const *const *const argv) {
-  using term::printf_colored, term::ColorFG, term::ColorBG;
+  namespace fs = std::filesystem;
+  using namespace term;
 
   if (argc < 4) {
-    printf_colored(
-      ColorFG::YELLOW,
-      ColorBG::BLACK,
+    color::printf(
+      color::fore::YELLOW | color::back::BLACK,
       "usage: <res_dir> <imgs_dir> <regexglob_dir>\n"
     );
-    std::exit(1);
+    std::exit(-1);
   }
+
+  int const colorErr = color::fore::RED | color::back::BLACK;
 
   try {
 
@@ -121,19 +120,40 @@ int main(int const argc, char const *const *const argv) {
 
     test::evaluate_suites();
 
+    std::printf("\nterm:");
+    {
+      using namespace color;
+      printf(fore::WHITE | back::BLACK, "\nWHITE | BLACK");
+      printf(fore::RED | back::WHITE, "\nRED | WHITE");
+      printf(fore::GREEN | back::CYAN, "\nGREEN | CYAN");
+      printf(fore::YELLOW | back::MAGENTA, "\nYELLOW | MAGENTA");
+      printf(fore::BLUE | back::GREEN, "\nBLUE | GREEN");
+      printf(fore::MAGENTA | back::BLUE, "\nMAGENTA | BLUE");
+      printf(fore::CYAN | back::YELLOW, "\nCYAN | YELLOW");
+      printf(fore::GRAY | back::RED, "\nGRAY | RED");
+      printf(fore::GREY | back::RED, "\nGREY | RED");
+      printf(fore::LIGHT_RED | back::BLACK, "\nLIGHT_RED | BLACK");
+      printf(fore::LIGHT_GREEN | back::BLACK, "\nLIGHT_GREEN | BLACK");
+      printf(fore::LIGHT_YELLOW | back::BLACK, "\nLIGHT_YELLOW | BLACK");
+      printf(fore::LIGHT_BLUE | back::BLACK, "\nLIGHT_BLUE | BLACK");
+      printf(fore::LIGHT_MAGENTA | back::BLACK, "\nLIGHT_MAGENTA | BLACK");
+      printf(fore::LIGHT_CYAN | back::BLACK, "\nLIGHT_CYAN | BLACK");
+    }
+    std::printf("\n");
+
     return static_cast<int>(test::assertions_failed());
 
   } catch (char const *const err) {
-    printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: %s\n", err);
+    color::printf(colorErr, "uncaught exception: %s\n", err);
   } catch (std::string const &err) {
-    printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: %s\n", err.c_str());
+    color::printf(colorErr, "uncaught exception: %s\n", err.c_str());
   } catch (std::runtime_error const &err) {
     std::stringstream ss{};
     ss << "uncaught exception: " << err.what() << '\n';
     std::string const fullMsg = ss.str();
-    printf_colored(ColorFG::RED, ColorBG::BLACK, fullMsg.c_str());
+    color::printf(colorErr, fullMsg.c_str());
   } catch (...) {
-    printf_colored(ColorFG::RED, ColorBG::BLACK, "uncaught exception: ...\n");
+    color::printf(colorErr, "uncaught exception: ...\n");
   }
 
   return -1;

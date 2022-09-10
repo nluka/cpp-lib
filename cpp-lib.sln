@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "term-example", "term-example\term-example.vcxproj", "{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testing", "testing\testing.vcxproj", "{64263540-1B32-4214-B482-1EF55E7686B5}"
 EndProject
 Global
@@ -15,14 +13,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Debug|x64.ActiveCfg = Debug|x64
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Debug|x64.Build.0 = Debug|x64
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Debug|x86.ActiveCfg = Debug|Win32
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Debug|x86.Build.0 = Debug|Win32
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Release|x64.ActiveCfg = Release|x64
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Release|x64.Build.0 = Release|x64
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Release|x86.ActiveCfg = Release|Win32
-		{BF2FB559-3985-4B18-9FD6-BA9D6292BCCF}.Release|x86.Build.0 = Release|Win32
 		{64263540-1B32-4214-B482-1EF55E7686B5}.Debug|x64.ActiveCfg = Debug|x64
 		{64263540-1B32-4214-B482-1EF55E7686B5}.Debug|x64.Build.0 = Debug|x64
 		{64263540-1B32-4214-B482-1EF55E7686B5}.Debug|x86.ActiveCfg = Debug|Win32
