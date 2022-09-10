@@ -15,6 +15,7 @@ Modules:
 - [regexglob](#regexglob)
 - [term](#term)
 - [test](#test)
+- [timer](#timer)
 
 ## arr2d
 
@@ -286,4 +287,32 @@ int main() {
       fail: second assertion
   */
 }
+```
+
+## timer
+
+Module for timing code execution.
+
+### Files needed
+- [test.hpp](include/timer.hpp)
+
+### Example
+```cpp
+#include <iostream>
+#include "timer.hpp"
+
+int main() {
+  {
+    timer::Scoped<timer::Unit::SECONDS> timer("work1", &std::cout);
+    do_some_long_work();
+  }
+  {
+    timer::Scoped<timer::Unit::MILLISECONDS> timer("work2", &std::cout);
+    do_some_other_long_work();
+  }
+}
+
+// OUTPUT:
+// work1 took 123s
+// work2 took 12345ms
 ```
