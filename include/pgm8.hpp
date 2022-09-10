@@ -6,8 +6,7 @@
 #include <string>
 #include <vector>
 
-// Module for reading, writing, encoding, and decoding
-// 8-bit PGM images.
+// Module for reading and writing 8-bit PGM images.
 namespace pgm8 {
 
 // Class for reading 8-bit PGM image files.

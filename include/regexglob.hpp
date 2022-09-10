@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 
+// Module for file matching using regular expressions.
 namespace regexglob {
 
 void set_preferred_separator(char);
