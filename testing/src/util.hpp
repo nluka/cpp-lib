@@ -10,13 +10,9 @@
 
 template <typename FileStreamTy>
 void assert_file(FileStreamTy const *file, char const *const fpathname) {
-  using namespace term;
+  using namespace term::color;
   if (!file->is_open()) {
-    color::printf(
-      color::fore::RED | color::back::BLACK,
-      "failed to open file `%s`\n",
-      fpathname
-    );
+    printf(fore::RED | back::BLACK, "failed to open file `%s`\n", fpathname);
     std::exit(-1);
   }
 }

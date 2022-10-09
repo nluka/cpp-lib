@@ -22,7 +22,7 @@ void logger_tests(char const *const outPathname) {
   logger::set_out_pathname(logFilePathname);
   logger::set_delim("\n");
 
-  auto const logTask = [](EventType const evType){
+  auto const logTask = [](EventType const evType) {
     std::ostringstream oss{};
     oss << std::this_thread::get_id();
     std::string const threadId = oss.str();
@@ -74,7 +74,7 @@ void logger_tests(char const *const outPathname) {
     std::ifstream logFile(logFilePathname);
     assert_file(&logFile, logFilePathname.c_str());
 
-    s.assert("log file content", ([&logFile](){
+    s.assert("log file content", ([&logFile]() {
       // what each log should look like
       std::regex const logRegex(
         "\\[((INFO)|(WARNING)|(ERROR)|(FATAL))\\] " // event type

@@ -72,7 +72,7 @@ std::string const &Suite::name() const noexcept {
 size_t Suite::passes() const noexcept {
   return std::count_if(
     m_assertions.begin(), m_assertions.end(),
-    [](Assertion const &a){
+    [](Assertion const &a) {
       return a.expr() == true;
     }
   );
@@ -81,7 +81,7 @@ size_t Suite::passes() const noexcept {
 size_t Suite::fails() const noexcept {
   return std::count_if(
     m_assertions.begin(), m_assertions.end(),
-    [](Assertion const &a){
+    [](Assertion const &a) {
       return a.expr() == false;
     }
   );
@@ -103,7 +103,7 @@ void test::evaluate_suites() {
     s_numAssertionsPassed += s.passes();
     s_numAssertionsFailed += s.fails();
 
-    auto const printHeader = [&s](std::ostream *const os){
+    auto const printHeader = [&s](std::ostream *const os) {
       size_t const cases = s.passes() + s.fails();
       *os << s.name() << " (" << s.passes() << '/' << cases << ")\n";
     };

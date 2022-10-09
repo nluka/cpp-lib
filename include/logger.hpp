@@ -3,7 +3,7 @@
 
 #include <string>
 
-// Simple module for writing logs to a file in a threadsafe manner.
+// Simple, threadsafe logging.
 namespace logger {
 
 // Setting this to 0 disables thread safety for `logger::write` and `logger::flush`.
@@ -14,12 +14,10 @@ void set_out_pathname(char const *);
 // Sets the pathname of the file to write logs to.
 void set_out_pathname(std::string const &);
 
-// Sets the character sequence used to separate events.
-// The default is \n.
+// Sets the character sequence used to separate events. The default is "\n".
 void set_delim(char const *);
 
-// When enabled, events will be flushed after each `logger::write`.
-// Off by default.
+// When enabled, events will be flushed after each `logger::write`. Off by default.
 void set_autoflush(bool);
 
 enum class EventType {
@@ -35,12 +33,10 @@ enum class EventType {
   COUNT,
 };
 
-// Writes an event (with formatted message) to the log.
-// If `LOGGER_THREADSAFE` is non-zero, this operation is threadsafe.
+// Writes an event (with formatted message) to the log. If `LOGGER_THREADSAFE` is non-zero, this operation is threadsafe.
 void write(EventType, char const *fmt, ...);
 
-// Flushes the event log.
-// // If `LOGGER_THREADSAFE` is non-zero, this operation is threadsafe.
+// Flushes the event log. If `LOGGER_THREADSAFE` is non-zero, this operation is threadsafe.
 void flush();
 
 } // namespace logger

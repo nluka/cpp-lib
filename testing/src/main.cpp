@@ -41,7 +41,7 @@ int main(int const argc, char const *const *const argv) {
     // where we store assertions and logs
     char const *const resDir = argv[1];
 
-    std::ofstream assertionsFile = ([resDir](){
+    std::ofstream assertionsFile = ([resDir]() {
       fs::path pathname(resDir);
       pathname /= "assertions.txt";
       std::ofstream f(pathname);

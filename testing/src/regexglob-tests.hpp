@@ -26,7 +26,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
     SETUP_SUITE_USING(regexglob::fmatch)
 
     // don't really care which order, as long as things are sorted
-    auto const sorter = [](fs::path const &left, fs::path const &right){
+    auto const sorter = [](fs::path const &left, fs::path const &right) {
       return left > right;
     };
 
@@ -34,7 +34,7 @@ void regexglob_tests(char const *const regexglobDir, char const *const resDir) {
       char const *const root,
       char const *const filePattern,
       std::vector<fs::path> &expected
-    ){
+    ) {
       std::vector<fs::path> result = fmatch(root, filePattern);
 
       for (auto &path : result) {

@@ -1,11 +1,10 @@
 #ifndef CPPLIB_LENGTHOF_HPP
 #define CPPLIB_LENGTHOF_HPP
 
-// Returns the size of a static (stack-allocated) C-style array at compile time.
-template <typename ElemT, size_t Length>
+// Returns the size of a static C-style array at compile time.
+template <typename ElemTy, size_t Length>
 constexpr
-size_t lengthof(ElemT (&)[Length]) {
-  // implementation from: https://stackoverflow.com/a/2404697/16471560
+size_t lengthof(ElemTy (&)[Length]) {
   return Length;
 }
 

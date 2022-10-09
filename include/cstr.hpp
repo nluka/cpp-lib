@@ -3,12 +3,10 @@
 
 #include <cstdlib>
 
-// Module with constexpr versions of <cstring> functions,
-// with some additions.
+// Module for working with C-style strings. Includes constexpr alternatives to some standard functions.
 namespace cstr {
 
-// Returns the difference between two strings.
-// 0 means the strings are identical.
+// Returns the difference between two strings -> 0 means the strings are identical.
 constexpr
 int cmp(char const *s1, char const *s2) {
   // from https://stackoverflow.com/a/34873406/16471560
@@ -19,7 +17,7 @@ int cmp(char const *s1, char const *s2) {
   return *(unsigned char const *)s1 - *(unsigned char const *)s2;
 }
 
-// Returns the length of a string.
+// Returns the length of a NUL-terminated string, excluding the NUL char. Can be computed at compile, unlike std::strlen.
 constexpr
 size_t len(char const *const str) {
   size_t i = 0;
@@ -42,7 +40,7 @@ size_t count(char const *const str, char const c) {
   return count;
 }
 
-// Returns the last character a string.
+// Returns the last character a string. Can be computed at compile time.
 constexpr
 char last_char(char const *const str) {
   size_t const slen = len(str);

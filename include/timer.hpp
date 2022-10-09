@@ -52,7 +52,7 @@ public:
 
     auto const elapsedTimeInTemplatedUnits =
       static_cast<double>(elapsedNanos.count()) /
-      static_cast<double>([](){
+      static_cast<double>([]() {
         switch (UnitTy) {
           default:
           case Unit::SECONDS:      return Unit::NANOSECONDS;
@@ -62,7 +62,7 @@ public:
         }
       }());
 
-    char const *const units = [](){
+    char const *const units = []() {
       switch (UnitTy) {
         default:
         case Unit::SECONDS:      return "s";

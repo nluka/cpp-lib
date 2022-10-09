@@ -16,8 +16,7 @@
 // concise syntax.
 namespace seqgen {
 
-// Populates a block of memory using a pattern. The caller is responsible in
-// ensuring `out` has enough room for the sequence described by `pattern`.
+// Populates a block of memory using a pattern. The caller is responsible in ensuring `out` has enough room for the sequence described by `pattern`.
 template <typename Ty>
 requires std::integral<Ty> && (std::is_same<Ty, bool>::value == false)
 void populate(Ty *const out, char const *const pattern) {
@@ -25,7 +24,7 @@ void populate(Ty *const out, char const *const pattern) {
     throw std::runtime_error("empty pattern");
   }
 
-  auto const pattern_ = [pattern](){
+  auto const pattern_ = [pattern]() {
     size_t const len = cstr::len(pattern) + 1; // +1 for NUL
     char *buf = new char[len];
     std::strncpy(buf, pattern, len);
@@ -46,7 +45,7 @@ void populate(Ty *const out, char const *const pattern) {
 
   char *piece = std::strtok(pattern_.get(), ",");
   while (piece != nullptr) {
-    auto const parseNum = [](char const *const str){
+    auto const parseNum = [](char const *const str) {
       if constexpr (std::is_signed_v<Ty>) {
         // TODO: maybe replace with std::strtoimax?
         return static_cast<Ty>(std::stoll(str));

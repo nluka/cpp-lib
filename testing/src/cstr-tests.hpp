@@ -1,6 +1,8 @@
 #ifndef CPPLIB_CSTR_TESTS_HPP
 #define CPPLIB_CSTR_TESTS_HPP
 
+#include <sstream>
+
 #include "config.hpp"
 
 #if TEST_CSTR
@@ -61,7 +63,7 @@ void cstr_tests() {
     auto const testCase = [&s](
       char const *const input,
       char const *const expected
-    ){
+    ) {
       std::stringstream name{};
       name << '"' << input << '"';
 

@@ -2,7 +2,6 @@
 #define CPPLIB_TERM_HPP
 
 // Module for doing fancy things in the terminal via ANSI escape sequences.
-// Make sure your terminal supports ANSI escape sequences when using this module!
 namespace term {
 
 void clear_screen();
@@ -57,8 +56,7 @@ namespace color {
 
   // Foreground.
   namespace fore {
-
-    constexpr int
+    int constexpr
       DEFAULT       = 0b00000000000000000000000000000000,
       RED           = 0b00000000000000000000000000000001,
       GREEN         = 0b00000000000000000000000000000010,
@@ -75,13 +73,11 @@ namespace color {
       LIGHT_MAGENTA = 0b00000000000000000001000000000000,
       LIGHT_CYAN    = 0b00000000000000000010000000000000,
       WHITE         = 0b00000000000000000100000000000000;
-
   } // namespace fore
 
   // Background.
   namespace back {
-
-    constexpr int
+    int constexpr
       BLACK   = 0b10000000000000000000000000000000,
       RED     = 0b01000000000000000000000000000000,
       GREEN   = 0b00100000000000000000000000000000,
@@ -90,13 +86,12 @@ namespace color {
       MAGENTA = 0b00000100000000000000000000000000,
       CYAN    = 0b00000010000000000000000000000000,
       WHITE   = 0b00000001000000000000000000000000;
-
   } // namespace back
 
   // Sets stdout foreground and background color.
   void set(int color);
 
-  // Wrapper for `printf` allowing for colored printing.
+  // Wrapper for `printf` enabling colored printing.
   void printf(int color, char const *fmt, ...);
 
 } // namespace color

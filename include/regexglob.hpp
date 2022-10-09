@@ -17,8 +17,7 @@ void homogenize_path_separators(std::string &path, char const sep);
 
 void set_ofstream(std::ofstream *);
 
-// Matches any files starting from `root` (including those in subdirectories)
-// using the `filePattern` regular expression.
+// Matches any files starting from `root` (including those in subdirectories) using the `filePattern` regular expression.
 std::vector<std::filesystem::path> fmatch(
   char const *root,
   char const *filePattern

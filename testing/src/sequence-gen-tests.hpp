@@ -15,7 +15,7 @@ void seqgen_tests() {
   auto const testCase = [&s](
     char const *const pattern,
     std::initializer_list<int> expected
-  ){
+  ) {
     size_t const len = expected.size();
     auto const output = std::unique_ptr<int []>(new int[len]);
     populate<int>(output.get(), pattern);

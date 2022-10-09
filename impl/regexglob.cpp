@@ -21,7 +21,7 @@ void regexglob::homogenize_path_separators(
   std::replace_if(
     homogenized.begin(),
     homogenized.end(),
-    [](char const c){
+    [](char const c) {
       return c == '/' || c == '\\';
     },
     sep
@@ -36,7 +36,7 @@ void regexglob::homogenize_path_separators(
   std::replace_if(
     path.begin(),
     path.end(),
-    [](char const c){
+    [](char const c) {
       return c == '/' || c == '\\';
     },
     sep

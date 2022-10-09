@@ -14,7 +14,7 @@ void on_scope_exit_tests() {
   int counter = 0;
 
   {
-    auto const onScopeExit = make_on_scope_exit([&counter](){
+    auto const onScopeExit = make_on_scope_exit([&counter]() {
       ++counter;
     });
 

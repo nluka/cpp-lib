@@ -150,7 +150,7 @@ void pgm8_tests(char const *const imgsDir) {
     uint16_t const height,
     uint8_t const maxval,
     uint8_t const *const pixels
-  ){
+  ) {
     SETUP_SUITE(std::string("pgm8 E2E ") + caseName)
 
     fs::path fpathname = imgsDir;
@@ -167,10 +167,10 @@ void pgm8_tests(char const *const imgsDir) {
     ](
       // params
       Format const format
-    ){
+    ) {
       fpathname.replace_filename(
         std::string(caseName) +
-        [format](){
+        [format]() {
           switch (format) {
             case Format::PLAIN: return "-plain";
             case Format::RAW: return "-raw";
@@ -195,7 +195,7 @@ void pgm8_tests(char const *const imgsDir) {
         Image img(file);
         file.close();
         s.assert(
-          [format](){
+          [format]() {
             switch (format) {
               case Format::PLAIN: return "write-plain";
               case Format::RAW: return "write-raw";

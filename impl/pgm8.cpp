@@ -126,7 +126,7 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
     throw std::runtime_error("`file` not in good state");
   }
 
-  Format const format = ([&file](){
+  Format const format = ([&file]() {
     std::string magicNum{};
     std::getline(file, magicNum);
     if (string_starts_with(magicNum, "P5")) {
@@ -228,7 +228,7 @@ void pgm8::write(
 
   // header
   {
-    char const *const magicNum = [format](){
+    char const *const magicNum = [format]() {
       switch (format) {
         case Format::PLAIN: return "P2";
         case Format::RAW: return "P5";
