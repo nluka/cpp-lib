@@ -10,6 +10,8 @@ Module for reading and writing 8-bit Portable Gray Map (PGM) images.
 
 ## example
 
+### writing
+
 ```cpp
 uint16_t linesWidth = 8, linesHeight = 6;
 uint8_t lines[linesWidth * linesHeight] {
@@ -21,7 +23,7 @@ uint8_t lines[linesWidth * linesHeight] {
   1, 1, 1, 1, 1, 1, 1, 1,
 };
 
-// write plain (pixels stored in ASCII decimal) PGM file
+// write plain PGM file (pixels stored in ASCII decimal)
 {
   std::ofstream outFile("lines.pgm");
   pgm8::write(
@@ -35,19 +37,27 @@ uint8_t lines[linesWidth * linesHeight] {
     pgm8::Format::PLAIN
   );
 }
+```
 
-// resulting file:
-// P2
-// 8 6
-// 1
-// 0 0 0 0 0 0 0 0
-// 1 1 1 1 1 1 1 1
-// 0 0 0 0 0 0 0 0
-// 1 1 1 1 1 1 1 1
-// 0 0 0 0 0 0 0 0
-// 1 1 1 1 1 1 1 1
+resulting file:
+```
+P2
+8 6
+1
+0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 1
 
-// read our regular PGM file
+```
+
+<img src="../resources/lines.png" width="300" />
+
+### reading
+
+```cpp
 {
   std::ifstream inFile("lines.pgm");
   pgm8::Image img(inFile);
@@ -55,6 +65,6 @@ uint8_t lines[linesWidth * linesHeight] {
   img.height();      // 6
   img.maxval();      // 1
   img.pixel_count(); // 48
-  img.pixels();      // equivalent to `lines`
+  img.pixels();      // equivalent to `lines` from writing step
 }
 ```
