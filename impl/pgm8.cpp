@@ -162,7 +162,7 @@ void Image::load(std::ifstream &file, bool const loadPixels) {
   switch (format) {
     case Format::RAW:
       m_pixels = new uint8_t[pixelCount];
-      file.read(reinterpret_cast<char *>(m_pixels),pixelCount);
+      file.read(reinterpret_cast<char *>(m_pixels), pixelCount);
       break;
     case Format::PLAIN: {
       m_pixels = new uint8_t[pixelCount];
