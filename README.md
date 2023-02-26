@@ -15,4 +15,4 @@ Modules:
 - [regexglob](docs/regexglob.md)
 - [term](docs/term.md)
 - [test](docs/test.md)
-- [timer](#timer)
+- [timer](docs/timer.md)
