@@ -1,18 +1,16 @@
 # cpp-lib
 
-A collection of small but useful C++ modules not providing functionality not available in the STL.
+**Most modules have been superceded and become independent repositories, this is now an archive.**
 
-- No third party dependencies, only the STL is needed
-- Designed with C++20 in mind
-- Easy to add modules to any project, just drop in the necessary files
+A collection of small but useful C++ modules providing functionality not available in the STL.
 
 Modules:
 - [arr2d](docs/arr2d.md)
 - [cstr](docs/cstr.md)
-- [lengthof](docs/lengthof.md)
-- [logger](docs/logger.md)
-- [pgm8](docs/pgm8.md)
-- [regexglob](docs/regexglob.md)
-- [term](docs/term.md)
-- [test](docs/test.md)
-- [timer](docs/timer.md)
+- [lengthof](docs/lengthof.md) -> now part of [cpp-smallutils](https://github.com/nluka/cpp-smallutils)
+- [logger](docs/logger.md) -> superceded by [cpp-logger](https://github.com/nluka/cpp-logger)
+- [pgm8](docs/pgm8.md) -> superceded by [cpp-pgm8](https://github.com/nluka/cpp-pgm8)
+- [regexglob](docs/regexglob.md) -> superceded by [cpp-fregex](https://github.com/nluka/cpp-fregex)
+- [term](docs/term.md) -> superceded by [cpp-term](https://github.com/nluka/cpp-term)
+- [test](docs/test.md) -> superceded by [ntest](https://github.com/nluka/ntest)
+- [timer](docs/timer.md) -> now part of [cpp-smallutils](https://github.com/nluka/cpp-smallutils) as "scoped_timer"
