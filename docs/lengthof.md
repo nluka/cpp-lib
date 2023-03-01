@@ -6,7 +6,7 @@ Function for returning the length of a static array at compile time.
 
 - [lengthof.hpp](../include/lengthof.hpp)
 
-(although you should honestly just copy paste the function into your project's utilities header...)
+(although you should honestly just copy paste the function into your project's util header...)
 
 ## example
 
